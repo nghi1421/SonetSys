@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Core\Auth\Http\Requests;
 
 use App\Core\Auth\Application\DTOs\LoginData;
+use App\Core\Tenancy\Application\TenantContext;
 use Illuminate\Foundation\Http\FormRequest;
 
 final class LoginRequest extends FormRequest
@@ -17,7 +18,6 @@ final class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'tenant_id' => ['nullable', 'integer', 'exists:tenants,id'],
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
         ];
@@ -28,7 +28,7 @@ final class LoginRequest extends FormRequest
         return new LoginData(
             email: (string) $this->validated('email'),
             password: (string) $this->validated('password'),
-            tenantId: $this->validated('tenant_id') !== null ? (int) $this->validated('tenant_id') : null,
+            tenantId: app(TenantContext::class)->id(),
         );
     }
 }
