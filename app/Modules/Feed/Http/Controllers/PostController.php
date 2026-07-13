@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace App\Modules\Feed\Http\Controllers;
 
+use App\Core\Auth\Domain\Enums\PermissionSlug;
+use App\Core\Auth\Domain\Models\User;
 use App\Core\Support\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Modules\Feed\Application\Services\PostService;
 use App\Modules\Feed\Domain\Enums\PostVisibility;
 use App\Modules\Feed\Domain\Models\Post;
 use App\Modules\Feed\Http\Requests\CreatePostRequest;
+use App\Modules\Feed\Http\Requests\UpdatePostRequest;
 use App\Modules\Feed\Http\Resources\PostResource;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -49,14 +53,52 @@ final class PostController extends Controller
     {
         $user = $request->user();
 
-        if ($post->tenant_id !== $user->tenant_id) {
-            throw new ModelNotFoundException;
-        }
+        $this->ensureSameTenant($post, $user);
 
         if ($post->visibility === PostVisibility::Private && $post->author_id !== $user->id) {
             throw new ModelNotFoundException;
         }
 
         return ApiResponse::success(PostResource::make($post->load('author')));
+    }
+
+    public function update(UpdatePostRequest $request, Post $post): JsonResponse
+    {
+        $user = $request->user();
+
+        $this->ensureSameTenant($post, $user);
+
+        if ($post->author_id !== $user->id) {
+            throw new AuthorizationException('You can only edit your own posts.');
+        }
+
+        $post = $this->posts->update($post, $request->toDto($post));
+
+        return ApiResponse::success(PostResource::make($post->load('author')));
+    }
+
+    public function destroy(Request $request, Post $post): JsonResponse
+    {
+        $user = $request->user();
+
+        $this->ensureSameTenant($post, $user);
+
+        $isAuthor = $post->author_id === $user->id;
+        $canModerate = $user->hasPermission(PermissionSlug::PostsDeleteAny->value);
+
+        if (! $isAuthor && ! $canModerate) {
+            throw new AuthorizationException('You cannot delete this post.');
+        }
+
+        $this->posts->delete($post);
+
+        return ApiResponse::success();
+    }
+
+    private function ensureSameTenant(Post $post, User $user): void
+    {
+        if ($post->tenant_id !== $user->tenant_id) {
+            throw new ModelNotFoundException;
+        }
     }
 }
