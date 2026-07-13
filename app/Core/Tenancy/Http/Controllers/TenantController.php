@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Core\Tenancy\Http\Controllers;
 
 use App\Core\Auth\Domain\Enums\PermissionSlug;
+use App\Core\Auth\Http\Resources\UserResource;
 use App\Core\Support\ApiResponse;
 use App\Core\Tenancy\Application\Services\TenantService;
 use App\Core\Tenancy\Http\Requests\CreateTenantRequest;
@@ -23,8 +24,11 @@ final class TenantController extends Controller
     {
         Gate::authorize(PermissionSlug::TenantsManage->value);
 
-        $tenant = $this->tenants->create($request->toDto());
+        $result = $this->tenants->create($request->toDto());
 
-        return ApiResponse::success(TenantResource::make($tenant), status: 201);
+        return ApiResponse::success([
+            'tenant' => TenantResource::make($result['tenant']),
+            'admin' => UserResource::make($result['admin']->load('role')),
+        ], status: 201);
     }
 }
