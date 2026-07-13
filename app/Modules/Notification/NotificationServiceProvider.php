@@ -1,0 +1,30 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\Notification;
+
+use App\Modules\Feed\Domain\Events\CommentPosted;
+use App\Modules\Feed\Domain\Events\ContentLiked;
+use App\Modules\Notification\Application\Contracts\NotificationRepositoryInterface;
+use App\Modules\Notification\Application\Listeners\SendCommentNotification;
+use App\Modules\Notification\Application\Listeners\SendLikeNotification;
+use App\Modules\Notification\Infrastructure\Repositories\EloquentNotificationRepository;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\ServiceProvider;
+
+final class NotificationServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        $this->app->bind(NotificationRepositoryInterface::class, EloquentNotificationRepository::class);
+    }
+
+    public function boot(): void
+    {
+        // Notification listens to Feed's events — Feed never references
+        // Notification, so Feed keeps working if this module is disabled.
+        Event::listen(ContentLiked::class, SendLikeNotification::class);
+        Event::listen(CommentPosted::class, SendCommentNotification::class);
+    }
+}
