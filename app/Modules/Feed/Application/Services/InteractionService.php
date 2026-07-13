@@ -6,6 +6,7 @@ namespace App\Modules\Feed\Application\Services;
 
 use App\Modules\Feed\Application\Contracts\InteractionRepositoryInterface;
 use App\Modules\Feed\Domain\Enums\InteractionType;
+use App\Modules\Feed\Domain\Events\ContentLiked;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
@@ -46,6 +47,11 @@ final class InteractionService
                 ]);
                 $modelClass::whereKey($interactableId)->increment('likes_count');
                 $liked = true;
+
+                $authorId = (int) $modelClass::whereKey($interactableId)->value('author_id');
+                if ($authorId !== $userId) {
+                    ContentLiked::dispatch($morphAlias, $interactableId, $userId, $authorId, $tenantId);
+                }
             }
 
             return [
