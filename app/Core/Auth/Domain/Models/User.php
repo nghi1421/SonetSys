@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core\Auth\Domain\Models;
 
+use App\Core\Auth\Domain\Enums\RoleSlug;
 use App\Core\Auth\Domain\Enums\UserStatus;
 use App\Core\Tenancy\Domain\Models\Tenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -49,5 +50,17 @@ final class User extends Authenticatable
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function hasPermission(string $slug): bool
+    {
+        return $this->role?->permissions->contains('slug', $slug) ?? false;
+    }
+
+    public function hasRole(RoleSlug|string $slug): bool
+    {
+        $slug = $slug instanceof RoleSlug ? $slug->value : $slug;
+
+        return $this->role?->slug === $slug;
     }
 }
