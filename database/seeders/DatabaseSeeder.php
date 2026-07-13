@@ -1,22 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Core\Auth\Domain\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class DatabaseSeeder extends Seeder
+final class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
     public function run(): void
     {
-        // User::factory(10)->create();
+        $this->call(PermissionSeeder::class);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        User::factory()->superAdmin()->create([
+            'name' => 'Super Admin',
+            'email' => 'super-admin@sonetsys.test',
         ]);
     }
 }

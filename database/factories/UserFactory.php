@@ -12,6 +12,11 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
+/**
+ * Overriding 'tenant_id' via create()/state() alone will desync it from
+ * role_id's tenant (definition() creates its own tenant+role internally).
+ * Use forTenant()/tenantAdmin()/superAdmin() to keep both in sync.
+ */
 final class UserFactory extends Factory
 {
     protected $model = User::class;
@@ -34,6 +39,14 @@ final class UserFactory extends Factory
         ];
     }
 
+    public function forTenant(Tenant $tenant): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'tenant_id' => $tenant->id,
+            'role_id' => Role::factory()->recycle($tenant)->create()->id,
+        ]);
+    }
+
     public function unverified(): static
     {
         return $this->state(fn (array $attributes) => [
@@ -45,12 +58,23 @@ final class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'tenant_id' => null,
-            'role_id' => Role::factory()->create([
-                'tenant_id' => null,
-                'name' => 'Super Admin',
-                'slug' => 'super-admin',
-                'is_system' => true,
-            ])->id,
+            'role_id' => Role::factory()->superAdmin()->create()->id,
         ]);
+    }
+
+    /**
+     * Pass an existing $tenant to attach the admin to it — overriding
+     * 'tenant_id' via create() instead would desync it from role_id's tenant.
+     */
+    public function tenantAdmin(?Tenant $tenant = null): static
+    {
+        return $this->state(function (array $attributes) use ($tenant) {
+            $tenant ??= Tenant::factory()->create();
+
+            return [
+                'tenant_id' => $tenant->id,
+                'role_id' => Role::factory()->tenantAdmin()->recycle($tenant)->create()->id,
+            ];
+        });
     }
 }
