@@ -17,4 +17,8 @@ interface CommentRepositoryInterface
      * @return Collection<int, Comment>
      */
     public function listForPost(int $postId): Collection;
+
+    public function update(Comment $comment, array $attributes): Comment;
+
+    public function delete(Comment $comment): void;
 }

@@ -7,6 +7,7 @@ namespace App\Modules\Feed\Application\Services;
 use App\Modules\Feed\Application\Contracts\CommentRepositoryInterface;
 use App\Modules\Feed\Application\Contracts\PostRepositoryInterface;
 use App\Modules\Feed\Application\DTOs\CreateCommentData;
+use App\Modules\Feed\Application\DTOs\UpdateCommentData;
 use App\Modules\Feed\Domain\Events\CommentPosted;
 use App\Modules\Feed\Domain\Models\Comment;
 use Illuminate\Support\Collection;
@@ -68,5 +69,16 @@ final class CommentService
     public function listForPost(int $postId): Collection
     {
         return $this->comments->listForPost($postId);
+    }
+
+    public function update(Comment $comment, UpdateCommentData $data): Comment
+    {
+        return $this->comments->update($comment, ['body' => $data->body]);
+    }
+
+    public function delete(Comment $comment): void
+    {
+        $this->comments->delete($comment);
+        $this->posts->decrementCommentsCount($comment->post_id);
     }
 }
