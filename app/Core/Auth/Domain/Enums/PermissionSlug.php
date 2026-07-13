@@ -25,4 +25,15 @@ enum PermissionSlug: string
             self::TenantsManage => 'tenants',
         };
     }
+
+    /**
+     * Default permission set granted to a tenant's seeded TenantAdmin role.
+     * Single source of truth for TenantService::create() and RoleFactory::tenantAdmin().
+     *
+     * @return list<self>
+     */
+    public static function tenantAdminDefaults(): array
+    {
+        return [self::UsersView, self::UsersManage, self::RolesManage];
+    }
 }

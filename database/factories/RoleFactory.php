@@ -32,11 +32,9 @@ final class RoleFactory extends Factory
             'is_system' => false,
         ])->afterCreating(function (Role $role): void {
             $role->permissions()->sync(
-                Permission::query()->whereIn('slug', [
-                    PermissionSlug::UsersView->value,
-                    PermissionSlug::UsersManage->value,
-                    PermissionSlug::RolesManage->value,
-                ])->pluck('id'),
+                Permission::query()
+                    ->whereIn('slug', array_map(fn (PermissionSlug $p) => $p->value, PermissionSlug::tenantAdminDefaults()))
+                    ->pluck('id'),
             );
         });
     }
