@@ -8,9 +8,6 @@ use App\Core\Auth\Domain\Enums\RoleSlug;
 use App\Core\Auth\Domain\Models\Role;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends Factory<Role>
- */
 final class RoleFactory extends Factory
 {
     protected $model = Role::class;

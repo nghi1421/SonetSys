@@ -7,9 +7,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('tenants', function (Blueprint $table): void {
@@ -25,9 +22,6 @@ return new class extends Migration
         DB::statement('CREATE INDEX tenants_enabled_modules_gin ON tenants USING GIN (enabled_modules)');
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('tenants');

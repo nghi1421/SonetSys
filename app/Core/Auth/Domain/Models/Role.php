@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Core\Auth\Domain\Models;
 
 use App\Core\Tenancy\Domain\Models\Tenant;
-use Database\Factories\RoleFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,7 +13,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 final class Role extends Model
 {
-    /** @use HasFactory<RoleFactory> */
     use HasFactory;
 
     protected $fillable = [

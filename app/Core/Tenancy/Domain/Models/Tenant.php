@@ -7,14 +7,12 @@ namespace App\Core\Tenancy\Domain\Models;
 use App\Core\Auth\Domain\Models\Role;
 use App\Core\Auth\Domain\Models\User;
 use App\Core\Tenancy\Domain\Enums\TenantStatus;
-use Database\Factories\TenantFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 final class Tenant extends Model
 {
-    /** @use HasFactory<TenantFactory> */
     use HasFactory;
 
     protected $fillable = [

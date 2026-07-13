@@ -7,9 +7,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table): void {
@@ -27,9 +24,6 @@ return new class extends Migration
         DB::statement('CREATE UNIQUE INDEX users_email_unique_superadmin ON users (email) WHERE tenant_id IS NULL');
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         DB::statement('DROP INDEX IF EXISTS users_email_unique_superadmin');
