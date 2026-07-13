@@ -30,4 +30,16 @@ final class EloquentCommentRepository implements CommentRepositoryInterface
             ->orderBy('created_at')
             ->get();
     }
+
+    public function update(Comment $comment, array $attributes): Comment
+    {
+        $comment->fill($attributes)->save();
+
+        return $comment;
+    }
+
+    public function delete(Comment $comment): void
+    {
+        $comment->delete();
+    }
 }

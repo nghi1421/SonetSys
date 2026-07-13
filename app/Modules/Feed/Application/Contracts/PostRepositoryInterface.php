@@ -25,5 +25,11 @@ interface PostRepositoryInterface
         int $limit,
     ): Collection;
 
+    public function update(Post $post, array $attributes): Post;
+
+    public function delete(Post $post): void;
+
     public function incrementCommentsCount(int $postId): void;
+
+    public function decrementCommentsCount(int $postId): void;
 }

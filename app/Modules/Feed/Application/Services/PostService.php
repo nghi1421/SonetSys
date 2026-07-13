@@ -6,6 +6,7 @@ namespace App\Modules\Feed\Application\Services;
 
 use App\Modules\Feed\Application\Contracts\PostRepositoryInterface;
 use App\Modules\Feed\Application\DTOs\CreatePostData;
+use App\Modules\Feed\Application\DTOs\UpdatePostData;
 use App\Modules\Feed\Domain\Models\Post;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -26,6 +27,19 @@ final class PostService
             'metadata' => $data->metadata,
             'published_at' => now(),
         ]);
+    }
+
+    public function update(Post $post, UpdatePostData $data): Post
+    {
+        return $this->posts->update($post, [
+            'body' => $data->body,
+            'visibility' => $data->visibility,
+        ]);
+    }
+
+    public function delete(Post $post): void
+    {
+        $this->posts->delete($post);
     }
 
     /**

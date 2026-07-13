@@ -58,8 +58,25 @@ final class EloquentPostRepository implements PostRepositoryInterface
             ->get();
     }
 
+    public function update(Post $post, array $attributes): Post
+    {
+        $post->fill($attributes)->save();
+
+        return $post;
+    }
+
+    public function delete(Post $post): void
+    {
+        $post->delete();
+    }
+
     public function incrementCommentsCount(int $postId): void
     {
         Post::query()->whereKey($postId)->increment('comments_count');
+    }
+
+    public function decrementCommentsCount(int $postId): void
+    {
+        Post::query()->whereKey($postId)->decrement('comments_count');
     }
 }

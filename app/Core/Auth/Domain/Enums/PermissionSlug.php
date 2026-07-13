@@ -17,12 +17,23 @@ enum PermissionSlug: string
     case RolesManage = 'roles.manage';
     case TenantsManage = 'tenants.manage';
 
+    // Feed-owned moderation permissions. Architecturally these belong in a
+    // Feed-scoped enum per module (see FeedServiceProvider's intent), but
+    // TenantService (Core/Tenancy) would then need to import Feed's enum to
+    // build tenantAdminDefaults() — a Core -> Module dependency we don't want
+    // either. Kept here as a known MVP simplification until there's a proper
+    // module permission registry that lets TenantService stay module-agnostic.
+    case PostsDeleteAny = 'posts.delete.any';
+    case CommentsDeleteAny = 'comments.delete.any';
+
     public function group(): string
     {
         return match ($this) {
             self::UsersView, self::UsersManage => 'users',
             self::RolesManage => 'roles',
             self::TenantsManage => 'tenants',
+            self::PostsDeleteAny => 'posts',
+            self::CommentsDeleteAny => 'comments',
         };
     }
 
@@ -34,6 +45,12 @@ enum PermissionSlug: string
      */
     public static function tenantAdminDefaults(): array
     {
-        return [self::UsersView, self::UsersManage, self::RolesManage];
+        return [
+            self::UsersView,
+            self::UsersManage,
+            self::RolesManage,
+            self::PostsDeleteAny,
+            self::CommentsDeleteAny,
+        ];
     }
 }
