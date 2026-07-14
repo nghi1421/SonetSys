@@ -6,6 +6,7 @@ namespace App\Modules\Feed\Domain\Models;
 
 use App\Core\Auth\Domain\Models\User;
 use App\Core\Tenancy\Domain\Models\Tenant;
+use App\Modules\Feed\Domain\Enums\MediaType;
 use App\Modules\Feed\Domain\Enums\PostVisibility;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -25,6 +26,8 @@ final class Post extends Model
         'body',
         'visibility',
         'metadata',
+        'media_type',
+        'media_path',
         'published_at',
     ];
 
@@ -33,6 +36,7 @@ final class Post extends Model
         return [
             'visibility' => PostVisibility::class,
             'metadata' => 'array',
+            'media_type' => MediaType::class,
             'published_at' => 'datetime',
         ];
     }

@@ -8,10 +8,12 @@ use App\Modules\Feed\Application\Contracts\InteractionRepositoryInterface;
 use App\Modules\Feed\Application\Contracts\PostRepositoryInterface;
 use App\Modules\Feed\Application\DTOs\CreatePostData;
 use App\Modules\Feed\Application\DTOs\UpdatePostData;
+use App\Modules\Feed\Domain\Enums\MediaType;
 use App\Modules\Feed\Domain\Events\PostShared;
 use App\Modules\Feed\Domain\Models\Post;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 
 final class PostService
 {
@@ -44,6 +46,17 @@ final class PostService
             }
         }
 
+        $mediaType = null;
+        $mediaPath = null;
+
+        if ($data->media !== null && $data->mediaType !== null) {
+            $mediaType = $data->mediaType;
+            $mediaPath = $data->media->store('posts/'.$data->tenantId, 'public');
+        } elseif ($data->stickerKey !== null) {
+            $mediaType = MediaType::Sticker;
+            $mediaPath = $data->stickerKey;
+        }
+
         $post = $this->posts->create([
             'tenant_id' => $data->tenantId,
             'author_id' => $data->authorId,
@@ -51,6 +64,8 @@ final class PostService
             'body' => $data->body,
             'visibility' => $data->visibility,
             'metadata' => $data->metadata,
+            'media_type' => $mediaType,
+            'media_path' => $mediaPath,
             'published_at' => now(),
         ]);
 
@@ -73,6 +88,10 @@ final class PostService
     {
         if ($post->shared_post_id !== null) {
             $this->posts->decrementSharesCount($post->shared_post_id);
+        }
+
+        if (in_array($post->media_type, [MediaType::Image, MediaType::Video], true) && $post->media_path !== null) {
+            Storage::disk('public')->delete($post->media_path);
         }
 
         $this->posts->delete($post);
