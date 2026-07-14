@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Feed\Application\Services;
 
 use App\Modules\Feed\Application\Contracts\CommentRepositoryInterface;
+use App\Modules\Feed\Application\Contracts\InteractionRepositoryInterface;
 use App\Modules\Feed\Application\Contracts\PostRepositoryInterface;
 use App\Modules\Feed\Application\DTOs\CreateCommentData;
 use App\Modules\Feed\Application\DTOs\UpdateCommentData;
@@ -18,6 +19,7 @@ final class CommentService
     public function __construct(
         private readonly CommentRepositoryInterface $comments,
         private readonly PostRepositoryInterface $posts,
+        private readonly InteractionRepositoryInterface $interactions,
     ) {}
 
     public function create(CreateCommentData $data): Comment
@@ -66,9 +68,24 @@ final class CommentService
     /**
      * @return Collection<int, Comment>
      */
-    public function listForPost(int $postId): Collection
+    public function listForPost(int $postId, int $viewerId): Collection
     {
-        return $this->comments->listForPost($postId);
+        $comments = $this->comments->listForPost($postId);
+        $this->markLikedByViewer($comments, $viewerId);
+
+        return $comments;
+    }
+
+    /**
+     * @param  Collection<int, Comment>  $comments
+     */
+    private function markLikedByViewer(Collection $comments, int $viewerId): void
+    {
+        $likedIds = $this->interactions->likedInteractableIds($viewerId, 'comment', $comments->pluck('id')->all());
+
+        $comments->each(function (Comment $comment) use ($likedIds): void {
+            $comment->liked_by_me = in_array($comment->id, $likedIds, true);
+        });
     }
 
     public function update(Comment $comment, UpdateCommentData $data): Comment

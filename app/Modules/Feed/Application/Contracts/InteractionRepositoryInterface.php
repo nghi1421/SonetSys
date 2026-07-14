@@ -13,4 +13,10 @@ interface InteractionRepositoryInterface
     public function create(array $attributes): Interaction;
 
     public function delete(Interaction $interaction): void;
+
+    /**
+     * @param  list<int>  $interactableIds
+     * @return list<int>
+     */
+    public function likedInteractableIds(int $userId, string $interactableType, array $interactableIds): array;
 }

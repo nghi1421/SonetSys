@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Feed\Application\Services;
 
+use App\Modules\Feed\Application\Contracts\InteractionRepositoryInterface;
 use App\Modules\Feed\Application\Contracts\PostRepositoryInterface;
 use App\Modules\Feed\Application\DTOs\CreatePostData;
 use App\Modules\Feed\Application\DTOs\UpdatePostData;
@@ -15,6 +16,7 @@ final class PostService
 {
     public function __construct(
         private readonly PostRepositoryInterface $posts,
+        private readonly InteractionRepositoryInterface $interactions,
     ) {}
 
     public function create(CreatePostData $data): Post
@@ -50,6 +52,7 @@ final class PostService
         [$afterPublishedAt, $afterId] = $this->decodeCursor($cursor);
 
         $posts = $this->posts->cursorPaginateForTenant($tenantId, $viewerId, $afterPublishedAt, $afterId, $limit);
+        $this->markLikedByViewer($posts, $viewerId);
 
         $nextCursor = null;
         if ($posts->count() === $limit) {
@@ -58,6 +61,20 @@ final class PostService
         }
 
         return ['items' => $posts, 'next_cursor' => $nextCursor];
+    }
+
+    /**
+     * @param  Post|Collection<int, Post>  $posts
+     */
+    public function markLikedByViewer(Post|Collection $posts, int $viewerId): void
+    {
+        $collection = $posts instanceof Post ? collect([$posts]) : $posts;
+
+        $likedIds = $this->interactions->likedInteractableIds($viewerId, 'post', $collection->pluck('id')->all());
+
+        $collection->each(function (Post $post) use ($likedIds): void {
+            $post->liked_by_me = in_array($post->id, $likedIds, true);
+        });
     }
 
     /**
