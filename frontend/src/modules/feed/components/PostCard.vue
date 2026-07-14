@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { Heart, Link2, MessageCircle, Pencil, Trash2 } from '@lucide/vue'
+import { Heart, MessageCircle, Pencil, Trash2 } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog.vue'
 import { useRelativeTime } from '@/shared/composables/useRelativeTime'
 import CommentThread from './CommentThread.vue'
+import ShareMenu from './ShareMenu.vue'
+import SharedPostPreview from './SharedPostPreview.vue'
 import { useFeedStore } from '../store/feedStore'
 import type { Post } from '../types'
 
@@ -14,8 +16,6 @@ const feedStore = useFeedStore()
 const authStore = useAuthStore()
 
 const showComments = ref(false)
-const copied = ref(false)
-const shareError = ref(false)
 const editing = ref(false)
 const editBody = ref(props.post.body)
 const confirmingDelete = ref(false)
@@ -33,48 +33,6 @@ async function onToggleComments(): Promise<void> {
   if (showComments.value && !feedStore.commentsByPost[props.post.id]) {
     await feedStore.fetchComments(props.post.id)
   }
-}
-
-async function copyToClipboard(text: string): Promise<boolean> {
-  if (navigator.clipboard) {
-    try {
-      await navigator.clipboard.writeText(text)
-      return true
-    } catch {
-      // Fall through to the legacy fallback below.
-    }
-  }
-
-  const textarea = document.createElement('textarea')
-  textarea.value = text
-  textarea.style.position = 'fixed'
-  textarea.style.opacity = '0'
-  document.body.appendChild(textarea)
-  textarea.select()
-
-  let succeeded = false
-  try {
-    succeeded = document.execCommand('copy')
-  } catch {
-    succeeded = false
-  } finally {
-    document.body.removeChild(textarea)
-  }
-
-  return succeeded
-}
-
-async function onShare(): Promise<void> {
-  const url = `${window.location.origin}/posts/${props.post.id}`
-  const succeeded = await copyToClipboard(url)
-
-  copied.value = succeeded
-  shareError.value = !succeeded
-
-  setTimeout(() => {
-    copied.value = false
-    shareError.value = false
-  }, 2000)
 }
 
 async function onConfirmDelete(): Promise<void> {
@@ -146,7 +104,10 @@ async function saveEdit(): Promise<void> {
         </button>
       </div>
     </div>
-    <p v-else class="mt-3 whitespace-pre-wrap text-sm text-slate-700 dark:text-zinc-300">{{ post.body }}</p>
+    <template v-else>
+      <p v-if="post.body" class="mt-3 whitespace-pre-wrap text-sm text-slate-700 dark:text-zinc-300">{{ post.body }}</p>
+      <SharedPostPreview v-if="post.shared_post" :post="post.shared_post" class="mt-3" />
+    </template>
 
     <footer class="mt-4 flex items-center gap-4 border-t border-zinc-100 pt-3 dark:border-zinc-800">
       <button
@@ -168,14 +129,7 @@ async function saveEdit(): Promise<void> {
         {{ post.comments_count }}
       </button>
 
-      <button
-        type="button"
-        class="flex items-center gap-1.5 rounded-md px-2 py-1 text-sm text-slate-500 transition-colors duration-200 hover:text-accent-600 dark:text-zinc-400"
-        @click="onShare"
-      >
-        <Link2 class="h-4 w-4" />
-        {{ shareError ? 'Could not copy' : copied ? 'Copied!' : 'Share' }}
-      </button>
+      <ShareMenu :post="post" />
     </footer>
 
     <CommentThread v-if="showComments" :post-id="post.id" />

@@ -10,6 +10,8 @@ export function describeNotification(notification: AppNotification): string {
       return `${actor} liked your comment`
     case 'comment.posted':
       return `${actor} commented on your post`
+    case 'post.shared':
+      return `${actor} shared your post`
     default:
       return `${actor} interacted with your content`
   }

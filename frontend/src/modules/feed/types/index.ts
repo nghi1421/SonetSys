@@ -13,8 +13,10 @@ export interface Post {
   metadata: Record<string, unknown>
   likes_count: number
   comments_count: number
+  shares_count: number
   liked_by_me: boolean
   author: PostAuthor
+  shared_post: Post | null
   published_at: string | null
   created_at: string
 }
@@ -38,6 +40,7 @@ export interface ToggleLikeResult {
 export interface CreatePostPayload {
   body: string
   visibility?: PostVisibility
+  shared_post_id?: number
 }
 
 export interface UpdatePostPayload {
