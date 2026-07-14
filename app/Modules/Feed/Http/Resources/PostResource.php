@@ -19,11 +19,13 @@ final class PostResource extends JsonResource
             'metadata' => $this->metadata,
             'likes_count' => $this->likes_count,
             'comments_count' => $this->comments_count,
+            'shares_count' => $this->shares_count,
             'liked_by_me' => (bool) ($this->liked_by_me ?? false),
             'author' => [
                 'id' => $this->whenLoaded('author', fn () => $this->author->id),
                 'name' => $this->whenLoaded('author', fn () => $this->author->name),
             ],
+            'shared_post' => $this->shared_post_id !== null ? self::make($this->sharedPost) : null,
             'published_at' => $this->published_at?->toIso8601String(),
             'created_at' => $this->created_at->toIso8601String(),
         ];

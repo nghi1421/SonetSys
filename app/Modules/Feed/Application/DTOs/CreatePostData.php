@@ -14,5 +14,6 @@ final readonly class CreatePostData
         public int $tenantId,
         public int $authorId,
         public array $metadata = [],
+        public ?int $sharedPostId = null,
     ) {}
 }

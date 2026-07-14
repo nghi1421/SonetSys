@@ -54,7 +54,7 @@ final class EloquentPostRepository implements PostRepositoryInterface
             ->orderByDesc('published_at')
             ->orderByDesc('id')
             ->limit($limit)
-            ->with('author')
+            ->with(['author', 'sharedPost.author'])
             ->get();
     }
 
@@ -78,5 +78,15 @@ final class EloquentPostRepository implements PostRepositoryInterface
     public function decrementCommentsCount(int $postId): void
     {
         Post::query()->whereKey($postId)->decrement('comments_count');
+    }
+
+    public function incrementSharesCount(int $postId): void
+    {
+        Post::query()->whereKey($postId)->increment('shares_count');
+    }
+
+    public function decrementSharesCount(int $postId): void
+    {
+        Post::query()->whereKey($postId)->decrement('shares_count');
     }
 }

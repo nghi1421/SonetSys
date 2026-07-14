@@ -8,6 +8,7 @@ use App\Modules\Feed\Application\Contracts\InteractionRepositoryInterface;
 use App\Modules\Feed\Application\Contracts\PostRepositoryInterface;
 use App\Modules\Feed\Application\DTOs\CreatePostData;
 use App\Modules\Feed\Application\DTOs\UpdatePostData;
+use App\Modules\Feed\Domain\Events\PostShared;
 use App\Modules\Feed\Domain\Models\Post;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -21,14 +22,43 @@ final class PostService
 
     public function create(CreatePostData $data): Post
     {
-        return $this->posts->create([
+        $sharedPostId = null;
+        $originalAuthorId = null;
+
+        if ($data->sharedPostId !== null) {
+            $referenced = $this->posts->findById($data->sharedPostId);
+
+            if ($referenced !== null) {
+                // Flatten: sharing an already-shared post points at the
+                // original, so reshares never chain more than one level deep.
+                $originalPostId = $referenced->shared_post_id ?? $referenced->id;
+                $original = $originalPostId === $referenced->id
+                    ? $referenced
+                    : $this->posts->findById($originalPostId);
+
+                if ($original !== null) {
+                    $sharedPostId = $originalPostId;
+                    $originalAuthorId = (int) $original->author_id;
+                    $this->posts->incrementSharesCount($originalPostId);
+                }
+            }
+        }
+
+        $post = $this->posts->create([
             'tenant_id' => $data->tenantId,
             'author_id' => $data->authorId,
+            'shared_post_id' => $sharedPostId,
             'body' => $data->body,
             'visibility' => $data->visibility,
             'metadata' => $data->metadata,
             'published_at' => now(),
         ]);
+
+        if ($sharedPostId !== null && $originalAuthorId !== null && $originalAuthorId !== $data->authorId) {
+            PostShared::dispatch($sharedPostId, $post->id, $data->authorId, $originalAuthorId, $data->tenantId);
+        }
+
+        return $post;
     }
 
     public function update(Post $post, UpdatePostData $data): Post
@@ -41,6 +71,10 @@ final class PostService
 
     public function delete(Post $post): void
     {
+        if ($post->shared_post_id !== null) {
+            $this->posts->decrementSharesCount($post->shared_post_id);
+        }
+
         $this->posts->delete($post);
     }
 

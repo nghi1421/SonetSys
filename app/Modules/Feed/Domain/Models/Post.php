@@ -21,6 +21,7 @@ final class Post extends Model
     protected $fillable = [
         'tenant_id',
         'author_id',
+        'shared_post_id',
         'body',
         'visibility',
         'metadata',
@@ -49,6 +50,11 @@ final class Post extends Model
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
+    }
+
+    public function sharedPost(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'shared_post_id');
     }
 
     public function interactions(): MorphMany
