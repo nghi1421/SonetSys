@@ -19,6 +19,7 @@ final class PostResource extends JsonResource
             'metadata' => $this->metadata,
             'likes_count' => $this->likes_count,
             'comments_count' => $this->comments_count,
+            'liked_by_me' => (bool) ($this->liked_by_me ?? false),
             'author' => [
                 'id' => $this->whenLoaded('author', fn () => $this->author->id),
                 'name' => $this->whenLoaded('author', fn () => $this->author->name),

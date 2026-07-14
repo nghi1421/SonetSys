@@ -28,7 +28,9 @@ final class CommentController extends Controller
     {
         $this->ensureSameTenant($request, $post);
 
-        return ApiResponse::success(CommentResource::collection($this->comments->listForPost($post->id)));
+        $comments = $this->comments->listForPost($post->id, $request->user()->id);
+
+        return ApiResponse::success(CommentResource::collection($comments));
     }
 
     public function store(CreateCommentRequest $request, Post $post): JsonResponse
