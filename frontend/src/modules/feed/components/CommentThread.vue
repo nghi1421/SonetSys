@@ -54,47 +54,55 @@ async function onConfirmDelete(): Promise<void> {
 </script>
 
 <template>
-  <div class="mt-4 space-y-3 border-t border-zinc-100 pt-3 dark:border-zinc-800">
+  <div class="mt-4 space-y-3 border-t border-cyber-border pt-3">
     <div v-for="comment in topLevel" :key="comment.id" class="space-y-2">
-      <div class="flex items-start justify-between gap-2">
-        <div class="flex-1 rounded-md bg-zinc-50 px-3 py-2 dark:bg-zinc-800">
-          <p class="text-sm font-medium text-slate-900 dark:text-zinc-100">{{ comment.author.name }}</p>
-          <p class="text-sm text-slate-700 dark:text-zinc-300">{{ comment.body }}</p>
-          <div class="mt-1 flex items-center gap-3 text-xs text-slate-500 dark:text-zinc-400">
+      <div class="flex items-start justify-between gap-2 rounded-hud border border-cyber-border bg-cyber-surface/40 p-3 backdrop-blur-md">
+        <div class="flex-1">
+          <p class="text-xs font-bold tracking-wider text-cyber-text">// {{ comment.author.name }}</p>
+          <p class="mt-1 border-l border-cyber-neon-indigo pl-2 font-mono text-xs leading-relaxed text-cyber-text/90">
+            {{ comment.body }}
+          </p>
+          <div class="mt-2 flex items-center gap-3 font-mono text-[9px] uppercase tracking-widest text-cyber-muted">
             <span>{{ useRelativeTime(comment.created_at) }}</span>
             <button
               type="button"
-              class="flex items-center gap-1 transition-colors duration-200"
-              :class="comment.liked_by_me ? 'text-red-600' : 'hover:text-red-600'"
+              class="flex items-center gap-1 normal-case tracking-normal transition-colors duration-300"
+              :class="comment.liked_by_me ? 'text-cyber-neon-pink' : 'hover:text-cyber-neon-pink'"
               @click="onToggleLike(comment.id)"
             >
               <Heart class="h-3 w-3" :fill="comment.liked_by_me ? 'currentColor' : 'none'" />
               {{ comment.likes_count }}
             </button>
-            <button type="button" class="hover:text-accent-600" @click="replyingTo = comment.id">Reply</button>
+            <button type="button" class="hover:text-cyber-neon-cyan" @click="replyingTo = comment.id">Reply</button>
           </div>
         </div>
         <button
           v-if="canDelete(comment)"
           type="button"
-          class="rounded p-1 text-slate-400 transition-colors duration-200 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950"
+          class="rounded-full border border-cyber-border bg-cyber-glass p-1 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-pink/50 hover:text-cyber-neon-pink hover:shadow-pink-glow"
           aria-label="Delete comment"
           @click="pendingDeleteId = comment.id"
         >
-          <Trash2 class="h-3.5 w-3.5" />
+          <Trash2 class="h-3 w-3" />
         </button>
       </div>
 
-      <div v-for="reply in repliesFor(comment.id)" :key="reply.id" class="ml-6 flex items-start justify-between gap-2">
-        <div class="flex-1 rounded-md bg-zinc-50 px-3 py-2 dark:bg-zinc-800">
-          <p class="text-sm font-medium text-slate-900 dark:text-zinc-100">{{ reply.author.name }}</p>
-          <p class="text-sm text-slate-700 dark:text-zinc-300">{{ reply.body }}</p>
-          <div class="mt-1 flex items-center gap-3 text-xs text-slate-500 dark:text-zinc-400">
+      <div
+        v-for="reply in repliesFor(comment.id)"
+        :key="reply.id"
+        class="ml-6 flex items-start justify-between gap-2 rounded-hud border border-cyber-border bg-cyber-surface/40 p-3 backdrop-blur-md"
+      >
+        <div class="flex-1">
+          <p class="text-xs font-bold tracking-wider text-cyber-text">// {{ reply.author.name }}</p>
+          <p class="mt-1 border-l border-cyber-neon-indigo pl-2 font-mono text-xs leading-relaxed text-cyber-text/90">
+            {{ reply.body }}
+          </p>
+          <div class="mt-2 flex items-center gap-3 font-mono text-[9px] uppercase tracking-widest text-cyber-muted">
             <span>{{ useRelativeTime(reply.created_at) }}</span>
             <button
               type="button"
-              class="flex items-center gap-1 transition-colors duration-200"
-              :class="reply.liked_by_me ? 'text-red-600' : 'hover:text-red-600'"
+              class="flex items-center gap-1 normal-case tracking-normal transition-colors duration-300"
+              :class="reply.liked_by_me ? 'text-cyber-neon-pink' : 'hover:text-cyber-neon-pink'"
               @click="onToggleLike(reply.id)"
             >
               <Heart class="h-3 w-3" :fill="reply.liked_by_me ? 'currentColor' : 'none'" />
@@ -105,11 +113,11 @@ async function onConfirmDelete(): Promise<void> {
         <button
           v-if="canDelete(reply)"
           type="button"
-          class="rounded p-1 text-slate-400 transition-colors duration-200 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950"
+          class="rounded-full border border-cyber-border bg-cyber-glass p-1 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-pink/50 hover:text-cyber-neon-pink hover:shadow-pink-glow"
           aria-label="Delete reply"
           @click="pendingDeleteId = reply.id"
         >
-          <Trash2 class="h-3.5 w-3.5" />
+          <Trash2 class="h-3 w-3" />
         </button>
       </div>
 
@@ -118,12 +126,12 @@ async function onConfirmDelete(): Promise<void> {
           v-model="newComment"
           type="text"
           placeholder="Write a reply…"
-          class="flex-1 rounded-md border border-zinc-200 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+          class="flex-1 rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-1.5 font-mono text-xs text-cyber-text backdrop-blur-md focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
         />
         <AppButton type="submit" label="Reply" :loading="submitting" />
         <button
           type="button"
-          class="text-sm text-slate-500 hover:text-slate-700 dark:text-zinc-400"
+          class="font-mono text-xs text-cyber-muted transition-colors duration-300 hover:text-cyber-text"
           @click="replyingTo = null"
         >
           Cancel
@@ -136,7 +144,7 @@ async function onConfirmDelete(): Promise<void> {
         v-model="newComment"
         type="text"
         placeholder="Write a comment…"
-        class="flex-1 rounded-md border border-zinc-200 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+        class="flex-1 rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-1.5 font-mono text-xs text-cyber-text backdrop-blur-md focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
       />
       <AppButton type="submit" label="Comment" :loading="submitting" />
     </form>

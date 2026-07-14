@@ -25,14 +25,14 @@ async function onItemClick(notificationId: string): Promise<void> {
   <div class="relative">
     <button
       type="button"
-      class="relative rounded-md p-2 text-slate-500 transition-colors duration-200 hover:bg-zinc-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-accent-500 dark:text-zinc-400 dark:hover:bg-zinc-800"
+      class="relative rounded-full border border-cyber-border bg-cyber-glass p-2 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/60 focus:ring-offset-2 focus:ring-offset-cyber-bg"
       aria-label="Notifications"
       @click="toggle"
     >
-      <Bell class="h-5 w-5" />
+      <Bell class="h-4 w-4" />
       <span
         v-if="notificationStore.unreadCount > 0"
-        class="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-medium text-white"
+        class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-cyber-neon-pink px-1 font-mono text-[9px] font-bold text-white shadow-pink-glow"
       >
         {{ notificationStore.unreadCount > 9 ? '9+' : notificationStore.unreadCount }}
       </span>
@@ -42,15 +42,15 @@ async function onItemClick(notificationId: string): Promise<void> {
 
     <div
       v-if="open"
-      class="absolute right-0 z-10 mt-2 w-80 rounded-lg border border-zinc-200 bg-white shadow-lg dark:border-zinc-800 dark:bg-zinc-900"
+      class="absolute right-0 z-10 mt-2 w-80 rounded-hud border border-cyber-border bg-cyber-glass backdrop-blur-md"
       @click.stop
     >
-      <div class="flex items-center justify-between border-b border-zinc-100 px-4 py-2 dark:border-zinc-800">
-        <p class="text-sm font-medium text-slate-900 dark:text-zinc-100">Notifications</p>
+      <div class="flex items-center justify-between border-b border-cyber-border px-4 py-2.5">
+        <p class="font-mono text-[9px] uppercase tracking-widest text-cyber-neon-cyan">Notifications</p>
         <button
           v-if="notificationStore.unreadCount > 0"
           type="button"
-          class="text-xs text-accent-600 hover:text-accent-700"
+          class="font-mono text-[10px] uppercase tracking-wider text-cyber-neon-indigo transition-colors duration-300 hover:text-cyber-neon-cyan"
           @click="notificationStore.markAllAsRead"
         >
           Mark all read
@@ -59,21 +59,21 @@ async function onItemClick(notificationId: string): Promise<void> {
 
       <div
         v-if="notificationStore.items.length === 0"
-        class="px-4 py-8 text-center text-sm text-slate-500 dark:text-zinc-400"
+        class="px-4 py-8 text-center font-mono text-xs text-cyber-muted"
       >
         No notifications yet
       </div>
 
-      <ul v-else class="max-h-80 divide-y divide-zinc-100 overflow-y-auto dark:divide-zinc-800">
+      <ul v-else class="max-h-80 divide-y divide-cyber-border overflow-y-auto">
         <li
           v-for="item in notificationStore.items"
           :key="item.id"
-          class="cursor-pointer px-4 py-3 text-sm transition-colors duration-200 hover:bg-zinc-50 dark:hover:bg-zinc-800"
-          :class="!item.read_at && 'bg-accent-50 dark:bg-accent-950/30'"
+          class="cursor-pointer px-4 py-3 transition-all duration-300 hover:bg-cyber-surface/60"
+          :class="!item.read_at && 'bg-cyber-neon-indigo/10'"
           @click="onItemClick(item.id)"
         >
-          <p class="text-slate-700 dark:text-zinc-300">{{ describeNotification(item) }}</p>
-          <p class="mt-0.5 text-xs text-slate-400 dark:text-zinc-500">
+          <p class="font-mono text-xs text-cyber-text/90">{{ describeNotification(item) }}</p>
+          <p class="mt-0.5 font-mono text-[9px] uppercase tracking-widest text-cyber-muted">
             {{ item.created_at ? useRelativeTime(item.created_at) : '' }}
           </p>
         </li>

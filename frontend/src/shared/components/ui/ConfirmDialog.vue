@@ -11,24 +11,25 @@ const emit = defineEmits<{ confirm: []; cancel: [] }>()
 </script>
 
 <template>
-  <div v-if="open" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4" @click="emit('cancel')">
-    <div
-      class="w-full max-w-sm rounded-lg bg-white p-5 shadow-lg dark:bg-zinc-900"
-      @click.stop
-    >
-      <h2 class="text-base font-semibold text-slate-900 dark:text-zinc-100">{{ title }}</h2>
-      <p class="mt-1 text-sm text-slate-500 dark:text-zinc-400">{{ message }}</p>
-      <div class="mt-4 flex justify-end gap-2">
+  <div
+    v-if="open"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-cyber-bg/80 px-4 backdrop-blur-sm"
+    @click="emit('cancel')"
+  >
+    <div class="w-full max-w-sm rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md" @click.stop>
+      <h2 class="font-mono text-xs font-bold uppercase tracking-widest text-cyber-text">{{ title }}</h2>
+      <p class="mt-2 font-mono text-xs leading-relaxed text-cyber-muted">{{ message }}</p>
+      <div class="mt-4 flex justify-end gap-3">
         <button
           type="button"
-          class="rounded-md px-3 py-1.5 text-sm text-slate-600 transition-colors duration-200 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+          class="rounded-full border border-cyber-border bg-cyber-glass px-4 py-1.5 font-mono text-xs uppercase tracking-wider text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
           @click="emit('cancel')"
         >
           Cancel
         </button>
         <button
           type="button"
-          class="rounded-md bg-red-600 px-3 py-1.5 text-sm font-medium text-white transition-colors duration-200 hover:bg-red-700"
+          class="rounded-full border border-cyber-neon-pink/30 bg-cyber-neon-pink/10 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-cyber-neon-pink transition-all duration-300 hover:shadow-pink-glow"
           @click="emit('confirm')"
         >
           Delete

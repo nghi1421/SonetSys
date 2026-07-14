@@ -27,16 +27,16 @@ async function onSubmit(): Promise<void> {
 
 <template>
   <form
-    class="space-y-3 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900"
+    class="space-y-3 rounded-hud border border-cyber-border bg-cyber-glass p-4 backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/30"
     @submit.prevent="onSubmit"
   >
     <textarea
       v-model="body"
       rows="3"
       placeholder="Share something with your community…"
-      class="block w-full resize-none rounded-md border border-zinc-200 px-3 py-2 text-sm text-slate-900 transition-colors duration-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-accent-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+      class="block w-full resize-none rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-2 font-mono text-xs text-cyber-text backdrop-blur-md transition-all duration-300 placeholder:text-cyber-muted focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
     />
-    <p v-if="error" class="text-sm text-red-600 dark:text-red-400">{{ error }}</p>
+    <p v-if="error" class="font-mono text-xs text-cyber-neon-pink">{{ error }}</p>
     <div class="flex justify-end">
       <AppButton type="submit" label="Post" :loading="loading" :disabled="!body.trim()" />
     </div>

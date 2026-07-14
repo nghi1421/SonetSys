@@ -6,11 +6,11 @@ withDefaults(defineProps<{ variant?: 'error' | 'warning' }>(), {
 
 <template>
   <div
-    class="rounded-md border px-4 py-3 text-sm"
+    class="rounded-hud border px-4 py-3 font-mono text-xs backdrop-blur-md"
     :class="
       variant === 'error'
-        ? 'border-red-200 bg-red-50 text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-300'
-        : 'border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-300'
+        ? 'border-cyber-neon-pink/30 bg-cyber-neon-pink/10 text-cyber-neon-pink'
+        : 'border-amber-500/30 bg-amber-500/10 text-amber-400'
     "
   >
     <slot />
