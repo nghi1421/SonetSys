@@ -8,6 +8,7 @@ use App\Modules\Feed\Application\Contracts\CommentRepositoryInterface;
 use App\Modules\Feed\Application\Contracts\PostRepositoryInterface;
 use App\Modules\Feed\Application\DTOs\CreateCommentData;
 use App\Modules\Feed\Application\DTOs\UpdateCommentData;
+use App\Modules\Feed\Domain\Events\CommentPosted;
 use App\Modules\Feed\Domain\Models\Comment;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -23,9 +24,13 @@ final class CommentService
     {
         return DB::transaction(function () use ($data): Comment {
             $parentId = $data->parentId;
+            $directParentAuthorId = null;
 
             if ($parentId !== null) {
                 $parent = $this->comments->findById($parentId);
+                // Capture who the user actually clicked "reply" on, before
+                // flattening — that's the correct notification recipient.
+                $directParentAuthorId = $parent?->author_id;
 
                 // Depth cap = 1: a reply to a reply flattens onto the original parent.
                 if ($parent !== null && $parent->parent_id !== null) {
@@ -42,6 +47,17 @@ final class CommentService
             ]);
 
             $this->posts->incrementCommentsCount($data->postId);
+
+            $post = $this->posts->findById($data->postId);
+
+            CommentPosted::dispatch(
+                $comment->id,
+                $data->postId,
+                $data->authorId,
+                $directParentAuthorId,
+                (int) $post->author_id,
+                $data->tenantId,
+            );
 
             return $comment;
         });
