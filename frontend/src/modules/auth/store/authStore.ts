@@ -1,0 +1,69 @@
+import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
+import { registerUnauthorizedHandler } from '@/shared/api/http'
+import { clearStoredToken, getStoredToken, setStoredToken } from '@/shared/api/tokenStorage'
+import { authApi } from '../api/authApi'
+import type { LoginPayload, RegisterPayload, User } from '../types'
+
+export const useAuthStore = defineStore('auth', () => {
+  const user = ref<User | null>(null)
+  const token = ref<string | null>(getStoredToken())
+  const isAuthenticated = computed(() => token.value !== null)
+
+  function setSession(sessionUser: User, sessionToken: string): void {
+    user.value = sessionUser
+    token.value = sessionToken
+    setStoredToken(sessionToken)
+  }
+
+  function clearSession(): void {
+    user.value = null
+    token.value = null
+    clearStoredToken()
+  }
+
+  async function login(payload: LoginPayload) {
+    const response = await authApi.login(payload)
+    if (response.data) {
+      setSession(response.data.user, response.data.token)
+    }
+    return response
+  }
+
+  async function register(payload: RegisterPayload) {
+    const response = await authApi.register(payload)
+    if (response.data) {
+      setSession(response.data.user, response.data.token)
+    }
+    return response
+  }
+
+  async function logout(): Promise<void> {
+    try {
+      await authApi.logout()
+    } finally {
+      clearSession()
+    }
+  }
+
+  async function fetchCurrentUser() {
+    const response = await authApi.me()
+    if (response.data) {
+      user.value = response.data
+    }
+    return response
+  }
+
+  registerUnauthorizedHandler(clearSession)
+
+  return {
+    user,
+    token,
+    isAuthenticated,
+    login,
+    register,
+    logout,
+    fetchCurrentUser,
+    clearSession,
+  }
+})
