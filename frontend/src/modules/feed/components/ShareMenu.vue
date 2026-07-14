@@ -1,21 +1,16 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { Copy, ExternalLink, Repeat2, Share2 } from '@lucide/vue'
+import { Copy, Globe, Repeat2, Share2 } from '@lucide/vue'
 import RepostDialog from './RepostDialog.vue'
-import {
-  copyToClipboard,
-  facebookShareUrl,
-  linkedInShareUrl,
-  openShareWindow,
-  postPermalink,
-  threadsShareUrl,
-} from '../utils/shareIntents'
+import SocialShareDialog from './SocialShareDialog.vue'
+import { copyToClipboard, postPermalink } from '../utils/shareIntents'
 import type { Post } from '../types'
 
 const props = defineProps<{ post: Post }>()
 
 const open = ref(false)
 const showRepostDialog = ref(false)
+const showSocialDialog = ref(false)
 const copied = ref(false)
 const copyError = ref(false)
 
@@ -32,19 +27,9 @@ function openRepostDialog(): void {
   showRepostDialog.value = true
 }
 
-function shareToFacebook(): void {
+function openSocialDialog(): void {
   open.value = false
-  openShareWindow(facebookShareUrl(postPermalink(props.post.id)))
-}
-
-function shareToLinkedIn(): void {
-  open.value = false
-  openShareWindow(linkedInShareUrl(postPermalink(props.post.id)))
-}
-
-function shareToThreads(): void {
-  open.value = false
-  openShareWindow(threadsShareUrl(postPermalink(props.post.id)))
+  showSocialDialog.value = true
 }
 
 async function onCopyLink(): Promise<void> {
@@ -88,23 +73,9 @@ async function onCopyLink(): Promise<void> {
       <button
         type="button"
         class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-slate-700 transition-colors duration-200 hover:bg-zinc-50 dark:text-zinc-300 dark:hover:bg-zinc-800"
-        @click="shareToFacebook"
+        @click="openSocialDialog"
       >
-        <ExternalLink class="h-4 w-4" /> Share to Facebook
-      </button>
-      <button
-        type="button"
-        class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-slate-700 transition-colors duration-200 hover:bg-zinc-50 dark:text-zinc-300 dark:hover:bg-zinc-800"
-        @click="shareToLinkedIn"
-      >
-        <ExternalLink class="h-4 w-4" /> Share to LinkedIn
-      </button>
-      <button
-        type="button"
-        class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-slate-700 transition-colors duration-200 hover:bg-zinc-50 dark:text-zinc-300 dark:hover:bg-zinc-800"
-        @click="shareToThreads"
-      >
-        <ExternalLink class="h-4 w-4" /> Share to Threads
+        <Globe class="h-4 w-4" /> Share to Social Media
       </button>
       <button
         type="button"
@@ -117,5 +88,6 @@ async function onCopyLink(): Promise<void> {
     </div>
 
     <RepostDialog v-model:open="showRepostDialog" :post="repostTarget" />
+    <SocialShareDialog v-model:open="showSocialDialog" :post="post" />
   </div>
 </template>
