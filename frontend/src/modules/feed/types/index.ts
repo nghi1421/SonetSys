@@ -5,6 +5,13 @@ export interface PostAuthor {
 
 export type PostVisibility = 'public' | 'tenant_only' | 'private'
 
+export type MediaType = 'image' | 'video' | 'sticker'
+
+export interface Sticker {
+  key: string
+  emoji: string
+}
+
 export interface Post {
   id: number
   tenant_id: number
@@ -17,6 +24,9 @@ export interface Post {
   liked_by_me: boolean
   author: PostAuthor
   shared_post: Post | null
+  media_type: MediaType | null
+  media_url: string | null
+  sticker_key: string | null
   published_at: string | null
   created_at: string
 }
@@ -41,6 +51,9 @@ export interface CreatePostPayload {
   body: string
   visibility?: PostVisibility
   shared_post_id?: number
+  media?: File
+  media_type?: 'image' | 'video'
+  sticker_key?: string
 }
 
 export interface UpdatePostPayload {

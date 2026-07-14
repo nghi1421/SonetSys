@@ -5,6 +5,7 @@ import { useAuthStore } from '@/modules/auth/store/authStore'
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog.vue'
 import { useRelativeTime } from '@/shared/composables/useRelativeTime'
 import CommentThread from './CommentThread.vue'
+import PostMedia from './PostMedia.vue'
 import ShareMenu from './ShareMenu.vue'
 import SharedPostPreview from './SharedPostPreview.vue'
 import { useFeedStore } from '../store/feedStore'
@@ -106,6 +107,7 @@ async function saveEdit(): Promise<void> {
     </div>
     <template v-else>
       <p v-if="post.body" class="mt-3 whitespace-pre-wrap text-sm text-slate-700 dark:text-zinc-300">{{ post.body }}</p>
+      <PostMedia v-if="post.media_type" :post="post" class="mt-3" />
       <SharedPostPreview v-if="post.shared_post" :post="post.shared_post" class="mt-3" />
     </template>
 
