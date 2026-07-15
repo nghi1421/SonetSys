@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { Heart, Link2, MessageCircle, Pencil, Trash2 } from '@lucide/vue'
+import { EllipsisVertical, Heart, MessageCircle, Pencil, Trash2 } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import AppButton from '@/shared/components/ui/AppButton.vue'
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog.vue'
 import { useRelativeTime } from '@/shared/composables/useRelativeTime'
 import CommentThread from './CommentThread.vue'
+import PostMedia from './PostMedia.vue'
+import ShareMenu from './ShareMenu.vue'
+import SharedPostPreview from './SharedPostPreview.vue'
 import { useFeedStore } from '../store/feedStore'
 import type { Post } from '../types'
 
@@ -15,8 +18,7 @@ const feedStore = useFeedStore()
 const authStore = useAuthStore()
 
 const showComments = ref(false)
-const copied = ref(false)
-const shareError = ref(false)
+const showActionsMenu = ref(false)
 const editing = ref(false)
 const editBody = ref(props.post.body)
 const confirmingDelete = ref(false)
@@ -36,56 +38,20 @@ async function onToggleComments(): Promise<void> {
   }
 }
 
-async function copyToClipboard(text: string): Promise<boolean> {
-  if (navigator.clipboard) {
-    try {
-      await navigator.clipboard.writeText(text)
-      return true
-    } catch {
-      // Fall through to the legacy fallback below.
-    }
-  }
-
-  const textarea = document.createElement('textarea')
-  textarea.value = text
-  textarea.style.position = 'fixed'
-  textarea.style.opacity = '0'
-  document.body.appendChild(textarea)
-  textarea.select()
-
-  let succeeded = false
-  try {
-    succeeded = document.execCommand('copy')
-  } catch {
-    succeeded = false
-  } finally {
-    document.body.removeChild(textarea)
-  }
-
-  return succeeded
-}
-
-async function onShare(): Promise<void> {
-  const url = `${window.location.origin}/posts/${props.post.id}`
-  const succeeded = await copyToClipboard(url)
-
-  copied.value = succeeded
-  shareError.value = !succeeded
-
-  setTimeout(() => {
-    copied.value = false
-    shareError.value = false
-  }, 2000)
-}
-
 async function onConfirmDelete(): Promise<void> {
   confirmingDelete.value = false
   await feedStore.deletePost(props.post.id)
 }
 
 function startEditing(): void {
+  showActionsMenu.value = false
   editBody.value = props.post.body
   editing.value = true
+}
+
+function onDeleteClick(): void {
+  showActionsMenu.value = false
+  confirmingDelete.value = true
 }
 
 async function saveEdit(): Promise<void> {
@@ -111,25 +77,40 @@ async function saveEdit(): Promise<void> {
           </span>
         </div>
       </div>
-      <div v-if="isOwner || canDelete" class="flex items-center gap-2">
+      <div v-if="isOwner || canDelete" class="relative">
         <button
-          v-if="isOwner && !editing"
           type="button"
           class="rounded-full border border-cyber-border bg-cyber-glass p-1.5 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow"
-          aria-label="Edit post"
-          @click="startEditing"
+          aria-label="Post actions"
+          @click="showActionsMenu = !showActionsMenu"
         >
-          <Pencil class="h-3.5 w-3.5" />
+          <EllipsisVertical class="h-4 w-4" />
         </button>
-        <button
-          v-if="canDelete"
-          type="button"
-          class="rounded-full border border-cyber-border bg-cyber-glass p-1.5 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-pink/50 hover:text-cyber-neon-pink hover:shadow-pink-glow"
-          aria-label="Delete post"
-          @click="confirmingDelete = true"
+
+        <div v-if="showActionsMenu" class="fixed inset-0 z-0" @click="showActionsMenu = false" />
+
+        <div
+          v-if="showActionsMenu"
+          class="absolute right-0 z-10 mt-1 w-36 rounded-hud border border-cyber-border bg-cyber-glass py-1 backdrop-blur-md"
+          @click.stop
         >
-          <Trash2 class="h-3.5 w-3.5" />
-        </button>
+          <button
+            v-if="isOwner && !editing"
+            type="button"
+            class="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-cyan"
+            @click="startEditing"
+          >
+            <Pencil class="h-3.5 w-3.5" /> Edit
+          </button>
+          <button
+            v-if="canDelete"
+            type="button"
+            class="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-xs text-cyber-neon-pink transition-colors duration-300 hover:shadow-pink-glow"
+            @click="onDeleteClick"
+          >
+            <Trash2 class="h-3.5 w-3.5" /> Delete
+          </button>
+        </div>
       </div>
     </header>
 
@@ -150,9 +131,16 @@ async function saveEdit(): Promise<void> {
         <AppButton label="Save" @click="saveEdit" />
       </div>
     </div>
-    <p v-else class="mt-3 whitespace-pre-wrap border-l border-cyber-neon-indigo pl-2 font-mono text-xs leading-relaxed text-cyber-text/90">
-      {{ post.body }}
-    </p>
+    <template v-else>
+      <p
+        v-if="post.body"
+        class="mt-3 whitespace-pre-wrap border-l border-cyber-neon-indigo pl-2 font-mono text-xs leading-relaxed text-cyber-text/90"
+      >
+        {{ post.body }}
+      </p>
+      <PostMedia v-if="post.media_type" :post="post" class="mt-3" />
+      <SharedPostPreview v-if="post.shared_post" :post="post.shared_post" class="mt-3" />
+    </template>
 
     <footer class="mt-4 flex items-center gap-2 border-t border-cyber-border pt-3">
       <button
@@ -178,14 +166,7 @@ async function saveEdit(): Promise<void> {
         {{ post.comments_count }}
       </button>
 
-      <button
-        type="button"
-        class="inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-cyber-glass px-2.5 py-1 font-mono text-[10px] text-cyber-muted transition-all duration-300 hover:border-cyber-neon-indigo/40 hover:text-cyber-neon-indigo"
-        @click="onShare"
-      >
-        <Link2 class="h-3 w-3" />
-        {{ shareError ? 'Could not copy' : copied ? 'Copied!' : 'Share' }}
-      </button>
+      <ShareMenu :post="post" />
     </footer>
 
     <CommentThread v-if="showComments" :post-id="post.id" />

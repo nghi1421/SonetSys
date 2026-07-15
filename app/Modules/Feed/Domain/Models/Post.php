@@ -6,6 +6,7 @@ namespace App\Modules\Feed\Domain\Models;
 
 use App\Core\Auth\Domain\Models\User;
 use App\Core\Tenancy\Domain\Models\Tenant;
+use App\Modules\Feed\Domain\Enums\MediaType;
 use App\Modules\Feed\Domain\Enums\PostVisibility;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -21,9 +22,12 @@ final class Post extends Model
     protected $fillable = [
         'tenant_id',
         'author_id',
+        'shared_post_id',
         'body',
         'visibility',
         'metadata',
+        'media_type',
+        'media_path',
         'published_at',
     ];
 
@@ -32,6 +36,7 @@ final class Post extends Model
         return [
             'visibility' => PostVisibility::class,
             'metadata' => 'array',
+            'media_type' => MediaType::class,
             'published_at' => 'datetime',
         ];
     }
@@ -49,6 +54,11 @@ final class Post extends Model
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
+    }
+
+    public function sharedPost(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'shared_post_id');
     }
 
     public function interactions(): MorphMany

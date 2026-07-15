@@ -18,6 +18,19 @@ export const feedApi = {
   },
 
   async createPost(payload: CreatePostPayload) {
+    if (payload.media || payload.sticker_key) {
+      const form = new FormData()
+      form.append('body', payload.body)
+      if (payload.visibility) form.append('visibility', payload.visibility)
+      if (payload.shared_post_id) form.append('shared_post_id', String(payload.shared_post_id))
+      if (payload.media) form.append('media', payload.media)
+      if (payload.media_type) form.append('media_type', payload.media_type)
+      if (payload.sticker_key) form.append('sticker_key', payload.sticker_key)
+
+      const { data } = await http.post<ApiResponse<Post>>('/posts', form)
+      return data
+    }
+
     const { data } = await http.post<ApiResponse<Post>>('/posts', payload)
     return data
   },

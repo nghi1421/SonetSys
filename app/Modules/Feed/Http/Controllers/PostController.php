@@ -46,7 +46,7 @@ final class PostController extends Controller
     {
         $post = $this->posts->create($request->toDto());
 
-        return ApiResponse::success(PostResource::make($post->load('author')), status: 201);
+        return ApiResponse::success(PostResource::make($post->load(['author', 'sharedPost.author'])), status: 201);
     }
 
     public function show(Request $request, Post $post): JsonResponse
@@ -61,7 +61,7 @@ final class PostController extends Controller
 
         $this->posts->markLikedByViewer($post, $user->id);
 
-        return ApiResponse::success(PostResource::make($post->load('author')));
+        return ApiResponse::success(PostResource::make($post->load(['author', 'sharedPost.author'])));
     }
 
     public function update(UpdatePostRequest $request, Post $post): JsonResponse
@@ -76,7 +76,7 @@ final class PostController extends Controller
 
         $post = $this->posts->update($post, $request->toDto($post));
 
-        return ApiResponse::success(PostResource::make($post->load('author')));
+        return ApiResponse::success(PostResource::make($post->load(['author', 'sharedPost.author'])));
     }
 
     public function destroy(Request $request, Post $post): JsonResponse
