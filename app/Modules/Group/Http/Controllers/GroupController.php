@@ -67,7 +67,7 @@ final class GroupController extends Controller
     {
         $user = $request->user();
         $this->ensureSameTenant($group, $user);
-        $this->authorizeOwnerOrManager($group, $user);
+        $this->authorizeOwner($group, $user);
 
         $this->groups->delete($group);
 
@@ -83,8 +83,15 @@ final class GroupController extends Controller
 
     private function authorizeOwnerOrManager(Group $group, User $user): void
     {
-        if ($group->owner_id !== $user->id && ! $user->hasPermission(PermissionSlug::GroupsManageAny->value)) {
+        if (! $this->groups->isManager($group, (int) $user->id) && ! $user->hasPermission(PermissionSlug::GroupsManageAny->value)) {
             throw new AuthorizationException('You do not have permission to manage this group.');
+        }
+    }
+
+    private function authorizeOwner(Group $group, User $user): void
+    {
+        if ($group->owner_id !== $user->id && ! $user->hasPermission(PermissionSlug::GroupsManageAny->value)) {
+            throw new AuthorizationException('Only the group owner can do this.');
         }
     }
 }

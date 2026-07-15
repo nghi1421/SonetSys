@@ -1,6 +1,6 @@
 export type GroupVisibility = 'public' | 'private'
 
-export type GroupMemberRole = 'owner' | 'member'
+export type GroupMemberRole = 'owner' | 'admin' | 'member'
 
 export type GroupMemberStatus = 'pending' | 'approved'
 

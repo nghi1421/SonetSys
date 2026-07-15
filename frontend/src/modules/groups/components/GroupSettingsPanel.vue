@@ -8,7 +8,7 @@ import ConfirmDialog from '@/shared/components/ui/ConfirmDialog.vue'
 import { useGroupStore } from '../store/groupStore'
 import type { Group, GroupVisibility } from '../types'
 
-const props = defineProps<{ group: Group }>()
+const props = defineProps<{ group: Group; isOwner: boolean }>()
 
 const router = useRouter()
 const groupStore = useGroupStore()
@@ -108,7 +108,7 @@ async function onConfirmDelete(): Promise<void> {
       <AppButton type="submit" label="Save Changes" :loading="saving" :disabled="!name.trim()" />
     </form>
 
-    <section class="rounded-hud border border-cyber-neon-pink/30 bg-cyber-neon-pink/5 p-5 backdrop-blur-md">
+    <section v-if="isOwner" class="rounded-hud border border-cyber-neon-pink/30 bg-cyber-neon-pink/5 p-5 backdrop-blur-md">
       <h2 class="text-xs font-bold uppercase tracking-widest text-cyber-neon-pink">Danger Zone</h2>
       <p class="mt-2 font-mono text-xs text-cyber-muted">
         Deleting a group removes it and its posts for every member. This can't be undone.
@@ -124,6 +124,7 @@ async function onConfirmDelete(): Promise<void> {
     </section>
 
     <ConfirmDialog
+      v-if="isOwner"
       :open="confirmingDelete"
       title="Delete this group?"
       message="This permanently deletes the group and its posts for every member."

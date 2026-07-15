@@ -237,6 +237,116 @@ final class GroupTest extends TestCase
         $this->postJson("/api/v1/groups/{$group->id}/posts", ['body' => 'Sneaky'])->assertForbidden();
     }
 
+    public function test_owner_can_promote_a_member_to_admin(): void
+    {
+        $owner = User::factory()->create();
+        $group = $this->createGroup($owner, 'public');
+
+        $member = $this->sameTenantUser($owner);
+        $this->joinAsApproved($group, $member);
+
+        Sanctum::actingAs($owner);
+
+        $response = $this->postJson("/api/v1/groups/{$group->id}/members/{$member->id}/promote");
+
+        $response->assertOk();
+        $response->assertJsonPath('data.role', 'admin');
+    }
+
+    public function test_non_owner_cannot_promote_a_member_to_admin(): void
+    {
+        $owner = User::factory()->create();
+        $group = $this->createGroup($owner, 'public');
+
+        $admin = $this->sameTenantUser($owner);
+        $this->joinAsApproved($group, $admin);
+        $this->promoteToAdmin($group, $owner, $admin);
+
+        $member = $this->sameTenantUser($owner);
+        $this->joinAsApproved($group, $member);
+
+        Sanctum::actingAs($admin);
+
+        $this->postJson("/api/v1/groups/{$group->id}/members/{$member->id}/promote")->assertForbidden();
+    }
+
+    public function test_owner_can_demote_an_admin_back_to_member(): void
+    {
+        $owner = User::factory()->create();
+        $group = $this->createGroup($owner, 'public');
+
+        $admin = $this->sameTenantUser($owner);
+        $this->joinAsApproved($group, $admin);
+        $this->promoteToAdmin($group, $owner, $admin);
+
+        Sanctum::actingAs($owner);
+
+        $response = $this->postJson("/api/v1/groups/{$group->id}/members/{$admin->id}/demote");
+
+        $response->assertOk();
+        $response->assertJsonPath('data.role', 'member');
+    }
+
+    public function test_admin_can_approve_join_requests_and_remove_members(): void
+    {
+        $owner = User::factory()->create();
+        $group = $this->createGroup($owner, 'private');
+
+        $admin = $this->sameTenantUser($owner);
+        $this->joinAsPending($group, $admin);
+        Sanctum::actingAs($owner);
+        $this->postJson("/api/v1/groups/{$group->id}/requests/{$admin->id}/approve")->assertOk();
+        $this->promoteToAdmin($group, $owner, $admin);
+
+        $joiner = $this->sameTenantUser($owner);
+        $this->joinAsPending($group, $joiner);
+
+        Sanctum::actingAs($admin);
+
+        $this->postJson("/api/v1/groups/{$group->id}/requests/{$joiner->id}/approve")
+            ->assertOk()
+            ->assertJsonPath('data.status', 'approved');
+
+        $this->deleteJson("/api/v1/groups/{$group->id}/members/{$joiner->id}")->assertOk();
+    }
+
+    public function test_admin_can_update_group_settings_but_cannot_delete_the_group(): void
+    {
+        $owner = User::factory()->create();
+        $group = $this->createGroup($owner, 'public');
+
+        $admin = $this->sameTenantUser($owner);
+        $this->joinAsApproved($group, $admin);
+        $this->promoteToAdmin($group, $owner, $admin);
+
+        Sanctum::actingAs($admin);
+
+        $this->putJson("/api/v1/groups/{$group->id}", [
+            'name' => 'Renamed by admin',
+            'visibility' => 'public',
+        ])->assertOk();
+
+        $this->deleteJson("/api/v1/groups/{$group->id}")->assertForbidden();
+    }
+
+    public function test_admin_cannot_remove_another_admin(): void
+    {
+        $owner = User::factory()->create();
+        $group = $this->createGroup($owner, 'public');
+
+        $adminOne = $this->sameTenantUser($owner);
+        $this->joinAsApproved($group, $adminOne);
+        $this->promoteToAdmin($group, $owner, $adminOne);
+
+        $adminTwo = $this->sameTenantUser($owner);
+        $this->joinAsApproved($group, $adminTwo);
+        $this->promoteToAdmin($group, $owner, $adminTwo);
+
+        Sanctum::actingAs($adminOne);
+
+        $this->deleteJson("/api/v1/groups/{$group->id}/members/{$adminTwo->id}")->assertForbidden();
+    }
+
     private function sameTenantUser(User $owner): User
     {
         // Reuse the owner's existing role row instead of UserFactory::forTenant(),
@@ -272,5 +382,12 @@ final class GroupTest extends TestCase
     {
         Sanctum::actingAs($user);
         $this->postJson("/api/v1/groups/{$group->id}/join")->assertJsonPath('data.status', 'approved');
+    }
+
+    private function promoteToAdmin(Group $group, User $owner, User $member): void
+    {
+        Sanctum::actingAs($owner);
+        $this->postJson("/api/v1/groups/{$group->id}/members/{$member->id}/promote")
+            ->assertJsonPath('data.role', 'admin');
     }
 }

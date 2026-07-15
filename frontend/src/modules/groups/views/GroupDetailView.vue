@@ -24,6 +24,7 @@ const joiningOrLeaving = ref(false)
 
 const group = computed(() => groupStore.currentGroup)
 const isOwner = computed(() => group.value?.viewer_membership?.role === 'owner')
+const isManager = computed(() => isOwner.value || group.value?.viewer_membership?.role === 'admin')
 const isApprovedMember = computed(() => isOwner.value || group.value?.viewer_membership?.status === 'approved')
 const canViewPosts = computed(() => group.value?.visibility === 'public' || isApprovedMember.value)
 
@@ -138,7 +139,7 @@ function createGroupPost(payload: Parameters<typeof feedStore.createGroupPost>[1
         <nav class="flex gap-1 border-b border-cyber-border">
           <button
             v-for="tab in tabs"
-            v-show="tab !== 'settings' || isOwner"
+            v-show="tab !== 'settings' || isManager"
             :key="tab"
             type="button"
             class="rounded-t-hud px-4 py-2 font-mono text-xs uppercase tracking-widest transition-all duration-300"
@@ -192,10 +193,15 @@ function createGroupPost(payload: Parameters<typeof feedStore.createGroupPost>[1
           </div>
         </div>
 
-        <GroupMembersPanel v-else-if="activeTab === 'members' && isApprovedMember" :group="group" :is-owner="isOwner" />
+        <GroupMembersPanel
+          v-else-if="activeTab === 'members' && isApprovedMember"
+          :group="group"
+          :is-owner="isOwner"
+          :is-manager="isManager"
+        />
         <AppAlert v-else-if="activeTab === 'members'">Join this group to see its members.</AppAlert>
 
-        <GroupSettingsPanel v-else-if="activeTab === 'settings' && isOwner" :group="group" />
+        <GroupSettingsPanel v-else-if="activeTab === 'settings' && isManager" :group="group" :is-owner="isOwner" />
       </template>
     </div>
   </AppShell>

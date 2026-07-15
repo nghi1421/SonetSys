@@ -96,6 +96,19 @@ final class GroupService
         return $this->members->findForGroupAndUser($group->id, $userId);
     }
 
+    public function isManager(Group $group, int $userId): bool
+    {
+        if ($group->owner_id === $userId) {
+            return true;
+        }
+
+        $member = $this->members->findForGroupAndUser($group->id, $userId);
+
+        return $member !== null
+            && $member->status === GroupMemberStatus::Approved
+            && $member->role === GroupMemberRole::Admin;
+    }
+
     public function requestJoin(Group $group, int $userId): GroupMember
     {
         $existing = $this->members->findForGroupAndUser($group->id, $userId);
@@ -164,6 +177,28 @@ final class GroupService
     public function listMembers(Group $group, ?string $status = null): Collection
     {
         return $this->members->listForGroup($group->id, $status);
+    }
+
+    public function promoteToAdmin(Group $group, int $targetUserId): GroupMember
+    {
+        $member = $this->members->findForGroupAndUser($group->id, $targetUserId);
+
+        if ($member === null || $member->status !== GroupMemberStatus::Approved || $member->role !== GroupMemberRole::Member) {
+            throw new ModelNotFoundException;
+        }
+
+        return $this->members->update($member, ['role' => GroupMemberRole::Admin]);
+    }
+
+    public function demoteToMember(Group $group, int $targetUserId): GroupMember
+    {
+        $member = $this->members->findForGroupAndUser($group->id, $targetUserId);
+
+        if ($member === null || $member->role !== GroupMemberRole::Admin) {
+            throw new ModelNotFoundException;
+        }
+
+        return $this->members->update($member, ['role' => GroupMemberRole::Member]);
     }
 
     private function uniqueSlug(int $tenantId, string $name): string

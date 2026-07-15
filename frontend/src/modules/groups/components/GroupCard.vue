@@ -13,6 +13,7 @@ const membershipLabel = computed(() => {
   const membership = props.group.viewer_membership
   if (!membership) return null
   if (membership.role === 'owner') return 'Owner'
+  if (membership.role === 'admin') return 'Admin'
   return membership.status === 'pending' ? 'Requested' : 'Member'
 })
 

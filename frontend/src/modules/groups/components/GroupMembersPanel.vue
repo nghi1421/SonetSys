@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { Check, Users, X } from '@lucide/vue'
+import { Check, ShieldMinus, ShieldPlus, Users, X } from '@lucide/vue'
 import AppAlert from '@/shared/components/ui/AppAlert.vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import { useGroupStore } from '../store/groupStore'
-import type { Group } from '../types'
+import type { Group, GroupMember } from '../types'
 
-const props = defineProps<{ group: Group; isOwner: boolean }>()
+const props = defineProps<{ group: Group; isOwner: boolean; isManager: boolean }>()
 
 const groupStore = useGroupStore()
 const authStore = useAuthStore()
@@ -16,7 +16,7 @@ const busyUserId = ref<number | null>(null)
 
 onMounted(async () => {
   await groupStore.fetchMembers(props.group.id)
-  if (props.isOwner) {
+  if (props.isManager) {
     await groupStore.fetchRequests(props.group.id)
   }
 })
@@ -44,13 +44,28 @@ function onReject(userId: number): Promise<void> {
 function onRemove(userId: number): Promise<void> {
   return withErrorHandling(userId, () => groupStore.removeMember(props.group.id, userId))
 }
+
+function onPromote(userId: number): Promise<void> {
+  return withErrorHandling(userId, () => groupStore.promoteMember(props.group.id, userId))
+}
+
+function onDemote(userId: number): Promise<void> {
+  return withErrorHandling(userId, () => groupStore.demoteMember(props.group.id, userId))
+}
+
+function canRemove(member: GroupMember): boolean {
+  if (member.role === 'owner' || member.user.id === authStore.user?.id) return false
+  if (!props.isManager) return false
+  if (member.role === 'admin' && !props.isOwner) return false
+  return true
+}
 </script>
 
 <template>
   <div class="space-y-4">
     <AppAlert v-if="error">{{ error }}</AppAlert>
 
-    <section v-if="isOwner" class="rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md">
+    <section v-if="isManager" class="rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md">
       <h2 class="text-xs font-bold uppercase tracking-widest text-cyber-neon-pink">Join Requests</h2>
 
       <div v-if="groupStore.loadingRequests" class="mt-4 space-y-2">
@@ -109,16 +124,38 @@ function onRemove(userId: number): Promise<void> {
             <p class="mt-0.5 font-mono text-[9px] uppercase tracking-widest text-cyber-muted">{{ member.role }}</p>
           </div>
 
-          <button
-            v-if="isOwner && member.role !== 'owner' && member.user.id !== authStore.user?.id"
-            type="button"
-            :disabled="busyUserId === member.user.id"
-            class="shrink-0 rounded-full border border-cyber-border bg-cyber-glass p-1.5 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-pink/50 hover:text-cyber-neon-pink hover:shadow-pink-glow disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
-            title="Remove member"
-            @click="member.user.id !== null && onRemove(member.user.id)"
-          >
-            <X class="h-3.5 w-3.5" />
-          </button>
+          <div class="flex shrink-0 items-center gap-1">
+            <button
+              v-if="isOwner && member.role === 'member' && member.user.id !== authStore.user?.id"
+              type="button"
+              :disabled="busyUserId === member.user.id"
+              class="rounded-full border border-cyber-border bg-cyber-glass p-1.5 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
+              title="Make admin"
+              @click="member.user.id !== null && onPromote(member.user.id)"
+            >
+              <ShieldPlus class="h-3.5 w-3.5" />
+            </button>
+            <button
+              v-if="isOwner && member.role === 'admin'"
+              type="button"
+              :disabled="busyUserId === member.user.id"
+              class="rounded-full border border-cyber-border bg-cyber-glass p-1.5 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-indigo/50 hover:text-cyber-neon-indigo hover:shadow-cyan-glow disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
+              title="Remove admin"
+              @click="member.user.id !== null && onDemote(member.user.id)"
+            >
+              <ShieldMinus class="h-3.5 w-3.5" />
+            </button>
+            <button
+              v-if="canRemove(member)"
+              type="button"
+              :disabled="busyUserId === member.user.id"
+              class="rounded-full border border-cyber-border bg-cyber-glass p-1.5 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-pink/50 hover:text-cyber-neon-pink hover:shadow-pink-glow disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
+              title="Remove member"
+              @click="member.user.id !== null && onRemove(member.user.id)"
+            >
+              <X class="h-3.5 w-3.5" />
+            </button>
+          </div>
         </li>
       </ul>
     </section>

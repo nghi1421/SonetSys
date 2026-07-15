@@ -9,6 +9,7 @@ use App\Core\Auth\Domain\Models\User;
 use App\Core\Support\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Modules\Group\Application\Services\GroupService;
+use App\Modules\Group\Domain\Enums\GroupMemberRole;
 use App\Modules\Group\Domain\Enums\GroupMemberStatus;
 use App\Modules\Group\Domain\Models\Group;
 use App\Modules\Group\Http\Resources\GroupMemberResource;
@@ -90,9 +91,41 @@ final class GroupMembershipController extends Controller
             throw new AuthorizationException('The group owner cannot be removed.');
         }
 
+        $targetMembership = $this->groups->membershipFor($group, (int) $user->id);
+
+        if ($targetMembership !== null
+            && $targetMembership->role === GroupMemberRole::Admin
+            && $group->owner_id !== $actingUser->id
+            && ! $actingUser->hasPermission(PermissionSlug::GroupsManageAny->value)
+        ) {
+            throw new AuthorizationException('Only the owner can remove an admin.');
+        }
+
         $this->groups->removeMember($group, (int) $user->id);
 
         return ApiResponse::success();
+    }
+
+    public function promote(Request $request, Group $group, User $user): JsonResponse
+    {
+        $actingUser = $request->user();
+        $this->ensureSameTenant($group, $actingUser);
+        $this->authorizeOwner($group, $actingUser);
+
+        $member = $this->groups->promoteToAdmin($group, (int) $user->id);
+
+        return ApiResponse::success(GroupMemberResource::make($member->load('user')));
+    }
+
+    public function demote(Request $request, Group $group, User $user): JsonResponse
+    {
+        $actingUser = $request->user();
+        $this->ensureSameTenant($group, $actingUser);
+        $this->authorizeOwner($group, $actingUser);
+
+        $member = $this->groups->demoteToMember($group, (int) $user->id);
+
+        return ApiResponse::success(GroupMemberResource::make($member->load('user')));
     }
 
     private function ensureSameTenant(Group $group, User $user): void
@@ -117,8 +150,15 @@ final class GroupMembershipController extends Controller
 
     private function authorizeOwnerOrManager(Group $group, User $user): void
     {
-        if ($group->owner_id !== $user->id && ! $user->hasPermission(PermissionSlug::GroupsManageAny->value)) {
+        if (! $this->groups->isManager($group, (int) $user->id) && ! $user->hasPermission(PermissionSlug::GroupsManageAny->value)) {
             throw new AuthorizationException('You do not have permission to manage this group.');
+        }
+    }
+
+    private function authorizeOwner(Group $group, User $user): void
+    {
+        if ($group->owner_id !== $user->id && ! $user->hasPermission(PermissionSlug::GroupsManageAny->value)) {
+            throw new AuthorizationException('Only the group owner can do this.');
         }
     }
 }

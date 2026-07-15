@@ -18,6 +18,8 @@ Route::middleware('auth:sanctum')->group(function (): void {
     Route::get('groups/{group}/requests', [GroupMembershipController::class, 'requests']);
     Route::post('groups/{group}/requests/{user}/approve', [GroupMembershipController::class, 'approve']);
     Route::delete('groups/{group}/members/{user}', [GroupMembershipController::class, 'remove']);
+    Route::post('groups/{group}/members/{user}/promote', [GroupMembershipController::class, 'promote']);
+    Route::post('groups/{group}/members/{user}/demote', [GroupMembershipController::class, 'demote']);
 
     Route::get('groups/{group}/posts', [GroupPostController::class, 'index']);
     Route::post('groups/{group}/posts', [GroupPostController::class, 'store']);

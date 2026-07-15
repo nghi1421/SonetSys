@@ -125,6 +125,20 @@ export const useGroupStore = defineStore('groups', () => {
     }
   }
 
+  async function promoteMember(groupId: number, userId: number): Promise<void> {
+    const response = await groupApi.promoteMember(groupId, userId)
+    if (response.data) {
+      members.value = members.value.map((member) => (member.user.id === userId ? response.data! : member))
+    }
+  }
+
+  async function demoteMember(groupId: number, userId: number): Promise<void> {
+    const response = await groupApi.demoteMember(groupId, userId)
+    if (response.data) {
+      members.value = members.value.map((member) => (member.user.id === userId ? response.data! : member))
+    }
+  }
+
   return {
     groups,
     loading,
@@ -145,5 +159,7 @@ export const useGroupStore = defineStore('groups', () => {
     fetchRequests,
     approveRequest,
     removeMember,
+    promoteMember,
+    demoteMember,
   }
 })

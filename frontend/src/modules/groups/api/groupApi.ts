@@ -57,4 +57,14 @@ export const groupApi = {
     const { data } = await http.delete<ApiResponse<null>>(`/groups/${groupId}/members/${userId}`)
     return data
   },
+
+  async promoteMember(groupId: number, userId: number) {
+    const { data } = await http.post<ApiResponse<GroupMember>>(`/groups/${groupId}/members/${userId}/promote`)
+    return data
+  },
+
+  async demoteMember(groupId: number, userId: number) {
+    const { data } = await http.post<ApiResponse<GroupMember>>(`/groups/${groupId}/members/${userId}/demote`)
+    return data
+  },
 }
