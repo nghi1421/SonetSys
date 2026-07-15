@@ -110,7 +110,10 @@ export const useGroupStore = defineStore('groups', () => {
       members.value = [...members.value, response.data]
     }
     if (currentGroup.value?.id === groupId) {
-      currentGroup.value = { ...currentGroup.value, members_count: currentGroup.value.members_count + 1 }
+      currentGroup.value = {
+        ...currentGroup.value,
+        members_count: currentGroup.value.members_count + 1,
+      }
     }
   }
 
@@ -128,14 +131,18 @@ export const useGroupStore = defineStore('groups', () => {
   async function promoteMember(groupId: number, userId: number): Promise<void> {
     const response = await groupApi.promoteMember(groupId, userId)
     if (response.data) {
-      members.value = members.value.map((member) => (member.user.id === userId ? response.data! : member))
+      members.value = members.value.map((member) =>
+        member.user.id === userId ? response.data! : member,
+      )
     }
   }
 
   async function demoteMember(groupId: number, userId: number): Promise<void> {
     const response = await groupApi.demoteMember(groupId, userId)
     if (response.data) {
-      members.value = members.value.map((member) => (member.user.id === userId ? response.data! : member))
+      members.value = members.value.map((member) =>
+        member.user.id === userId ? response.data! : member,
+      )
     }
   }
 

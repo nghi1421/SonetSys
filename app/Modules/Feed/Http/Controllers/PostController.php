@@ -8,6 +8,7 @@ use App\Core\Auth\Domain\Enums\PermissionSlug;
 use App\Core\Auth\Domain\Models\User;
 use App\Core\Support\ApiResponse;
 use App\Http\Controllers\Controller;
+use App\Modules\Feed\Application\Contracts\GroupAccessCheckerInterface;
 use App\Modules\Feed\Application\Services\PostService;
 use App\Modules\Feed\Domain\Enums\PostVisibility;
 use App\Modules\Feed\Domain\Models\Post;
@@ -23,6 +24,7 @@ final class PostController extends Controller
 {
     public function __construct(
         private readonly PostService $posts,
+        private readonly GroupAccessCheckerInterface $groupAccess,
     ) {}
 
     public function index(Request $request): JsonResponse
@@ -57,6 +59,10 @@ final class PostController extends Controller
 
         if ($post->visibility === PostVisibility::Private && $post->author_id !== $user->id) {
             throw new ModelNotFoundException;
+        }
+
+        if ($post->group_id !== null && ! $this->groupAccess->canView($post->group_id, (int) $user->id)) {
+            throw new AuthorizationException('You must be a member of this group.');
         }
 
         $this->posts->markLikedByViewer($post, $user->id);

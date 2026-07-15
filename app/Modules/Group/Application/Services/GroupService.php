@@ -14,6 +14,7 @@ use App\Modules\Group\Domain\Enums\GroupVisibility;
 use App\Modules\Group\Domain\Models\Group;
 use App\Modules\Group\Domain\Models\GroupMember;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -65,6 +66,11 @@ final class GroupService
     public function findBySlugForTenant(int $tenantId, string $slug): ?Group
     {
         return $this->groups->findBySlugForTenant($tenantId, $slug);
+    }
+
+    public function findById(int $id): ?Group
+    {
+        return $this->groups->findById($id);
     }
 
     /**
@@ -121,13 +127,19 @@ final class GroupService
             ? GroupMemberStatus::Approved
             : GroupMemberStatus::Pending;
 
-        $member = $this->members->create([
-            'group_id' => $group->id,
-            'user_id' => $userId,
-            'role' => GroupMemberRole::Member,
-            'status' => $status,
-            'joined_at' => $status === GroupMemberStatus::Approved ? now() : null,
-        ]);
+        try {
+            $member = $this->members->create([
+                'group_id' => $group->id,
+                'user_id' => $userId,
+                'role' => GroupMemberRole::Member,
+                'status' => $status,
+                'joined_at' => $status === GroupMemberStatus::Approved ? now() : null,
+            ]);
+        } catch (QueryException) {
+            // Concurrent join request already inserted the row between our
+            // existence check and this insert — return that row instead.
+            return $this->members->findForGroupAndUser($group->id, $userId) ?? throw new ModelNotFoundException;
+        }
 
         if ($status === GroupMemberStatus::Approved) {
             $this->groups->incrementMembersCount($group->id);

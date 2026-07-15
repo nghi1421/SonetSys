@@ -22,9 +22,11 @@ return new class extends Migration
             $table->unsignedInteger('members_count')->default(0);
             $table->timestamps();
             $table->softDeletes();
-
-            $table->unique(['tenant_id', 'slug']);
         });
+
+        DB::statement(
+            'CREATE UNIQUE INDEX groups_tenant_slug_unique ON groups (tenant_id, slug) WHERE deleted_at IS NULL',
+        );
 
         DB::statement(
             'CREATE INDEX groups_tenant_visibility_idx ON groups (tenant_id, visibility) WHERE deleted_at IS NULL',

@@ -158,7 +158,7 @@ final class GroupTest extends TestCase
         $this->assertSame(1, $group->fresh()->members_count);
     }
 
-    public function test_only_owner_can_update_or_delete_the_group(): void
+    public function test_bystander_cannot_update_or_delete_the_group(): void
     {
         $owner = User::factory()->create();
         $group = $this->createGroup($owner, 'public');
@@ -235,6 +235,46 @@ final class GroupTest extends TestCase
 
         $this->getJson("/api/v1/groups/{$group->id}/posts")->assertForbidden();
         $this->postJson("/api/v1/groups/{$group->id}/posts", ['body' => 'Sneaky'])->assertForbidden();
+    }
+
+    public function test_non_member_cannot_reach_a_private_groups_post_via_the_generic_feed_endpoints(): void
+    {
+        $owner = User::factory()->create();
+        $group = $this->createGroup($owner, 'private');
+
+        Sanctum::actingAs($owner);
+        $postId = $this->postJson("/api/v1/groups/{$group->id}/posts", ['body' => 'Members only'])
+            ->assertCreated()
+            ->json('data.id');
+
+        $outsider = $this->sameTenantUser($owner);
+        Sanctum::actingAs($outsider);
+
+        $this->getJson("/api/v1/posts/{$postId}")->assertForbidden();
+        $this->getJson("/api/v1/posts/{$postId}/comments")->assertForbidden();
+        $this->postJson("/api/v1/posts/{$postId}/comments", ['body' => 'Sneaky comment'])->assertForbidden();
+        $this->postJson("/api/v1/posts/{$postId}/like")->assertForbidden();
+    }
+
+    public function test_any_tenant_member_can_reach_a_public_groups_post_via_the_generic_feed_endpoints(): void
+    {
+        $owner = User::factory()->create();
+        $group = $this->createGroup($owner, 'public');
+
+        Sanctum::actingAs($owner);
+        $postId = $this->postJson("/api/v1/groups/{$group->id}/posts", ['body' => 'Public post'])
+            ->assertCreated()
+            ->json('data.id');
+
+        $outsider = $this->sameTenantUser($owner);
+        Sanctum::actingAs($outsider);
+
+        $this->getJson("/api/v1/posts/{$postId}")->assertOk();
+        $this->getJson("/api/v1/posts/{$postId}/comments")->assertOk();
+
+        // Viewing is open to any tenant member, but interacting still requires membership.
+        $this->postJson("/api/v1/posts/{$postId}/comments", ['body' => 'Sneaky comment'])->assertForbidden();
+        $this->postJson("/api/v1/posts/{$postId}/like")->assertForbidden();
     }
 
     public function test_owner_can_promote_a_member_to_admin(): void

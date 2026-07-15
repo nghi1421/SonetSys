@@ -49,7 +49,9 @@ export const groupApi = {
   },
 
   async approve(groupId: number, userId: number) {
-    const { data } = await http.post<ApiResponse<GroupMember>>(`/groups/${groupId}/requests/${userId}/approve`)
+    const { data } = await http.post<ApiResponse<GroupMember>>(
+      `/groups/${groupId}/requests/${userId}/approve`,
+    )
     return data
   },
 
@@ -59,12 +61,16 @@ export const groupApi = {
   },
 
   async promoteMember(groupId: number, userId: number) {
-    const { data } = await http.post<ApiResponse<GroupMember>>(`/groups/${groupId}/members/${userId}/promote`)
+    const { data } = await http.post<ApiResponse<GroupMember>>(
+      `/groups/${groupId}/members/${userId}/promote`,
+    )
     return data
   },
 
   async demoteMember(groupId: number, userId: number) {
-    const { data } = await http.post<ApiResponse<GroupMember>>(`/groups/${groupId}/members/${userId}/demote`)
+    const { data } = await http.post<ApiResponse<GroupMember>>(
+      `/groups/${groupId}/members/${userId}/demote`,
+    )
     return data
   },
 }

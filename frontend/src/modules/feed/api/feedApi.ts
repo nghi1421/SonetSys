@@ -78,7 +78,10 @@ export const feedApi = {
   },
 
   async createGroupPost(groupId: number, payload: CreatePostPayload) {
-    const { data } = await http.post<ApiResponse<Post>>(`/groups/${groupId}/posts`, toRequestBody(payload))
+    const { data } = await http.post<ApiResponse<Post>>(
+      `/groups/${groupId}/posts`,
+      toRequestBody(payload),
+    )
     return data
   },
 }
