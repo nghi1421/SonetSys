@@ -23,6 +23,7 @@ final class Post extends Model
         'tenant_id',
         'author_id',
         'shared_post_id',
+        'group_id',
         'body',
         'visibility',
         'metadata',

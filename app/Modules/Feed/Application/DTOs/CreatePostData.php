@@ -17,6 +17,7 @@ final readonly class CreatePostData
         public int $authorId,
         public array $metadata = [],
         public ?int $sharedPostId = null,
+        public ?int $groupId = null,
         public ?UploadedFile $media = null,
         public ?MediaType $mediaType = null,
         public ?string $stickerKey = null,

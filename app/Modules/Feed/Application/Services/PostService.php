@@ -61,6 +61,7 @@ final class PostService
             'tenant_id' => $data->tenantId,
             'author_id' => $data->authorId,
             'shared_post_id' => $sharedPostId,
+            'group_id' => $data->groupId,
             'body' => $data->body,
             'visibility' => $data->visibility,
             'metadata' => $data->metadata,
@@ -105,6 +106,25 @@ final class PostService
         [$afterPublishedAt, $afterId] = $this->decodeCursor($cursor);
 
         $posts = $this->posts->cursorPaginateForTenant($tenantId, $viewerId, $afterPublishedAt, $afterId, $limit);
+        $this->markLikedByViewer($posts, $viewerId);
+
+        $nextCursor = null;
+        if ($posts->count() === $limit) {
+            $last = $posts->last();
+            $nextCursor = $this->encodeCursor($last->published_at, $last->id);
+        }
+
+        return ['items' => $posts, 'next_cursor' => $nextCursor];
+    }
+
+    /**
+     * @return array{items: Collection<int, Post>, next_cursor: ?string}
+     */
+    public function feedForGroup(int $groupId, int $viewerId, ?string $cursor, int $limit = 20): array
+    {
+        [$afterPublishedAt, $afterId] = $this->decodeCursor($cursor);
+
+        $posts = $this->posts->cursorPaginateForGroup($groupId, $afterPublishedAt, $afterId, $limit);
         $this->markLikedByViewer($posts, $viewerId);
 
         $nextCursor = null;

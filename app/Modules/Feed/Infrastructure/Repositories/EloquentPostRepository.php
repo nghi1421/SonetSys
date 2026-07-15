@@ -33,6 +33,7 @@ final class EloquentPostRepository implements PostRepositoryInterface
         int $limit,
     ): Collection {
         return Post::query()
+            ->whereNull('group_id')
             ->when(
                 $tenantId === null,
                 fn ($query) => $query->whereNull('tenant_id'),
@@ -55,6 +56,30 @@ final class EloquentPostRepository implements PostRepositoryInterface
             ->orderByDesc('id')
             ->limit($limit)
             ->with(['author', 'sharedPost.author'])
+            ->get();
+    }
+
+    public function cursorPaginateForGroup(
+        int $groupId,
+        ?Carbon $afterPublishedAt,
+        ?int $afterId,
+        int $limit,
+    ): Collection {
+        return Post::query()
+            ->where('group_id', $groupId)
+            ->when(
+                $afterPublishedAt !== null && $afterId !== null,
+                fn ($query) => $query->where(function ($inner) use ($afterPublishedAt, $afterId): void {
+                    $inner->where('published_at', '<', $afterPublishedAt)
+                        ->orWhere(function ($tie) use ($afterPublishedAt, $afterId): void {
+                            $tie->where('published_at', $afterPublishedAt)->where('id', '<', $afterId);
+                        });
+                }),
+            )
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
+            ->limit($limit)
+            ->with(['author'])
             ->get();
     }
 
