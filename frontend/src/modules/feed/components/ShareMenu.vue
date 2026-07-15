@@ -49,10 +49,10 @@ async function onCopyLink(): Promise<void> {
   <div class="relative">
     <button
       type="button"
-      class="flex items-center gap-1.5 rounded-md px-2 py-1 text-sm text-slate-500 transition-colors duration-200 hover:text-accent-600 dark:text-zinc-400"
+      class="inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-cyber-glass px-2.5 py-1 font-mono text-[10px] text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-indigo/40 hover:text-cyber-neon-indigo"
       @click="toggle"
     >
-      <Share2 class="h-4 w-4" />
+      <Share2 class="h-3 w-3" />
       {{ post.shares_count }}
     </button>
 
@@ -60,26 +60,26 @@ async function onCopyLink(): Promise<void> {
 
     <div
       v-if="open"
-      class="absolute left-0 z-10 mt-2 w-56 rounded-lg border border-zinc-200 bg-white py-1 shadow-lg dark:border-zinc-800 dark:bg-zinc-900"
+      class="absolute left-0 z-10 mt-2 w-56 rounded-hud border border-cyber-border bg-cyber-glass py-1 backdrop-blur-md"
       @click.stop
     >
       <button
         type="button"
-        class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-slate-700 transition-colors duration-200 hover:bg-zinc-50 dark:text-zinc-300 dark:hover:bg-zinc-800"
+        class="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-cyan"
         @click="openRepostDialog"
       >
         <Repeat2 class="h-4 w-4" /> Share to Profile
       </button>
       <button
         type="button"
-        class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-slate-700 transition-colors duration-200 hover:bg-zinc-50 dark:text-zinc-300 dark:hover:bg-zinc-800"
+        class="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-cyan"
         @click="openSocialDialog"
       >
         <Globe class="h-4 w-4" /> Share to Social Media
       </button>
       <button
         type="button"
-        class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-slate-700 transition-colors duration-200 hover:bg-zinc-50 dark:text-zinc-300 dark:hover:bg-zinc-800"
+        class="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-cyan"
         @click="onCopyLink"
       >
         <Copy class="h-4 w-4" />

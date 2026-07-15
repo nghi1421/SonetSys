@@ -44,10 +44,12 @@ async function onSubmit(): Promise<void> {
   <div class="flex min-h-screen items-center justify-center px-4">
     <div class="w-full max-w-sm space-y-6">
       <div class="text-center">
-        <h1 class="text-2xl font-semibold tracking-tight text-slate-900 dark:text-zinc-100">
+        <h1
+          class="bg-gradient-to-r from-cyber-neon-cyan via-cyber-neon-indigo to-cyber-neon-pink bg-clip-text text-sm font-bold uppercase tracking-widest text-transparent"
+        >
           Create your account
         </h1>
-        <p class="mt-1 text-sm text-slate-500 dark:text-zinc-400">
+        <p class="mt-1 font-mono text-xs text-cyber-muted">
           Join your community on Sonetsys
         </p>
       </div>
@@ -74,11 +76,11 @@ async function onSubmit(): Promise<void> {
         <AppButton type="submit" label="Create account" :loading="loading" class="w-full" />
       </form>
 
-      <p class="text-center text-sm text-slate-500 dark:text-zinc-400">
+      <p class="text-center font-mono text-xs text-cyber-muted">
         Already have an account?
         <RouterLink
           :to="{ name: 'login' }"
-          class="font-medium text-accent-600 hover:text-accent-700"
+          class="font-bold text-cyber-neon-cyan transition-colors duration-300 hover:text-cyber-neon-indigo"
         >
           Sign in
         </RouterLink>

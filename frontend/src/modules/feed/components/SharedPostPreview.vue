@@ -7,10 +7,17 @@ defineProps<{ post: Post }>()
 </script>
 
 <template>
-  <div class="rounded-md border border-zinc-200 p-3 dark:border-zinc-700">
-    <p class="text-sm font-medium text-slate-900 dark:text-zinc-100">{{ post.author.name }}</p>
-    <p class="text-xs text-slate-500 dark:text-zinc-400">{{ useRelativeTime(post.created_at) }}</p>
-    <p v-if="post.body" class="mt-2 whitespace-pre-wrap text-sm text-slate-700 dark:text-zinc-300">{{ post.body }}</p>
+  <div class="rounded-hud border border-cyber-border bg-cyber-surface/40 p-3 backdrop-blur-md">
+    <p class="text-xs font-bold tracking-wider text-cyber-text">// {{ post.author.name }}</p>
+    <p class="mt-0.5 font-mono text-[9px] uppercase tracking-widest text-cyber-muted">
+      {{ useRelativeTime(post.created_at) }}
+    </p>
+    <p
+      v-if="post.body"
+      class="mt-2 whitespace-pre-wrap border-l border-cyber-neon-indigo pl-2 font-mono text-xs leading-relaxed text-cyber-text/90"
+    >
+      {{ post.body }}
+    </p>
     <PostMedia v-if="post.media_type" :post="post" class="mt-2" />
   </div>
 </template>

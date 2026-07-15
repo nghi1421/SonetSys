@@ -6,14 +6,11 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './app/router'
 import { useAuthStore } from './modules/auth/store/authStore'
-import { useThemeStore } from './shared/store/themeStore'
 
 const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
-
-useThemeStore()
 
 async function bootstrap(): Promise<void> {
   const authStore = useAuthStore()

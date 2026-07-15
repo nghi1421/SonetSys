@@ -107,14 +107,14 @@ async function onSubmit(): Promise<void> {
 
 <template>
   <form
-    class="space-y-3 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900"
+    class="space-y-3 rounded-hud border border-cyber-border bg-cyber-glass p-4 backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/30"
     @submit.prevent="onSubmit"
   >
     <textarea
       v-model="body"
       rows="3"
       placeholder="Share something with your community…"
-      class="block w-full resize-none rounded-md border border-zinc-200 px-3 py-2 text-sm text-slate-900 transition-colors duration-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-accent-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+      class="block w-full resize-none rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-2 font-mono text-xs text-cyber-text backdrop-blur-md transition-all duration-300 placeholder:text-cyber-muted focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
     />
 
     <div v-if="mediaPreviewUrl" class="relative w-fit">
@@ -122,17 +122,17 @@ async function onSubmit(): Promise<void> {
         v-if="mediaType === 'image'"
         :src="mediaPreviewUrl"
         alt="Selected photo preview"
-        class="max-h-64 rounded-md border border-zinc-200 dark:border-zinc-700"
+        class="max-h-64 rounded-hud border border-cyber-border"
       />
       <video
         v-else-if="mediaType === 'video'"
         :src="mediaPreviewUrl"
         controls
-        class="max-h-64 rounded-md border border-zinc-200 dark:border-zinc-700"
+        class="max-h-64 rounded-hud border border-cyber-border"
       />
       <button
         type="button"
-        class="absolute -right-2 -top-2 rounded-full bg-zinc-900 p-1 text-white transition-colors duration-200 hover:bg-zinc-700"
+        class="absolute -right-2 -top-2 rounded-full border border-cyber-border bg-cyber-glass p-1 text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-pink/50 hover:text-cyber-neon-pink hover:shadow-pink-glow"
         aria-label="Remove media"
         @click="clearMedia"
       >
@@ -142,13 +142,13 @@ async function onSubmit(): Promise<void> {
 
     <div v-else-if="selectedStickerEmoji" class="relative w-fit">
       <div
-        class="flex h-24 w-24 items-center justify-center rounded-md border border-zinc-200 text-5xl dark:border-zinc-700"
+        class="flex h-24 w-24 items-center justify-center rounded-hud border border-cyber-border bg-cyber-surface/60 text-5xl backdrop-blur-md"
       >
         {{ selectedStickerEmoji }}
       </div>
       <button
         type="button"
-        class="absolute -right-2 -top-2 rounded-full bg-zinc-900 p-1 text-white transition-colors duration-200 hover:bg-zinc-700"
+        class="absolute -right-2 -top-2 rounded-full border border-cyber-border bg-cyber-glass p-1 text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-pink/50 hover:text-cyber-neon-pink hover:shadow-pink-glow"
         aria-label="Remove sticker"
         @click="clearMedia"
       >
@@ -156,7 +156,7 @@ async function onSubmit(): Promise<void> {
       </button>
     </div>
 
-    <p v-if="error" class="text-sm text-red-600 dark:text-red-400">{{ error }}</p>
+    <p v-if="error" class="font-mono text-xs text-cyber-neon-pink">{{ error }}</p>
 
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-1">
@@ -165,7 +165,7 @@ async function onSubmit(): Promise<void> {
 
         <button
           type="button"
-          class="rounded-md p-2 text-slate-500 transition-colors duration-200 hover:bg-zinc-100 hover:text-accent-600 dark:text-zinc-400 dark:hover:bg-zinc-800"
+          class="rounded-full p-2 text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
           aria-label="Add photo"
           @click="pickPhoto"
         >
@@ -173,7 +173,7 @@ async function onSubmit(): Promise<void> {
         </button>
         <button
           type="button"
-          class="rounded-md p-2 text-slate-500 transition-colors duration-200 hover:bg-zinc-100 hover:text-accent-600 dark:text-zinc-400 dark:hover:bg-zinc-800"
+          class="rounded-full p-2 text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
           aria-label="Add video"
           @click="pickVideo"
         >
@@ -183,7 +183,7 @@ async function onSubmit(): Promise<void> {
         <div class="relative">
           <button
             type="button"
-            class="rounded-md p-2 text-slate-500 transition-colors duration-200 hover:bg-zinc-100 hover:text-accent-600 dark:text-zinc-400 dark:hover:bg-zinc-800"
+            class="rounded-full p-2 text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
             aria-label="Add sticker"
             @click="toggleStickerPicker"
           >
@@ -194,14 +194,14 @@ async function onSubmit(): Promise<void> {
 
           <div
             v-if="showStickerPicker"
-            class="absolute left-0 z-10 mt-2 grid w-56 grid-cols-4 gap-1 rounded-lg border border-zinc-200 bg-white p-2 shadow-lg dark:border-zinc-800 dark:bg-zinc-900"
+            class="absolute left-0 z-10 mt-2 grid w-56 grid-cols-4 gap-1 rounded-hud border border-cyber-border bg-cyber-glass p-2 backdrop-blur-md"
             @click.stop
           >
             <button
               v-for="sticker in stickerStore.stickers"
               :key="sticker.key"
               type="button"
-              class="flex h-10 w-10 items-center justify-center rounded-md text-2xl transition-colors duration-200 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              class="flex h-10 w-10 items-center justify-center rounded-hud text-2xl transition-all duration-300 hover:bg-cyber-surface/60"
               @click="selectSticker(sticker.key)"
             >
               {{ sticker.emoji }}

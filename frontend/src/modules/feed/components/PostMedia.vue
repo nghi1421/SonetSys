@@ -23,17 +23,17 @@ onMounted(() => {
     v-if="post.media_type === 'image' && post.media_url"
     :src="post.media_url"
     alt="Post attachment"
-    class="max-h-96 w-full rounded-md border border-zinc-200 object-cover dark:border-zinc-700"
+    class="max-h-96 w-full rounded-hud border border-cyber-border object-cover"
   />
   <video
     v-else-if="post.media_type === 'video' && post.media_url"
     :src="post.media_url"
     controls
-    class="max-h-96 w-full rounded-md border border-zinc-200 dark:border-zinc-700"
+    class="max-h-96 w-full rounded-hud border border-cyber-border"
   />
   <div
     v-else-if="post.media_type === 'sticker'"
-    class="flex h-24 w-24 items-center justify-center rounded-md border border-zinc-200 text-5xl dark:border-zinc-700"
+    class="flex h-24 w-24 items-center justify-center rounded-hud border border-cyber-border bg-cyber-surface/60 text-5xl backdrop-blur-md"
   >
     {{ stickerEmoji ?? '❔' }}
   </div>
