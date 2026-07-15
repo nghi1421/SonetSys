@@ -37,6 +37,7 @@ final class GroupController extends Controller
     public function store(CreateGroupRequest $request): JsonResponse
     {
         $group = $this->groups->create($request->toDto());
+        $this->groups->attachViewerMembership($group, (int) $request->user()->id);
 
         return ApiResponse::success(GroupResource::make($group->load('owner')), status: 201);
     }

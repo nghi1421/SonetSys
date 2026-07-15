@@ -11,6 +11,7 @@ use App\Modules\Feed\Application\Services\PostService;
 use App\Modules\Feed\Http\Resources\PostResource;
 use App\Modules\Group\Application\Services\GroupService;
 use App\Modules\Group\Domain\Enums\GroupMemberStatus;
+use App\Modules\Group\Domain\Enums\GroupVisibility;
 use App\Modules\Group\Domain\Models\Group;
 use App\Modules\Group\Http\Requests\CreateGroupPostRequest;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -29,7 +30,12 @@ final class GroupPostController extends Controller
     {
         $user = $request->user();
         $this->ensureSameTenant($group, $user);
-        $this->ensureApprovedMember($group, $user);
+
+        // Public groups are readable by any tenant member — only posting
+        // requires membership. Private groups gate both.
+        if ($group->visibility !== GroupVisibility::Public) {
+            $this->ensureApprovedMember($group, $user);
+        }
 
         $limit = min((int) $request->query('limit', 20), 50);
 

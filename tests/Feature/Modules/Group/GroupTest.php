@@ -38,7 +38,8 @@ final class GroupTest extends TestCase
         $response->assertJsonPath('data.slug', 'book-club');
         $response->assertJsonPath('data.visibility', 'public');
         $response->assertJsonPath('data.members_count', 1);
-        $response->assertJsonPath('data.viewer_membership', null);
+        $response->assertJsonPath('data.viewer_membership.role', 'owner');
+        $response->assertJsonPath('data.viewer_membership.status', 'approved');
 
         $this->assertDatabaseHas('group_members', [
             'user_id' => $user->id,
@@ -207,6 +208,21 @@ final class GroupTest extends TestCase
 
         $this->assertDatabaseCount('posts', 1);
         $this->assertSame($group->id, Post::query()->firstOrFail()->group_id);
+    }
+
+    public function test_non_member_can_view_but_not_post_to_a_public_groups_feed(): void
+    {
+        $owner = User::factory()->create();
+        $group = $this->createGroup($owner, 'public');
+
+        Sanctum::actingAs($owner);
+        $this->postJson("/api/v1/groups/{$group->id}/posts", ['body' => 'Hello group'])->assertCreated();
+
+        $outsider = $this->sameTenantUser($owner);
+        Sanctum::actingAs($outsider);
+
+        $this->getJson("/api/v1/groups/{$group->id}/posts")->assertOk();
+        $this->postJson("/api/v1/groups/{$group->id}/posts", ['body' => 'Sneaky'])->assertForbidden();
     }
 
     public function test_non_member_cannot_view_or_post_to_a_private_groups_feed(): void
