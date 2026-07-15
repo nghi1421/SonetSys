@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { Inbox } from '@lucide/vue'
-import AppHeader from '@/shared/components/layout/AppHeader.vue'
+import AppShell from '@/shared/components/layout/AppShell.vue'
 import AppButton from '@/shared/components/ui/AppButton.vue'
 import PostCard from '../components/PostCard.vue'
 import PostComposer from '../components/PostComposer.vue'
@@ -15,10 +15,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen">
-    <AppHeader />
-
-    <main class="mx-auto max-w-2xl space-y-4 px-4 py-6">
+  <AppShell>
+    <div class="mx-auto max-w-2xl space-y-4">
       <PostComposer />
 
       <div v-if="feedStore.loading" class="space-y-4">
@@ -53,6 +51,6 @@ onMounted(() => {
           />
         </div>
       </template>
-    </main>
-  </div>
+    </div>
+  </AppShell>
 </template>
