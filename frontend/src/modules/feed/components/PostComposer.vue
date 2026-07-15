@@ -2,10 +2,11 @@
 import { computed, onBeforeUnmount, ref } from 'vue'
 import { Image, Smile, Video, X } from '@lucide/vue'
 import AppButton from '@/shared/components/ui/AppButton.vue'
-import { useFeedStore } from '../store/feedStore'
 import { useStickerStore } from '../store/stickerStore'
+import type { CreatePostPayload } from '../types'
 
-const feedStore = useFeedStore()
+const props = defineProps<{ onSubmit: (payload: CreatePostPayload) => Promise<void> }>()
+
 const stickerStore = useStickerStore()
 
 const body = ref('')
@@ -82,14 +83,14 @@ onBeforeUnmount(() => {
   if (mediaPreviewUrl.value) URL.revokeObjectURL(mediaPreviewUrl.value)
 })
 
-async function onSubmit(): Promise<void> {
+async function handleSubmit(): Promise<void> {
   if (!canSubmit.value) return
 
   loading.value = true
   error.value = null
 
   try {
-    await feedStore.createPost({
+    await props.onSubmit({
       body: body.value.trim(),
       media: mediaFile.value ?? undefined,
       media_type: mediaType.value ?? undefined,
@@ -108,7 +109,7 @@ async function onSubmit(): Promise<void> {
 <template>
   <form
     class="space-y-3 rounded-hud border border-cyber-border bg-cyber-glass p-4 backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/30"
-    @submit.prevent="onSubmit"
+    @submit.prevent="handleSubmit"
   >
     <textarea
       v-model="body"

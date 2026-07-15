@@ -40,6 +40,36 @@ export const useFeedStore = defineStore('feed', () => {
     }
   }
 
+  async function fetchGroupFeed(groupId: number): Promise<void> {
+    loading.value = true
+    try {
+      const response = await feedApi.fetchGroupFeed(groupId, null)
+      posts.value = response.data ?? []
+      nextCursor.value = (response.meta?.next_cursor as string | null) ?? null
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function fetchMoreGroupFeed(groupId: number): Promise<void> {
+    if (!nextCursor.value || loadingMore.value) return
+    loadingMore.value = true
+    try {
+      const response = await feedApi.fetchGroupFeed(groupId, nextCursor.value)
+      posts.value = [...posts.value, ...(response.data ?? [])]
+      nextCursor.value = (response.meta?.next_cursor as string | null) ?? null
+    } finally {
+      loadingMore.value = false
+    }
+  }
+
+  async function createGroupPost(groupId: number, payload: CreatePostPayload): Promise<void> {
+    const response = await feedApi.createGroupPost(groupId, payload)
+    if (response.data) {
+      posts.value = [response.data, ...posts.value]
+    }
+  }
+
   async function updatePost(postId: number, payload: UpdatePostPayload): Promise<void> {
     const response = await feedApi.updatePost(postId, payload)
     const post = posts.value.find((p) => p.id === postId)
@@ -104,6 +134,9 @@ export const useFeedStore = defineStore('feed', () => {
     fetchFeed,
     fetchMore,
     createPost,
+    fetchGroupFeed,
+    fetchMoreGroupFeed,
+    createGroupPost,
     updatePost,
     deletePost,
     toggleLike,

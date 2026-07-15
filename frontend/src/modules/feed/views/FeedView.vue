@@ -17,7 +17,7 @@ onMounted(() => {
 <template>
   <AppShell>
     <div class="mx-auto max-w-2xl space-y-4">
-      <PostComposer />
+      <PostComposer :on-submit="feedStore.createPost" />
 
       <div v-if="feedStore.loading" class="space-y-4">
         <div
