@@ -37,6 +37,18 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/groups',
+      name: 'groups-list',
+      component: () => import('@/modules/groups/views/GroupsListView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/groups/:slug',
+      name: 'group-detail',
+      component: () => import('@/modules/groups/views/GroupDetailView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/admin/menu',
       name: 'admin-menu',
       component: () => import('@/modules/menu/views/AdminMenuView.vue'),
