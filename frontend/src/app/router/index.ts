@@ -5,6 +5,7 @@ declare module 'vue-router' {
   interface RouteMeta {
     requiresAuth?: boolean
     guest?: boolean
+    requiresAdmin?: boolean
   }
 }
 
@@ -28,6 +29,18 @@ const router = createRouter({
       name: 'dashboard',
       component: () => import('@/modules/feed/views/FeedView.vue'),
       meta: { requiresAuth: true },
+    },
+    {
+      path: '/m/:slug',
+      name: 'menu-page',
+      component: () => import('@/modules/menu/views/MenuPageView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/admin/menu',
+      name: 'admin-menu',
+      component: () => import('@/modules/menu/views/AdminMenuView.vue'),
+      meta: { requiresAuth: true, requiresAdmin: true },
     },
   ],
 })

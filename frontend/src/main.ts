@@ -10,7 +10,6 @@ import { useAuthStore } from './modules/auth/store/authStore'
 const app = createApp(App)
 
 app.use(createPinia())
-app.use(router)
 
 async function bootstrap(): Promise<void> {
   const authStore = useAuthStore()
@@ -26,6 +25,10 @@ async function bootstrap(): Promise<void> {
     }
   }
 
+  // Installing the router (and thus its initial, guard-driven navigation)
+  // only after the user profile resolves avoids a race where a role-based
+  // guard (requiresAdmin) runs before authStore.user is populated.
+  app.use(router)
   app.mount('#app')
 }
 
