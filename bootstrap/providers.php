@@ -3,6 +3,7 @@
 use App\Core\Auth\CoreAuthServiceProvider;
 use App\Core\Tenancy\CoreTenancyServiceProvider;
 use App\Modules\Feed\FeedServiceProvider;
+use App\Modules\Group\GroupServiceProvider;
 use App\Modules\Menu\MenuServiceProvider;
 use App\Modules\Notification\NotificationServiceProvider;
 use App\Providers\AppServiceProvider;
@@ -12,6 +13,7 @@ return [
     CoreAuthServiceProvider::class,
     CoreTenancyServiceProvider::class,
     FeedServiceProvider::class,
+    GroupServiceProvider::class,
     MenuServiceProvider::class,
     NotificationServiceProvider::class,
 ];
