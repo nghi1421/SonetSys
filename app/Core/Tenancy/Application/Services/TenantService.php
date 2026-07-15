@@ -14,6 +14,7 @@ use App\Core\Auth\Domain\Models\User;
 use App\Core\Tenancy\Application\Contracts\TenantRepositoryInterface;
 use App\Core\Tenancy\Application\DTOs\CreateTenantData;
 use App\Core\Tenancy\Domain\Enums\TenantStatus;
+use App\Core\Tenancy\Domain\Events\TenantCreated;
 use App\Core\Tenancy\Domain\Models\Tenant;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -66,6 +67,8 @@ final class TenantService
                 'password' => Hash::make($data->adminPassword),
                 'status' => UserStatus::Active,
             ]);
+
+            TenantCreated::dispatch($tenant->id);
 
             return ['tenant' => $tenant, 'admin' => $admin];
         });
