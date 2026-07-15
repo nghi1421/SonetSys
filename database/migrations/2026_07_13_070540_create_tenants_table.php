@@ -19,7 +19,10 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        DB::statement('CREATE INDEX tenants_enabled_modules_gin ON tenants USING GIN (enabled_modules)');
+        // GIN indexes are Postgres-only — sqlite (used in tests) has no equivalent syntax.
+        if (DB::getDriverName() === 'pgsql') {
+            DB::statement('CREATE INDEX tenants_enabled_modules_gin ON tenants USING GIN (enabled_modules)');
+        }
     }
 
     public function down(): void
