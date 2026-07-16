@@ -54,6 +54,14 @@ export const useAuthStore = defineStore('auth', () => {
     return response
   }
 
+  async function forgotPassword(payload: { email: string }) {
+    return authApi.forgotPassword(payload)
+  }
+
+  async function resetPassword(payload: { token: string; email: string; password: string }) {
+    return authApi.resetPassword(payload)
+  }
+
   registerUnauthorizedHandler(clearSession)
 
   return {
@@ -64,6 +72,8 @@ export const useAuthStore = defineStore('auth', () => {
     register,
     logout,
     fetchCurrentUser,
+    forgotPassword,
+    resetPassword,
     setSession,
     clearSession,
   }

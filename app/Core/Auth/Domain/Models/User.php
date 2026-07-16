@@ -6,6 +6,7 @@ namespace App\Core\Auth\Domain\Models;
 
 use App\Core\Auth\Domain\Enums\RoleSlug;
 use App\Core\Auth\Domain\Enums\UserStatus;
+use App\Core\Auth\Domain\Notifications\ResetPasswordNotification;
 use App\Core\Tenancy\Domain\Models\Tenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -62,5 +63,21 @@ final class User extends Authenticatable
         $slug = $slug instanceof RoleSlug ? $slug->value : $slug;
 
         return $this->role?->slug === $slug;
+    }
+
+    /**
+     * Overrides Laravel's default (which points at a web route this SPA
+     * doesn't have) so the reset link lands on the frontend instead. Left
+     * untyped to stay LSP-compatible with the untyped parent trait method
+     * (Illuminate\Auth\Passwords\CanResetPassword).
+     *
+     * @param  string  $token
+     */
+    public function sendPasswordResetNotification(#[\SensitiveParameter] $token)
+    {
+        $url = rtrim((string) config('app.frontend_url'), '/').
+            '/reset-password?token='.$token.'&email='.urlencode($this->email);
+
+        $this->notify(new ResetPasswordNotification($url));
     }
 }

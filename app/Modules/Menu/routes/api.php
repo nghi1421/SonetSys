@@ -4,7 +4,7 @@ use App\Modules\Menu\Http\Controllers\MenuItemController;
 use App\Modules\Menu\Http\Controllers\StaticPageController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth:sanctum')->group(function (): void {
+Route::middleware(['auth:sanctum', 'tenant.active'])->group(function (): void {
     Route::get('menu', [MenuItemController::class, 'index']);
     Route::post('menu', [MenuItemController::class, 'store']);
     Route::post('menu/reorder', [MenuItemController::class, 'reorder']);

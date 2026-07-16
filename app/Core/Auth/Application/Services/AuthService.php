@@ -5,14 +5,17 @@ declare(strict_types=1);
 namespace App\Core\Auth\Application\Services;
 
 use App\Core\Auth\Application\Contracts\UserRepositoryInterface;
+use App\Core\Auth\Application\DTOs\ForgotPasswordData;
 use App\Core\Auth\Application\DTOs\LoginData;
 use App\Core\Auth\Application\DTOs\RegisterUserData;
+use App\Core\Auth\Application\DTOs\ResetPasswordData;
 use App\Core\Auth\Domain\Enums\RoleSlug;
 use App\Core\Auth\Domain\Enums\UserStatus;
 use App\Core\Auth\Domain\Models\Role;
 use App\Core\Auth\Domain\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 final class AuthService
@@ -78,5 +81,67 @@ final class AuthService
     public function logout(User $user): void
     {
         $user->currentAccessToken()->delete();
+    }
+
+    /**
+     * Laravel's stock Password broker resolves users by email alone, but
+     * emails here are only unique per tenant — resolving tenant-scoped via
+     * the same repository login() already uses, and storing the token in a
+     * dedicated user_id-keyed table (user_password_reset_tokens), avoids
+     * resetting the wrong tenant's account when an email is reused across
+     * tenants.
+     *
+     * Always succeeds from the caller's perspective regardless of whether
+     * the email is registered, and always pays the same hashing cost either
+     * way, so neither the response nor its timing can be used to enumerate
+     * valid accounts.
+     */
+    public function sendPasswordResetLink(ForgotPasswordData $data): void
+    {
+        $user = $this->users->findByEmailForTenant($data->email, $data->tenantId);
+
+        $token = Str::random(64);
+        $hashedToken = Hash::make($token);
+
+        if ($user === null) {
+            return;
+        }
+
+        DB::table('user_password_reset_tokens')->updateOrInsert(
+            ['user_id' => $user->id],
+            ['token' => $hashedToken, 'created_at' => now()],
+        );
+
+        $user->sendPasswordResetNotification($token);
+    }
+
+    public function resetPassword(ResetPasswordData $data): void
+    {
+        $user = $this->users->findByEmailForTenant($data->email, $data->tenantId);
+        $record = $user !== null
+            ? DB::table('user_password_reset_tokens')->where('user_id', $user->id)->first()
+            : null;
+
+        $expiryMinutes = (int) config('auth.passwords.users.expire');
+
+        $isValid = $user !== null
+            && $record !== null
+            && Hash::check($data->token, $record->token)
+            && abs(now()->diffInMinutes($record->created_at)) <= $expiryMinutes;
+
+        if (! $isValid) {
+            throw ValidationException::withMessages([
+                'email' => ['This reset link is invalid or has expired.'],
+            ]);
+        }
+
+        DB::transaction(function () use ($user, $data): void {
+            $user->forceFill(['password' => Hash::make($data->password)])->save();
+
+            // A leaked/stolen token shouldn't survive a password reset.
+            $user->tokens()->delete();
+
+            DB::table('user_password_reset_tokens')->where('user_id', $user->id)->delete();
+        });
     }
 }

@@ -6,6 +6,7 @@ namespace App\Core\Tenancy\Infrastructure\Repositories;
 
 use App\Core\Tenancy\Application\Contracts\TenantRepositoryInterface;
 use App\Core\Tenancy\Domain\Models\Tenant;
+use Illuminate\Support\Collection;
 
 final class EloquentTenantRepository implements TenantRepositoryInterface
 {
@@ -24,5 +25,10 @@ final class EloquentTenantRepository implements TenantRepositoryInterface
         $tenant->fill($attributes)->save();
 
         return $tenant;
+    }
+
+    public function listAll(): Collection
+    {
+        return Tenant::query()->orderByDesc('created_at')->get();
     }
 }

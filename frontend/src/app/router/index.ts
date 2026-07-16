@@ -37,6 +37,17 @@ const router = createRouter({
       meta: { guest: true },
     },
     {
+      path: '/forgot-password',
+      name: 'forgot-password',
+      component: () => import('@/modules/auth/views/ForgotPasswordView.vue'),
+      meta: { guest: true },
+    },
+    {
+      path: '/reset-password',
+      name: 'reset-password',
+      component: () => import('@/modules/auth/views/ResetPasswordView.vue'),
+    },
+    {
       path: '/',
       name: 'dashboard',
       component: () => import('@/modules/feed/views/FeedView.vue'),
@@ -89,6 +100,12 @@ const router = createRouter({
       name: 'my-license',
       component: () => import('@/modules/billing/views/SubscriptionView.vue'),
       meta: { requiresAuth: true, requiresAdmin: true },
+    },
+    {
+      path: '/admin/tenants',
+      name: 'admin-tenants',
+      component: () => import('@/modules/billing/views/ManageTenantsView.vue'),
+      meta: { requiresAuth: true, requiresSuperAdmin: true },
     },
   ],
 })

@@ -17,6 +17,7 @@ final class TenantSubscriptionResource extends JsonResource
             'starts_at' => $this->starts_at->toIso8601String(),
             'expires_at' => $this->expires_at?->toIso8601String(),
             'plan' => PlanResource::make($this->whenLoaded('plan')),
+            'tenant_status' => $this->whenLoaded('tenant', fn () => $this->tenant->status->value),
         ];
     }
 }
