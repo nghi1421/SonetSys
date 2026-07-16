@@ -8,6 +8,7 @@ use App\Modules\Feed\Application\Contracts\InteractionRepositoryInterface;
 use App\Modules\Feed\Application\Contracts\PostRepositoryInterface;
 use App\Modules\Feed\Application\DTOs\CreatePostData;
 use App\Modules\Feed\Application\DTOs\UpdatePostData;
+use App\Modules\Feed\Application\Support\FeedCache;
 use App\Modules\Feed\Domain\Enums\MediaType;
 use App\Modules\Feed\Domain\Events\PostShared;
 use App\Modules\Feed\Domain\Models\Post;
@@ -20,12 +21,14 @@ final class PostService
     public function __construct(
         private readonly PostRepositoryInterface $posts,
         private readonly InteractionRepositoryInterface $interactions,
+        private readonly FeedCache $cache,
     ) {}
 
     public function create(CreatePostData $data): Post
     {
         $sharedPostId = null;
         $originalAuthorId = null;
+        $original = null;
 
         if ($data->sharedPostId !== null) {
             $referenced = $this->posts->findById($data->sharedPostId);
@@ -74,21 +77,35 @@ final class PostService
             PostShared::dispatch($sharedPostId, $post->id, $data->authorId, $originalAuthorId, $data->tenantId);
         }
 
+        $this->forgetFeedCache($post);
+        if ($original !== null) {
+            $this->forgetFeedCache($original);
+        }
+
         return $post;
     }
 
     public function update(Post $post, UpdatePostData $data): Post
     {
-        return $this->posts->update($post, [
+        $post = $this->posts->update($post, [
             'body' => $data->body,
             'visibility' => $data->visibility,
         ]);
+
+        $this->forgetFeedCache($post);
+
+        return $post;
     }
 
     public function delete(Post $post): void
     {
         if ($post->shared_post_id !== null) {
             $this->posts->decrementSharesCount($post->shared_post_id);
+
+            $original = $this->posts->findById($post->shared_post_id);
+            if ($original !== null) {
+                $this->forgetFeedCache($original);
+            }
         }
 
         if (in_array($post->media_type, [MediaType::Image, MediaType::Video], true) && $post->media_path !== null) {
@@ -96,6 +113,18 @@ final class PostService
         }
 
         $this->posts->delete($post);
+        $this->forgetFeedCache($post);
+    }
+
+    private function forgetFeedCache(Post $post): void
+    {
+        if ($post->group_id !== null) {
+            $this->cache->forgetGroupFeed((int) $post->group_id);
+
+            return;
+        }
+
+        $this->cache->forgetTenantFeed($post->tenant_id);
     }
 
     /**
@@ -105,7 +134,12 @@ final class PostService
     {
         [$afterPublishedAt, $afterId] = $this->decodeCursor($cursor);
 
-        $posts = $this->posts->cursorPaginateForTenant($tenantId, $viewerId, $afterPublishedAt, $afterId, $limit);
+        $posts = $this->cache->rememberTenantFeed(
+            $tenantId,
+            $viewerId,
+            $cursor,
+            fn () => $this->posts->cursorPaginateForTenant($tenantId, $viewerId, $afterPublishedAt, $afterId, $limit),
+        );
         $this->markLikedByViewer($posts, $viewerId);
 
         $nextCursor = null;
@@ -124,7 +158,11 @@ final class PostService
     {
         [$afterPublishedAt, $afterId] = $this->decodeCursor($cursor);
 
-        $posts = $this->posts->cursorPaginateForGroup($groupId, $afterPublishedAt, $afterId, $limit);
+        $posts = $this->cache->rememberGroupFeed(
+            $groupId,
+            $cursor,
+            fn () => $this->posts->cursorPaginateForGroup($groupId, $afterPublishedAt, $afterId, $limit),
+        );
         $this->markLikedByViewer($posts, $viewerId);
 
         $nextCursor = null;
