@@ -7,6 +7,6 @@ namespace App\Modules\Feed\Domain\Enums;
 enum PostVisibility: string
 {
     case Public = 'public';
-    case TenantOnly = 'tenant_only';
+    case Members = 'members';
     case Private = 'private';
 }

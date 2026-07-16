@@ -25,8 +25,7 @@ final class EloquentPostRepository implements PostRepositoryInterface
         return Post::query()->find($id);
     }
 
-    public function cursorPaginateForTenant(
-        ?int $tenantId,
+    public function cursorPaginate(
         int $viewerId,
         ?Carbon $afterPublishedAt,
         ?int $afterId,
@@ -34,11 +33,6 @@ final class EloquentPostRepository implements PostRepositoryInterface
     ): Collection {
         return Post::query()
             ->whereNull('group_id')
-            ->when(
-                $tenantId === null,
-                fn ($query) => $query->whereNull('tenant_id'),
-                fn ($query) => $query->where('tenant_id', $tenantId),
-            )
             ->where(function ($query) use ($viewerId): void {
                 $query->where('visibility', '!=', PostVisibility::Private->value)
                     ->orWhere('author_id', $viewerId);

@@ -35,7 +35,6 @@ final class CreateGroupRequest extends FormRequest
             visibility: $this->has('visibility')
                 ? GroupVisibility::from((string) $this->validated('visibility'))
                 : GroupVisibility::Public,
-            tenantId: (int) $user->tenant_id,
             ownerId: (int) $user->id,
         );
     }

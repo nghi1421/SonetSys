@@ -10,6 +10,5 @@ final readonly class RegisterUserData
         public string $name,
         public string $email,
         public string $password,
-        public int $tenantId,
     ) {}
 }

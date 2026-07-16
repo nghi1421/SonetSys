@@ -22,17 +22,6 @@ final class RateLimitTest extends TestCase
             ->assertStatus(429);
     }
 
-    public function test_the_fourth_tenant_registration_attempt_within_a_minute_is_throttled(): void
-    {
-        for ($i = 1; $i <= 3; $i++) {
-            $this->postJson('/api/v1/tenant-registrations', [])
-                ->assertStatus(422);
-        }
-
-        $this->postJson('/api/v1/tenant-registrations', [])
-            ->assertStatus(429);
-    }
-
     public function test_the_fourth_forgot_password_attempt_within_a_minute_is_throttled(): void
     {
         for ($i = 1; $i <= 3; $i++) {

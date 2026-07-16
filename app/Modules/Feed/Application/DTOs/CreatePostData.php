@@ -13,7 +13,6 @@ final readonly class CreatePostData
     public function __construct(
         public string $body,
         public PostVisibility $visibility,
-        public int $tenantId,
         public int $authorId,
         public array $metadata = [],
         public ?int $sharedPostId = null,

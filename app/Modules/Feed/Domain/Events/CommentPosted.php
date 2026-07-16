@@ -16,6 +16,5 @@ final class CommentPosted
         public readonly int $authorId,
         public readonly ?int $parentCommentAuthorId,
         public readonly int $postAuthorId,
-        public readonly int $tenantId,
     ) {}
 }

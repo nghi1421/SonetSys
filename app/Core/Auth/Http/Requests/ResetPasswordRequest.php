@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Core\Auth\Http\Requests;
 
 use App\Core\Auth\Application\DTOs\ResetPasswordData;
-use App\Core\Tenancy\Application\TenantContext;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 
@@ -31,7 +30,6 @@ final class ResetPasswordRequest extends FormRequest
             email: (string) $this->validated('email'),
             token: (string) $this->validated('token'),
             password: (string) $this->validated('password'),
-            tenantId: app(TenantContext::class)->id(),
         );
     }
 }

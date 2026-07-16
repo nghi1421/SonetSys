@@ -5,7 +5,7 @@ use App\Modules\Group\Http\Controllers\GroupMembershipController;
 use App\Modules\Group\Http\Controllers\GroupPostController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth:sanctum', 'tenant.active'])->group(function (): void {
+Route::middleware('auth:sanctum')->group(function (): void {
     Route::get('groups', [GroupController::class, 'index']);
     Route::post('groups', [GroupController::class, 'store']);
     Route::get('groups/{group:slug}', [GroupController::class, 'show']);

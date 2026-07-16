@@ -20,18 +20,14 @@ final class EloquentGroupRepository implements GroupRepositoryInterface
         return Group::query()->find($id);
     }
 
-    public function findBySlugForTenant(int $tenantId, string $slug): ?Group
+    public function findBySlug(string $slug): ?Group
     {
-        return Group::query()
-            ->where('tenant_id', $tenantId)
-            ->where('slug', $slug)
-            ->first();
+        return Group::query()->where('slug', $slug)->first();
     }
 
-    public function listForTenant(int $tenantId): Collection
+    public function list(): Collection
     {
         return Group::query()
-            ->where('tenant_id', $tenantId)
             ->with('owner')
             ->orderByDesc('created_at')
             ->get();

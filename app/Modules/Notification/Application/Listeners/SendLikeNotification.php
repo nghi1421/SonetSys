@@ -18,7 +18,6 @@ final class SendLikeNotification
     public function handle(ContentLiked $event): void
     {
         $this->notifications->create(new CreateNotificationData(
-            tenantId: $event->tenantId,
             notifiableType: 'user',
             notifiableId: $event->contentAuthorId,
             actorId: $event->likedByUserId,

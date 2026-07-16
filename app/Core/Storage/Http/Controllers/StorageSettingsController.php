@@ -10,7 +10,6 @@ use App\Core\Storage\Http\Requests\UpdateStorageConfigRequest;
 use App\Core\Support\ApiResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 final class StorageSettingsController extends Controller
@@ -19,20 +18,19 @@ final class StorageSettingsController extends Controller
         private readonly StorageConfigService $config,
     ) {}
 
-    public function show(Request $request): JsonResponse
+    public function show(): JsonResponse
     {
         Gate::authorize(PermissionSlug::StorageManage->value);
 
-        return ApiResponse::success($this->config->currentFor((int) $request->user()->tenant_id));
+        return ApiResponse::success($this->config->current());
     }
 
     public function update(UpdateStorageConfigRequest $request): JsonResponse
     {
         Gate::authorize(PermissionSlug::StorageManage->value);
 
-        $tenantId = (int) $request->user()->tenant_id;
-        $this->config->update($tenantId, $request->toDto());
+        $this->config->update($request->toDto());
 
-        return ApiResponse::success($this->config->currentFor($tenantId));
+        return ApiResponse::success($this->config->current());
     }
 }

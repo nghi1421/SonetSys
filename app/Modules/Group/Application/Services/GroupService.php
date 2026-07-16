@@ -30,10 +30,9 @@ final class GroupService
     public function create(CreateGroupData $data): Group
     {
         $group = $this->groups->create([
-            'tenant_id' => $data->tenantId,
             'owner_id' => $data->ownerId,
             'name' => $data->name,
-            'slug' => $this->uniqueSlug($data->tenantId, $data->name),
+            'slug' => $this->uniqueSlug($data->name),
             'description' => $data->description,
             'visibility' => $data->visibility,
         ]);
@@ -47,7 +46,7 @@ final class GroupService
         ]);
 
         $this->groups->incrementMembersCount($group->id);
-        $this->cache->forgetList($data->tenantId);
+        $this->cache->forgetList();
 
         return $group->refresh();
     }
@@ -60,7 +59,7 @@ final class GroupService
             'visibility' => $data->visibility,
         ]);
 
-        $this->cache->forgetList($group->tenant_id);
+        $this->cache->forgetList();
 
         return $group;
     }
@@ -68,12 +67,12 @@ final class GroupService
     public function delete(Group $group): void
     {
         $this->groups->delete($group);
-        $this->cache->forgetList($group->tenant_id);
+        $this->cache->forgetList();
     }
 
-    public function findBySlugForTenant(int $tenantId, string $slug): ?Group
+    public function findBySlug(string $slug): ?Group
     {
-        return $this->groups->findBySlugForTenant($tenantId, $slug);
+        return $this->groups->findBySlug($slug);
     }
 
     public function findById(int $id): ?Group
@@ -84,9 +83,9 @@ final class GroupService
     /**
      * @return Collection<int, Group>
      */
-    public function listForTenant(int $tenantId): Collection
+    public function list(): Collection
     {
-        return $this->cache->rememberList($tenantId, fn () => $this->groups->listForTenant($tenantId));
+        return $this->cache->rememberList(fn () => $this->groups->list());
     }
 
     /**
@@ -151,7 +150,7 @@ final class GroupService
 
         if ($status === GroupMemberStatus::Approved) {
             $this->groups->incrementMembersCount($group->id);
-            $this->cache->forgetList($group->tenant_id);
+            $this->cache->forgetList();
         }
 
         return $member;
@@ -171,7 +170,7 @@ final class GroupService
         ]);
 
         $this->groups->incrementMembersCount($group->id);
-        $this->cache->forgetList($group->tenant_id);
+        $this->cache->forgetList();
 
         return $member;
     }
@@ -190,7 +189,7 @@ final class GroupService
 
         if ($wasApproved) {
             $this->groups->decrementMembersCount($group->id);
-            $this->cache->forgetList($group->tenant_id);
+            $this->cache->forgetList();
         }
     }
 
@@ -224,13 +223,13 @@ final class GroupService
         return $this->members->update($member, ['role' => GroupMemberRole::Member]);
     }
 
-    private function uniqueSlug(int $tenantId, string $name): string
+    private function uniqueSlug(string $name): string
     {
         $base = Str::slug($name);
         $slug = $base !== '' ? $base : 'group';
         $suffix = 1;
 
-        while ($this->groups->findBySlugForTenant($tenantId, $slug) !== null) {
+        while ($this->groups->findBySlug($slug) !== null) {
             $suffix++;
             $slug = $base.'-'.$suffix;
         }

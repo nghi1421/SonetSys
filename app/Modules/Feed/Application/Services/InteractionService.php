@@ -20,12 +20,12 @@ final class InteractionService
     /**
      * @return array{liked: bool, likes_count: int}
      */
-    public function toggleLike(string $morphAlias, int $interactableId, int $userId, int $tenantId): array
+    public function toggleLike(string $morphAlias, int $interactableId, int $userId): array
     {
         $modelClass = Relation::getMorphedModel($morphAlias)
             ?? throw new InvalidArgumentException("Unknown interactable type [{$morphAlias}].");
 
-        return DB::transaction(function () use ($morphAlias, $interactableId, $userId, $tenantId, $modelClass): array {
+        return DB::transaction(function () use ($morphAlias, $interactableId, $userId, $modelClass): array {
             $existing = $this->interactions->findExisting(
                 $userId,
                 $morphAlias,
@@ -39,7 +39,6 @@ final class InteractionService
                 $liked = false;
             } else {
                 $this->interactions->create([
-                    'tenant_id' => $tenantId,
                     'user_id' => $userId,
                     'interactable_type' => $morphAlias,
                     'interactable_id' => $interactableId,
@@ -50,7 +49,7 @@ final class InteractionService
 
                 $authorId = (int) $modelClass::whereKey($interactableId)->value('author_id');
                 if ($authorId !== $userId) {
-                    ContentLiked::dispatch($morphAlias, $interactableId, $userId, $authorId, $tenantId);
+                    ContentLiked::dispatch($morphAlias, $interactableId, $userId, $authorId);
                 }
             }
 

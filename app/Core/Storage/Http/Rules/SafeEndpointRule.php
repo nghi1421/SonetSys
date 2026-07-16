@@ -8,11 +8,11 @@ use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
 /**
- * Blocks a tenant-configured S3 endpoint from pointing at loopback/private/
+ * Blocks an admin-configured S3 endpoint from pointing at loopback/private/
  * link-local/reserved network ranges (including cloud metadata endpoints
  * like 169.254.169.254) — the server itself connects to this URL on every
  * upload/read/delete, so an unrestricted value is a straightforward SSRF
- * vector even though the actor is only "trusted" for their own tenant.
+ * vector even though the actor is only "trusted" to manage storage settings.
  *
  * This checks DNS resolution at save time; it does not re-resolve on every
  * request, so it does not defend against DNS rebinding (a host that

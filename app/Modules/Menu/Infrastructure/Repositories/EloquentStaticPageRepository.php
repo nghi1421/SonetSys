@@ -20,12 +20,9 @@ final class EloquentStaticPageRepository implements StaticPageRepositoryInterfac
         return StaticPage::query()->find($id);
     }
 
-    public function listForTenant(int $tenantId): Collection
+    public function list(): Collection
     {
-        return StaticPage::query()
-            ->where('tenant_id', $tenantId)
-            ->orderByDesc('created_at')
-            ->get();
+        return StaticPage::query()->orderByDesc('created_at')->get();
     }
 
     public function update(StaticPage $page, array $attributes): StaticPage

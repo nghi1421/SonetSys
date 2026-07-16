@@ -6,7 +6,6 @@ namespace App\Core\Storage\Domain\Models;
 
 use App\Core\Auth\Domain\Models\User;
 use App\Core\Storage\Domain\Enums\MediaType;
-use App\Core\Tenancy\Domain\Models\Tenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,7 +18,6 @@ final class Media extends Model
     protected $table = 'media';
 
     protected $fillable = [
-        'tenant_id',
         'uploaded_by',
         'mediable_type',
         'mediable_id',
@@ -37,11 +35,6 @@ final class Media extends Model
             'type' => MediaType::class,
             'size' => 'integer',
         ];
-    }
-
-    public function tenant(): BelongsTo
-    {
-        return $this->belongsTo(Tenant::class);
     }
 
     public function uploader(): BelongsTo

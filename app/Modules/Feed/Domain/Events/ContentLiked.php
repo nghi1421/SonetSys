@@ -15,6 +15,5 @@ final class ContentLiked
         public readonly int $interactableId,
         public readonly int $likedByUserId,
         public readonly int $contentAuthorId,
-        public readonly int $tenantId,
     ) {}
 }

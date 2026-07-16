@@ -9,6 +9,5 @@ final readonly class CreateMenuItemData
     public function __construct(
         public string $label,
         public ?int $staticPageId,
-        public int $tenantId,
     ) {}
 }

@@ -20,23 +20,22 @@ final class MenuService
     /**
      * @return Collection<int, MenuItem>
      */
-    public function listForTenant(int $tenantId): Collection
+    public function list(): Collection
     {
-        return $this->items->listForTenant($tenantId);
+        return $this->items->list();
     }
 
-    public function findBySlug(int $tenantId, string $slug): ?MenuItem
+    public function findBySlug(string $slug): ?MenuItem
     {
-        return $this->items->findBySlug($tenantId, $slug);
+        return $this->items->findBySlug($slug);
     }
 
     public function create(CreateMenuItemData $data): MenuItem
     {
         return $this->items->create([
-            'tenant_id' => $data->tenantId,
             'label' => $data->label,
-            'slug' => $this->uniqueSlug($data->tenantId, Str::slug($data->label)),
-            'position' => $this->items->countForTenant($data->tenantId),
+            'slug' => $this->uniqueSlug(Str::slug($data->label)),
+            'position' => $this->items->count(),
             'is_home' => false,
             'static_page_id' => $data->staticPageId,
         ]);
@@ -58,15 +57,14 @@ final class MenuService
     /**
      * @param  array<int, int>  $orderedIds
      */
-    public function reorder(int $tenantId, array $orderedIds): void
+    public function reorder(array $orderedIds): void
     {
-        $this->items->reorder($tenantId, $orderedIds);
+        $this->items->reorder($orderedIds);
     }
 
-    public function seedDefaults(int $tenantId): void
+    public function seedDefaults(): void
     {
         $this->items->create([
-            'tenant_id' => $tenantId,
             'label' => 'Home',
             'slug' => 'home',
             'position' => 0,
@@ -75,7 +73,6 @@ final class MenuService
         ]);
 
         $this->items->create([
-            'tenant_id' => $tenantId,
             'label' => 'Group',
             'slug' => 'group',
             'position' => 1,
@@ -84,7 +81,6 @@ final class MenuService
         ]);
 
         $this->items->create([
-            'tenant_id' => $tenantId,
             'label' => 'Advertise',
             'slug' => 'advertise',
             'position' => 2,
@@ -93,12 +89,12 @@ final class MenuService
         ]);
     }
 
-    private function uniqueSlug(int $tenantId, string $base): string
+    private function uniqueSlug(string $base): string
     {
         $slug = $base;
         $suffix = 2;
 
-        while ($this->items->findBySlug($tenantId, $slug) !== null) {
+        while ($this->items->findBySlug($slug) !== null) {
             $slug = "{$base}-{$suffix}";
             $suffix++;
         }

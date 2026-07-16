@@ -24,7 +24,6 @@ final class SendCommentNotification
         }
 
         $this->notifications->create(new CreateNotificationData(
-            tenantId: $event->tenantId,
             notifiableType: 'user',
             notifiableId: $recipientId,
             actorId: $event->authorId,

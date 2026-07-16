@@ -13,7 +13,7 @@ final class FeedCacheTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_a_newly_created_post_appears_in_the_tenant_feed_even_after_the_feed_was_cached(): void
+    public function test_a_newly_created_post_appears_in_the_site_feed_even_after_the_feed_was_cached(): void
     {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
@@ -26,7 +26,7 @@ final class FeedCacheTest extends TestCase
         $this->getJson('/api/v1/posts')->assertOk()->assertJsonCount(1, 'data');
     }
 
-    public function test_updating_a_post_is_reflected_in_the_tenant_feed_even_after_the_feed_was_cached(): void
+    public function test_updating_a_post_is_reflected_in_the_site_feed_even_after_the_feed_was_cached(): void
     {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
@@ -43,7 +43,7 @@ final class FeedCacheTest extends TestCase
         $this->getJson('/api/v1/posts')->assertJsonPath('data.0.body', 'Edited body');
     }
 
-    public function test_deleting_a_post_removes_it_from_the_tenant_feed_even_after_the_feed_was_cached(): void
+    public function test_deleting_a_post_removes_it_from_the_site_feed_even_after_the_feed_was_cached(): void
     {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
@@ -70,10 +70,7 @@ final class FeedCacheTest extends TestCase
         // Author's feed is cached and (correctly) includes their own private post.
         $this->getJson('/api/v1/posts')->assertOk()->assertJsonCount(1, 'data');
 
-        $bystander = User::factory()->create([
-            'tenant_id' => $author->tenant_id,
-            'role_id' => $author->role_id,
-        ]);
+        $bystander = User::factory()->create();
         Sanctum::actingAs($bystander);
 
         // A different viewer's cached feed key must not reuse the author's
@@ -98,7 +95,7 @@ final class FeedCacheTest extends TestCase
         $this->getJson("/api/v1/groups/{$groupId}/posts")->assertOk()->assertJsonCount(1, 'data');
     }
 
-    public function test_resharing_a_post_updates_its_shares_count_in_the_tenant_feed_even_after_it_was_cached(): void
+    public function test_resharing_a_post_updates_its_shares_count_in_the_site_feed_even_after_it_was_cached(): void
     {
         $user = User::factory()->create();
         Sanctum::actingAs($user);

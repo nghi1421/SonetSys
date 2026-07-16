@@ -29,26 +29,20 @@ final class AuthService
      */
     public function register(RegisterUserData $data): array
     {
-        return DB::transaction(function () use ($data): array {
-            $role = Role::query()->firstOrCreate(
-                ['tenant_id' => $data->tenantId, 'slug' => RoleSlug::Member->value],
-                ['name' => 'Member'],
-            );
+        $role = Role::query()->where('slug', RoleSlug::User->value)->firstOrFail();
 
-            $user = $this->users->create([
-                'tenant_id' => $data->tenantId,
-                'role_id' => $role->id,
-                'name' => $data->name,
-                'email' => $data->email,
-                'password' => Hash::make($data->password),
-                'status' => UserStatus::Active,
-            ]);
+        $user = $this->users->create([
+            'role_id' => $role->id,
+            'name' => $data->name,
+            'email' => $data->email,
+            'password' => Hash::make($data->password),
+            'status' => UserStatus::Active,
+        ]);
 
-            return [
-                'user' => $user,
-                'token' => $user->createToken('api')->plainTextToken,
-            ];
-        });
+        return [
+            'user' => $user,
+            'token' => $user->createToken('api')->plainTextToken,
+        ];
     }
 
     /**
@@ -56,7 +50,7 @@ final class AuthService
      */
     public function login(LoginData $data): array
     {
-        $user = $this->users->findByEmailForTenant($data->email, $data->tenantId);
+        $user = $this->users->findByEmail($data->email);
 
         if (! $user || ! Hash::check($data->password, $user->password)) {
             throw ValidationException::withMessages([
@@ -84,13 +78,6 @@ final class AuthService
     }
 
     /**
-     * Laravel's stock Password broker resolves users by email alone, but
-     * emails here are only unique per tenant — resolving tenant-scoped via
-     * the same repository login() already uses, and storing the token in a
-     * dedicated user_id-keyed table (user_password_reset_tokens), avoids
-     * resetting the wrong tenant's account when an email is reused across
-     * tenants.
-     *
      * Always succeeds from the caller's perspective regardless of whether
      * the email is registered, and always pays the same hashing cost either
      * way, so neither the response nor its timing can be used to enumerate
@@ -98,7 +85,7 @@ final class AuthService
      */
     public function sendPasswordResetLink(ForgotPasswordData $data): void
     {
-        $user = $this->users->findByEmailForTenant($data->email, $data->tenantId);
+        $user = $this->users->findByEmail($data->email);
 
         $token = Str::random(64);
         $hashedToken = Hash::make($token);
@@ -117,7 +104,7 @@ final class AuthService
 
     public function resetPassword(ResetPasswordData $data): void
     {
-        $user = $this->users->findByEmailForTenant($data->email, $data->tenantId);
+        $user = $this->users->findByEmail($data->email);
         $record = $user !== null
             ? DB::table('user_password_reset_tokens')->where('user_id', $user->id)->first()
             : null;

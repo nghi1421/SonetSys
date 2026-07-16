@@ -25,8 +25,8 @@ final class AppServiceProvider extends ServiceProvider
             fn (string $modelName): string => 'Database\\Factories\\'.class_basename($modelName).'Factory'
         );
 
-        // IP-only keying is a deliberate simplification — no per-account or
-        // per-tenant compounding at this scale. Known limitation: this repo
+        // IP-only keying is a deliberate simplification — no per-account
+        // compounding at this scale. Known limitation: this repo
         // has no reverse proxy/CDN in front of it today, so `$request->ip()`
         // is trustworthy as-is; if one is added later, `trustProxies()` must
         // be configured in bootstrap/app.php or every request collapses onto
@@ -38,11 +38,6 @@ final class AppServiceProvider extends ServiceProvider
         // attacker exhaust it and lock legitimate users out of login.
         RateLimiter::for(
             'password-reset',
-            fn (Request $request): Limit => Limit::perMinute(3)->by($request->ip()),
-        );
-
-        RateLimiter::for(
-            'tenant-registration',
             fn (Request $request): Limit => Limit::perMinute(3)->by($request->ip()),
         );
     }

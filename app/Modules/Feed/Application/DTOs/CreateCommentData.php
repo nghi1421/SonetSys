@@ -10,7 +10,6 @@ final readonly class CreateCommentData
         public string $body,
         public int $postId,
         public ?int $parentId,
-        public int $tenantId,
         public int $authorId,
     ) {}
 }

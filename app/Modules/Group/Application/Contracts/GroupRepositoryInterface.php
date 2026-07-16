@@ -13,12 +13,12 @@ interface GroupRepositoryInterface
 
     public function findById(int $id): ?Group;
 
-    public function findBySlugForTenant(int $tenantId, string $slug): ?Group;
+    public function findBySlug(string $slug): ?Group;
 
     /**
      * @return Collection<int, Group>
      */
-    public function listForTenant(int $tenantId): Collection;
+    public function list(): Collection;
 
     public function update(Group $group, array $attributes): Group;
 

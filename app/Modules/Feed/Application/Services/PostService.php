@@ -60,7 +60,7 @@ final class PostService
 
         if ($data->media !== null && $data->mediaType !== null) {
             $mediaType = $data->mediaType;
-            $stored = $this->storage->store($data->media, $data->tenantId, 'posts/'.$data->tenantId);
+            $stored = $this->storage->store($data->media, 'posts');
             $mediaPath = $stored['path'];
             $mediaDisk = $stored['disk'];
         } elseif ($data->stickerKey !== null) {
@@ -74,7 +74,6 @@ final class PostService
             }
 
             $post = $this->posts->create([
-                'tenant_id' => $data->tenantId,
                 'author_id' => $data->authorId,
                 'shared_post_id' => $sharedPostId,
                 'group_id' => $data->groupId,
@@ -90,7 +89,6 @@ final class PostService
             if ($stored !== null) {
                 $this->media->attach(
                     $stored,
-                    $data->tenantId,
                     $data->authorId,
                     $this->toCoreMediaType($mediaType),
                     $data->media,
@@ -102,7 +100,7 @@ final class PostService
         });
 
         if ($sharedPostId !== null && $originalAuthorId !== null && $originalAuthorId !== $data->authorId) {
-            PostShared::dispatch($sharedPostId, $post->id, $data->authorId, $originalAuthorId, $data->tenantId);
+            PostShared::dispatch($sharedPostId, $post->id, $data->authorId, $originalAuthorId);
         }
 
         $this->forgetFeedCache($post);
@@ -151,7 +149,7 @@ final class PostService
             if (! $hadMediaRow) {
                 // Post created before the media table existed — no row to
                 // clean up, but the file itself still needs deleting.
-                $this->storage->delete((int) $post->tenant_id, $post->media_disk ?? 'local', $post->media_path);
+                $this->storage->delete($post->media_disk ?? 'local', $post->media_path);
             }
         }
 
@@ -167,21 +165,20 @@ final class PostService
             return;
         }
 
-        $this->cache->forgetTenantFeed($post->tenant_id);
+        $this->cache->forgetFeed();
     }
 
     /**
      * @return array{items: Collection<int, Post>, next_cursor: ?string}
      */
-    public function feedForTenant(?int $tenantId, int $viewerId, ?string $cursor, int $limit = 20): array
+    public function feed(int $viewerId, ?string $cursor, int $limit = 20): array
     {
         [$afterPublishedAt, $afterId] = $this->decodeCursor($cursor);
 
-        $posts = $this->cache->rememberTenantFeed(
-            $tenantId,
+        $posts = $this->cache->rememberFeed(
             $viewerId,
             $cursor,
-            fn () => $this->posts->cursorPaginateForTenant($tenantId, $viewerId, $afterPublishedAt, $afterId, $limit),
+            fn () => $this->posts->cursorPaginate($viewerId, $afterPublishedAt, $afterId, $limit),
         );
         $this->markLikedByViewer($posts, $viewerId);
 

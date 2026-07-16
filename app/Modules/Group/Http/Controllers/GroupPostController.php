@@ -15,7 +15,6 @@ use App\Modules\Group\Domain\Enums\GroupVisibility;
 use App\Modules\Group\Domain\Models\Group;
 use App\Modules\Group\Http\Requests\CreateGroupPostRequest;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -29,9 +28,8 @@ final class GroupPostController extends Controller
     public function index(Request $request, Group $group): JsonResponse
     {
         $user = $request->user();
-        $this->ensureSameTenant($group, $user);
 
-        // Public groups are readable by any tenant member — only posting
+        // Public groups are readable by any registered user — only posting
         // requires membership. Private groups gate both.
         if ($group->visibility !== GroupVisibility::Public) {
             $this->ensureApprovedMember($group, $user);
@@ -49,19 +47,11 @@ final class GroupPostController extends Controller
     public function store(CreateGroupPostRequest $request, Group $group): JsonResponse
     {
         $user = $request->user();
-        $this->ensureSameTenant($group, $user);
         $this->ensureApprovedMember($group, $user);
 
         $post = $this->posts->create($request->toDto($group));
 
         return ApiResponse::success(PostResource::make($post->load('author')), status: 201);
-    }
-
-    private function ensureSameTenant(Group $group, User $user): void
-    {
-        if ($group->tenant_id !== $user->tenant_id) {
-            throw new ModelNotFoundException;
-        }
     }
 
     private function ensureApprovedMember(Group $group, User $user): void

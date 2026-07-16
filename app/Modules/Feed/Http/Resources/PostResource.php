@@ -15,7 +15,6 @@ final class PostResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'tenant_id' => $this->tenant_id,
             'group_id' => $this->group_id,
             'body' => $this->body,
             'visibility' => $this->visibility->value,
@@ -31,7 +30,7 @@ final class PostResource extends JsonResource
             'shared_post' => $this->shared_post_id !== null ? self::make($this->sharedPost) : null,
             'media_type' => $this->media_type?->value,
             'media_url' => in_array($this->media_type, [MediaType::Image, MediaType::Video], true) && $this->media_path !== null
-                ? app(StorageService::class)->url((int) $this->tenant_id, $this->media_disk ?? 'local', $this->media_path)
+                ? app(StorageService::class)->url($this->media_disk ?? 'local', $this->media_path)
                 : null,
             'sticker_key' => $this->media_type === MediaType::Sticker ? $this->media_path : null,
             'published_at' => $this->published_at?->toIso8601String(),

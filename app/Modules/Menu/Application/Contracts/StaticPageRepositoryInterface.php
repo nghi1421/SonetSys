@@ -16,7 +16,7 @@ interface StaticPageRepositoryInterface
     /**
      * @return Collection<int, StaticPage>
      */
-    public function listForTenant(int $tenantId): Collection;
+    public function list(): Collection;
 
     public function update(StaticPage $page, array $attributes): StaticPage;
 

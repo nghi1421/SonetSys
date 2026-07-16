@@ -5,42 +5,36 @@ declare(strict_types=1);
 namespace App\Core\Storage\Application\Services;
 
 use App\Core\Storage\Domain\Enums\StorageDriver;
-use App\Core\Tenancy\Application\Contracts\TenantRepositoryInterface;
-use App\Core\Tenancy\Domain\Models\Tenant;
+use App\Core\Storage\Domain\Models\StorageSetting;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * Resolves the Flysystem disk a tenant should use for new uploads and for
- * reading/deleting existing files, based on the tenant's `storage_config`.
+ * Resolves the Flysystem disk to use for new uploads and for reading/
+ * deleting existing files, based on the site's single storage_settings row.
  *
- * Known limitation: deletion/read always use the tenant's CURRENT config for
- * a given driver, not a historical snapshot from upload time. If a tenant
- * replaces their S3 credentials/bucket entirely (not just tweaking a field),
- * files uploaded under the old credentials become unreachable through the
- * app — migrating existing files to new credentials is a separate concern
- * this system doesn't attempt to solve.
+ * Known limitation: deletion/read always use the CURRENT config for a given
+ * driver, not a historical snapshot from upload time. If the S3 credentials/
+ * bucket are replaced entirely (not just tweaking a field), files uploaded
+ * under the old credentials become unreachable through the app — migrating
+ * existing files to new credentials is a separate concern this system
+ * doesn't attempt to solve.
  */
 final class StorageService
 {
     private const LOCAL_DISK = 'public';
 
-    /** @var array<int, ?Tenant> memoizes tenant lookups for this request/instance */
-    private array $tenantCache = [];
-
-    public function __construct(
-        private readonly TenantRepositoryInterface $tenants,
-    ) {}
+    private ?StorageSetting $settingCache = null;
 
     /**
      * @return array{disk: string, path: string}
      */
-    public function store(UploadedFile $file, int $tenantId, string $directory): array
+    public function store(UploadedFile $file, string $directory): array
     {
-        $driver = $this->driverFor($tenantId);
-        $path = $this->filesystemFor($tenantId, $driver)->putFile($directory, $file);
+        $driver = $this->driver();
+        $path = $this->filesystemFor($driver)->putFile($directory, $file);
 
         if ($path === false) {
             throw new \RuntimeException('Failed to store the uploaded file.');
@@ -49,56 +43,50 @@ final class StorageService
         return ['disk' => $driver, 'path' => $path];
     }
 
-    public function delete(int $tenantId, string $disk, string $path): void
+    public function delete(string $disk, string $path): void
     {
-        $this->filesystemFor($tenantId, $disk)->delete($path);
+        $this->filesystemFor($disk)->delete($path);
     }
 
-    public function url(int $tenantId, string $disk, string $path): string
+    public function url(string $disk, string $path): string
     {
-        return $this->filesystemFor($tenantId, $disk)->url($path);
+        return $this->filesystemFor($disk)->url($path);
     }
 
-    private function driverFor(int $tenantId): string
+    private function driver(): string
     {
-        $config = $this->tenantFor($tenantId)?->storage_config;
-
-        return $config['driver'] ?? StorageDriver::Local->value;
+        return $this->setting()->driver;
     }
 
-    private function tenantFor(int $tenantId): ?Tenant
+    private function setting(): StorageSetting
     {
-        if (! array_key_exists($tenantId, $this->tenantCache)) {
-            $this->tenantCache[$tenantId] = $this->tenants->findById($tenantId);
-        }
-
-        return $this->tenantCache[$tenantId];
+        return $this->settingCache ??= StorageSetting::query()->firstOrFail();
     }
 
-    private function filesystemFor(int $tenantId, string $disk): Filesystem
+    private function filesystemFor(string $disk): Filesystem
     {
         if ($disk !== StorageDriver::S3->value) {
             return Storage::disk(self::LOCAL_DISK);
         }
 
-        return Storage::build($this->s3ConfigFor($tenantId));
+        return Storage::build($this->s3Config());
     }
 
     /**
      * @return array<string, mixed>
      */
-    private function s3ConfigFor(int $tenantId): array
+    private function s3Config(): array
     {
-        $config = $this->tenantFor($tenantId)?->storage_config ?? [];
+        $setting = $this->setting();
 
         return [
             'driver' => 's3',
-            'key' => $config['key'] ?? null,
-            'secret' => isset($config['secret']) ? Crypt::decryptString($config['secret']) : null,
-            'region' => $config['region'] ?? null,
-            'bucket' => $config['bucket'] ?? null,
-            'endpoint' => $config['endpoint'] ?? null,
-            'use_path_style_endpoint' => $config['use_path_style_endpoint'] ?? false,
+            'key' => $setting->key,
+            'secret' => $setting->secret !== null ? Crypt::decryptString($setting->secret) : null,
+            'region' => $setting->region,
+            'bucket' => $setting->bucket,
+            'endpoint' => $setting->endpoint,
+            'use_path_style_endpoint' => $setting->use_path_style_endpoint,
             'throw' => true,
         ];
     }

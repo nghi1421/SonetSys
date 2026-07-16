@@ -14,15 +14,8 @@ final class EloquentUserRepository implements UserRepositoryInterface
         return User::query()->create($attributes);
     }
 
-    public function findByEmailForTenant(string $email, ?int $tenantId): ?User
+    public function findByEmail(string $email): ?User
     {
-        return User::query()
-            ->where('email', $email)
-            ->when(
-                $tenantId === null,
-                fn ($query) => $query->whereNull('tenant_id'),
-                fn ($query) => $query->where('tenant_id', $tenantId),
-            )
-            ->first();
+        return User::query()->where('email', $email)->first();
     }
 }

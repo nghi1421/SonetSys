@@ -13,7 +13,7 @@ final class GroupCacheTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_a_newly_created_group_appears_in_the_tenant_listing_even_after_it_was_cached(): void
+    public function test_a_newly_created_group_appears_in_the_listing_even_after_it_was_cached(): void
     {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
@@ -26,7 +26,7 @@ final class GroupCacheTest extends TestCase
         $this->getJson('/api/v1/groups')->assertOk()->assertJsonCount(1, 'data');
     }
 
-    public function test_members_count_in_the_tenant_listing_updates_even_after_it_was_cached(): void
+    public function test_members_count_in_the_listing_updates_even_after_it_was_cached(): void
     {
         $owner = User::factory()->create();
         Sanctum::actingAs($owner);
@@ -37,17 +37,14 @@ final class GroupCacheTest extends TestCase
         // Populate the cache with members_count = 1 (owner only).
         $this->getJson('/api/v1/groups')->assertJsonPath('data.0.members_count', 1);
 
-        $joiner = User::factory()->create([
-            'tenant_id' => $owner->tenant_id,
-            'role_id' => $owner->role_id,
-        ]);
+        $joiner = User::factory()->create();
         Sanctum::actingAs($joiner);
         $this->postJson("/api/v1/groups/{$groupId}/join")->assertOk();
 
         $this->getJson('/api/v1/groups')->assertJsonPath('data.0.members_count', 2);
     }
 
-    public function test_deleting_a_group_removes_it_from_the_tenant_listing_even_after_it_was_cached(): void
+    public function test_deleting_a_group_removes_it_from_the_listing_even_after_it_was_cached(): void
     {
         $owner = User::factory()->create();
         Sanctum::actingAs($owner);

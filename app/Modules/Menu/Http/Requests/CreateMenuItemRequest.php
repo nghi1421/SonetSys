@@ -24,12 +24,9 @@ final class CreateMenuItemRequest extends FormRequest
 
     public function toDto(): CreateMenuItemData
     {
-        $user = $this->user();
-
         return new CreateMenuItemData(
             label: (string) $this->validated('label'),
             staticPageId: $this->input('static_page_id') !== null ? (int) $this->input('static_page_id') : null,
-            tenantId: (int) $user->tenant_id,
         );
     }
 }

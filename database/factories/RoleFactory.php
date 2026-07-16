@@ -17,37 +17,39 @@ final class RoleFactory extends Factory
     public function definition(): array
     {
         return [
-            'tenant_id' => TenantFactory::new(),
-            'name' => 'Member',
-            'slug' => RoleSlug::Member->value,
+            'name' => 'User',
+            'slug' => RoleSlug::User->value,
             'is_system' => false,
         ];
     }
 
-    public function tenantAdmin(): static
+    public function moderator(): static
     {
         return $this->state(fn (array $attributes): array => [
-            'name' => 'Tenant Admin',
-            'slug' => RoleSlug::TenantAdmin->value,
-            'is_system' => false,
+            'name' => 'Moderator',
+            'slug' => RoleSlug::Moderator->value,
+            'is_system' => true,
         ])->afterCreating(function (Role $role): void {
             $role->permissions()->sync(
                 Permission::query()
-                    ->whereIn('slug', array_map(fn (PermissionSlug $p) => $p->value, PermissionSlug::tenantAdminDefaults()))
+                    ->whereIn('slug', array_map(fn (PermissionSlug $p) => $p->value, PermissionSlug::moderatorDefaults()))
                     ->pluck('id'),
             );
         });
     }
 
-    public function superAdmin(): static
+    public function admin(): static
     {
         return $this->state(fn (array $attributes): array => [
-            'tenant_id' => null,
-            'name' => 'Super Admin',
-            'slug' => RoleSlug::SuperAdmin->value,
+            'name' => 'Admin',
+            'slug' => RoleSlug::Admin->value,
             'is_system' => true,
         ])->afterCreating(function (Role $role): void {
-            $role->permissions()->sync(Permission::query()->pluck('id'));
+            $role->permissions()->sync(
+                Permission::query()
+                    ->whereIn('slug', array_map(fn (PermissionSlug $p) => $p->value, PermissionSlug::adminDefaults()))
+                    ->pluck('id'),
+            );
         });
     }
 }

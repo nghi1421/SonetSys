@@ -20,15 +20,14 @@ final class MediaService
 
     public function store(
         UploadedFile $file,
-        int $tenantId,
         int $uploadedBy,
         MediaType $type,
         string $directory,
         ?Model $mediable = null,
     ): Media {
-        $stored = $this->storage->store($file, $tenantId, $directory);
+        $stored = $this->storage->store($file, $directory);
 
-        return $this->attach($stored, $tenantId, $uploadedBy, $type, $file, $mediable);
+        return $this->attach($stored, $uploadedBy, $type, $file, $mediable);
     }
 
     /**
@@ -40,14 +39,12 @@ final class MediaService
      */
     public function attach(
         array $stored,
-        int $tenantId,
         int $uploadedBy,
         MediaType $type,
         UploadedFile $file,
         ?Model $mediable = null,
     ): Media {
         return $this->media->create([
-            'tenant_id' => $tenantId,
             'uploaded_by' => $uploadedBy,
             'mediable_type' => $mediable?->getMorphClass(),
             'mediable_id' => $mediable?->getKey(),
@@ -62,7 +59,7 @@ final class MediaService
 
     public function delete(Media $media): void
     {
-        $this->storage->delete((int) $media->tenant_id, $media->disk, $media->path);
+        $this->storage->delete($media->disk, $media->path);
         $this->media->delete($media);
     }
 
@@ -84,7 +81,7 @@ final class MediaService
 
     public function url(Media $media): string
     {
-        return $this->storage->url((int) $media->tenant_id, $media->disk, $media->path);
+        return $this->storage->url($media->disk, $media->path);
     }
 
     public function findById(int $id): ?Media
@@ -92,8 +89,8 @@ final class MediaService
         return $this->media->findById($id);
     }
 
-    public function listForTenant(int $tenantId, ?string $type, int $perPage, int $page): LengthAwarePaginator
+    public function list(?string $type, int $perPage, int $page): LengthAwarePaginator
     {
-        return $this->media->paginateForTenant($tenantId, $type, $perPage, $page);
+        return $this->media->paginate($type, $perPage, $page);
     }
 }

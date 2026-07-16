@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Modules\Notification\Domain\Models;
 
 use App\Core\Auth\Domain\Models\User;
-use App\Core\Tenancy\Domain\Models\Tenant;
 use App\Modules\Notification\Domain\Enums\NotificationType;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
@@ -20,7 +19,6 @@ final class Notification extends Model
     public const UPDATED_AT = null;
 
     protected $fillable = [
-        'tenant_id',
         'notifiable_type',
         'notifiable_id',
         'actor_id',
@@ -43,11 +41,6 @@ final class Notification extends Model
         // Time-ordered UUID keeps B-tree index locality on this insert-heavy
         // table (see docs/ARCHITECTURE.md §2.3) — a random UUIDv4 would not.
         return (string) Str::orderedUuid();
-    }
-
-    public function tenant(): BelongsTo
-    {
-        return $this->belongsTo(Tenant::class);
     }
 
     public function notifiable(): MorphTo
