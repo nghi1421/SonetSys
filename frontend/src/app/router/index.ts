@@ -90,6 +90,12 @@ const router = createRouter({
       component: () => import('@/modules/billing/views/SubscriptionView.vue'),
       meta: { requiresAuth: true, requiresAdmin: true },
     },
+    {
+      path: '/admin/tenants',
+      name: 'admin-tenants',
+      component: () => import('@/modules/billing/views/ManageTenantsView.vue'),
+      meta: { requiresAuth: true, requiresSuperAdmin: true },
+    },
   ],
 })
 

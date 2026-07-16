@@ -34,12 +34,32 @@ export interface UpdatePlanPayload {
 
 export type SubscriptionStatus = 'trialing' | 'active' | 'expired' | 'canceled'
 
+export type TenantStatus = 'trial' | 'active' | 'suspended'
+
 export interface TenantSubscription {
   id: number
   status: SubscriptionStatus
   starts_at: string
   expires_at: string | null
   plan: Plan
+  tenant_status: TenantStatus
+}
+
+export interface UpdateSubscriptionPayload {
+  plan_id: number
+}
+
+export interface AdminTenant {
+  tenant: {
+    id: number
+    name: string
+    slug: string
+    status: TenantStatus
+    enabled_modules: string[]
+    settings: Record<string, unknown>
+    created_at: string
+  }
+  subscription: TenantSubscription | null
 }
 
 export interface RegisterTenantPayload {

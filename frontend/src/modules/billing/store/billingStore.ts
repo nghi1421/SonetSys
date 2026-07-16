@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { billingApi } from '../api/billingApi'
 import type {
+  AdminTenant,
   CreatePlanPayload,
   Plan,
   RegisterTenantPayload,
@@ -20,6 +21,10 @@ export const useBillingStore = defineStore('billing', () => {
   const loadingSubscription = ref(false)
 
   const registering = ref(false)
+  const changingPlan = ref(false)
+
+  const tenants = ref<AdminTenant[]>([])
+  const loadingTenants = ref(false)
 
   async function fetchPublicPlans(): Promise<void> {
     loadingPublicPlans.value = true
@@ -79,6 +84,44 @@ export const useBillingStore = defineStore('billing', () => {
     }
   }
 
+  async function changePlan(planId: number): Promise<void> {
+    changingPlan.value = true
+    try {
+      const response = await billingApi.updateSubscription({ plan_id: planId })
+      subscription.value = response.data
+    } finally {
+      changingPlan.value = false
+    }
+  }
+
+  async function fetchTenants(): Promise<void> {
+    loadingTenants.value = true
+    try {
+      const response = await billingApi.listTenants()
+      tenants.value = response.data ?? []
+    } finally {
+      loadingTenants.value = false
+    }
+  }
+
+  async function suspendTenant(tenantId: number): Promise<void> {
+    const response = await billingApi.suspendTenant(tenantId)
+    if (response.data) {
+      tenants.value = tenants.value.map((entry) =>
+        entry.tenant.id === tenantId ? { ...entry, tenant: response.data! } : entry,
+      )
+    }
+  }
+
+  async function reactivateTenant(tenantId: number): Promise<void> {
+    const response = await billingApi.reactivateTenant(tenantId)
+    if (response.data) {
+      tenants.value = tenants.value.map((entry) =>
+        entry.tenant.id === tenantId ? { ...entry, tenant: response.data! } : entry,
+      )
+    }
+  }
+
   return {
     publicPlans,
     loadingPublicPlans,
@@ -87,6 +130,9 @@ export const useBillingStore = defineStore('billing', () => {
     subscription,
     loadingSubscription,
     registering,
+    changingPlan,
+    tenants,
+    loadingTenants,
     fetchPublicPlans,
     fetchAllPlans,
     createPlan,
@@ -94,5 +140,9 @@ export const useBillingStore = defineStore('billing', () => {
     deletePlan,
     registerTenant,
     fetchSubscription,
+    changePlan,
+    fetchTenants,
+    suspendTenant,
+    reactivateTenant,
   }
 })

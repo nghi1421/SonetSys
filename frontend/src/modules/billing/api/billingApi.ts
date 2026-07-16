@@ -1,12 +1,14 @@
 import { http } from '@/shared/api/http'
 import type { ApiResponse } from '@/shared/api/types'
 import type {
+  AdminTenant,
   CreatePlanPayload,
   Plan,
   RegisterTenantPayload,
   RegisterTenantResult,
   TenantSubscription,
   UpdatePlanPayload,
+  UpdateSubscriptionPayload,
 } from '../types'
 
 export const billingApi = {
@@ -45,6 +47,30 @@ export const billingApi = {
 
   async currentSubscription() {
     const { data } = await http.get<ApiResponse<TenantSubscription | null>>('/subscription')
+    return data
+  },
+
+  async updateSubscription(payload: UpdateSubscriptionPayload) {
+    const { data } = await http.put<ApiResponse<TenantSubscription>>('/subscription', payload)
+    return data
+  },
+
+  async listTenants() {
+    const { data } = await http.get<ApiResponse<AdminTenant[]>>('/admin/tenants')
+    return data
+  },
+
+  async suspendTenant(tenantId: number) {
+    const { data } = await http.post<ApiResponse<AdminTenant['tenant']>>(
+      `/admin/tenants/${tenantId}/suspend`,
+    )
+    return data
+  },
+
+  async reactivateTenant(tenantId: number) {
+    const { data } = await http.post<ApiResponse<AdminTenant['tenant']>>(
+      `/admin/tenants/${tenantId}/reactivate`,
+    )
     return data
   },
 }

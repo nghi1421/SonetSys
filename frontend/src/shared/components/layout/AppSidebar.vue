@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
-import { Cloud, CreditCard, FileText, Home, Image, Megaphone, Settings, Tag, Users } from '@lucide/vue'
+import { Building2, Cloud, CreditCard, FileText, Home, Image, Megaphone, Settings, Tag, Users } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import { useMenuStore } from '@/modules/menu/store/menuStore'
 import type { MenuItem } from '@/modules/menu/types'
@@ -98,6 +98,17 @@ function targetFor(item: MenuItem) {
     >
       <Tag class="h-4 w-4 shrink-0" />
       <span class="hidden sm:inline">Manage Pricing</span>
+    </RouterLink>
+
+    <RouterLink
+      v-if="isSuperAdmin"
+      :to="{ name: 'admin-tenants' }"
+      title="Manage Tenants"
+      class="mt-1 flex items-center justify-center gap-2.5 px-2 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-indigo sm:justify-start sm:px-3"
+      active-class="text-cyber-neon-indigo"
+    >
+      <Building2 class="h-4 w-4 shrink-0" />
+      <span class="hidden sm:inline">Manage Tenants</span>
     </RouterLink>
   </aside>
 </template>
