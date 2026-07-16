@@ -14,6 +14,6 @@ Route::prefix('auth')->group(function (): void {
     });
 });
 
-Route::middleware('auth:sanctum')->group(function (): void {
+Route::middleware(['auth:sanctum', 'tenant.active'])->group(function (): void {
     Route::get('users', [UserController::class, 'index']);
 });

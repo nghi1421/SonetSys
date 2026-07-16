@@ -4,7 +4,7 @@ use App\Core\Storage\Http\Controllers\MediaController;
 use App\Core\Storage\Http\Controllers\StorageSettingsController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth:sanctum')->group(function (): void {
+Route::middleware(['auth:sanctum', 'tenant.active'])->group(function (): void {
     Route::get('storage/settings', [StorageSettingsController::class, 'show']);
     Route::put('storage/settings', [StorageSettingsController::class, 'update']);
 

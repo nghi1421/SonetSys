@@ -45,6 +45,11 @@ enum PermissionSlug: string
     // their own tenant's current subscription.
     case PlansManage = 'plans.manage';
 
+    // Changing which plan a tenant subscribes to. In tenantAdminDefaults()
+    // below (unlike PlansManage) so a tenant's own admin can self-serve a
+    // plan change — a regular member cannot.
+    case SubscriptionManage = 'subscription.manage';
+
     public function group(): string
     {
         return match ($this) {
@@ -57,6 +62,7 @@ enum PermissionSlug: string
             self::GroupsManageAny => 'groups',
             self::StorageManage => 'storage',
             self::PlansManage => 'plans',
+            self::SubscriptionManage => 'subscription',
         };
     }
 
@@ -77,6 +83,7 @@ enum PermissionSlug: string
             self::MenuManage,
             self::GroupsManageAny,
             self::StorageManage,
+            self::SubscriptionManage,
         ];
     }
 }
