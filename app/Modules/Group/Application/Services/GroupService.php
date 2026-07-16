@@ -8,6 +8,7 @@ use App\Modules\Group\Application\Contracts\GroupMemberRepositoryInterface;
 use App\Modules\Group\Application\Contracts\GroupRepositoryInterface;
 use App\Modules\Group\Application\DTOs\CreateGroupData;
 use App\Modules\Group\Application\DTOs\UpdateGroupData;
+use App\Modules\Group\Application\Support\GroupCache;
 use App\Modules\Group\Domain\Enums\GroupMemberRole;
 use App\Modules\Group\Domain\Enums\GroupMemberStatus;
 use App\Modules\Group\Domain\Enums\GroupVisibility;
@@ -23,6 +24,7 @@ final class GroupService
     public function __construct(
         private readonly GroupRepositoryInterface $groups,
         private readonly GroupMemberRepositoryInterface $members,
+        private readonly GroupCache $cache,
     ) {}
 
     public function create(CreateGroupData $data): Group
@@ -45,22 +47,28 @@ final class GroupService
         ]);
 
         $this->groups->incrementMembersCount($group->id);
+        $this->cache->forgetList($data->tenantId);
 
         return $group->refresh();
     }
 
     public function update(Group $group, UpdateGroupData $data): Group
     {
-        return $this->groups->update($group, [
+        $group = $this->groups->update($group, [
             'name' => $data->name,
             'description' => $data->description,
             'visibility' => $data->visibility,
         ]);
+
+        $this->cache->forgetList($group->tenant_id);
+
+        return $group;
     }
 
     public function delete(Group $group): void
     {
         $this->groups->delete($group);
+        $this->cache->forgetList($group->tenant_id);
     }
 
     public function findBySlugForTenant(int $tenantId, string $slug): ?Group
@@ -78,7 +86,7 @@ final class GroupService
      */
     public function listForTenant(int $tenantId): Collection
     {
-        return $this->groups->listForTenant($tenantId);
+        return $this->cache->rememberList($tenantId, fn () => $this->groups->listForTenant($tenantId));
     }
 
     /**
@@ -143,6 +151,7 @@ final class GroupService
 
         if ($status === GroupMemberStatus::Approved) {
             $this->groups->incrementMembersCount($group->id);
+            $this->cache->forgetList($group->tenant_id);
         }
 
         return $member;
@@ -162,6 +171,7 @@ final class GroupService
         ]);
 
         $this->groups->incrementMembersCount($group->id);
+        $this->cache->forgetList($group->tenant_id);
 
         return $member;
     }
@@ -180,6 +190,7 @@ final class GroupService
 
         if ($wasApproved) {
             $this->groups->decrementMembersCount($group->id);
+            $this->cache->forgetList($group->tenant_id);
         }
     }
 

@@ -1,0 +1,83 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\Feed\Application\Support;
+
+use Closure;
+use Illuminate\Support\Facades\Cache;
+
+/**
+ * Caches the expensive part of feed listing (which posts, in order) behind
+ * Redis tags so a mutation can invalidate exactly the affected feed without
+ * scanning keys. Per-viewer overlays (liked_by_me) are applied by the caller
+ * after this returns, never cached here — see PostService::feedForTenant().
+ *
+ * Known tradeoff: remember()/forget() form a plain cache-aside pattern with
+ * no lock. A request that starts a slow read right before a concurrent
+ * mutation calls forget() can still write its (now-stale) result back after
+ * the flush, reviving stale data until the next mutation or TTL expiry.
+ * Accepted for this app's traffic level; add Cache::lock() around the
+ * remember() calls if that race becomes a real problem.
+ */
+final class FeedCache
+{
+    private const TTL_SECONDS = 300;
+
+    /**
+     * Tenant feed excludes group posts but includes each viewer's own
+     * Private-visibility posts, so the key must be per-viewer to avoid
+     * leaking one user's private posts into another user's cached page.
+     */
+    public function rememberTenantFeed(?int $tenantId, int $viewerId, ?string $cursor, Closure $callback): mixed
+    {
+        return Cache::tags([$this->tenantTag($tenantId)])->remember(
+            $this->tenantKey($tenantId, $viewerId, $cursor),
+            self::TTL_SECONDS,
+            $callback,
+        );
+    }
+
+    /**
+     * Group feed has no per-viewer filtering in the query itself (membership
+     * is already gated at the controller), so it can be shared across viewers.
+     */
+    public function rememberGroupFeed(int $groupId, ?string $cursor, Closure $callback): mixed
+    {
+        return Cache::tags([$this->groupTag($groupId)])->remember(
+            $this->groupKey($groupId, $cursor),
+            self::TTL_SECONDS,
+            $callback,
+        );
+    }
+
+    public function forgetTenantFeed(?int $tenantId): void
+    {
+        Cache::tags([$this->tenantTag($tenantId)])->flush();
+    }
+
+    public function forgetGroupFeed(int $groupId): void
+    {
+        Cache::tags([$this->groupTag($groupId)])->flush();
+    }
+
+    private function tenantTag(?int $tenantId): string
+    {
+        return 'feed:tenant:'.($tenantId ?? 'none');
+    }
+
+    private function groupTag(int $groupId): string
+    {
+        return 'feed:group:'.$groupId;
+    }
+
+    private function tenantKey(?int $tenantId, int $viewerId, ?string $cursor): string
+    {
+        return $this->tenantTag($tenantId).':viewer:'.$viewerId.':cursor:'.($cursor ?? 'root');
+    }
+
+    private function groupKey(int $groupId, ?string $cursor): string
+    {
+        return $this->groupTag($groupId).':cursor:'.($cursor ?? 'root');
+    }
+}
