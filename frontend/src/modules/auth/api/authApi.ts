@@ -22,4 +22,14 @@ export const authApi = {
     const { data } = await http.get<ApiResponse<User>>('/auth/me')
     return data
   },
+
+  async forgotPassword(payload: { email: string }) {
+    const { data } = await http.post<ApiResponse<null>>('/auth/forgot-password', payload)
+    return data
+  },
+
+  async resetPassword(payload: { token: string; email: string; password: string }) {
+    const { data } = await http.post<ApiResponse<null>>('/auth/reset-password', payload)
+    return data
+  },
 }

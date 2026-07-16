@@ -34,6 +34,22 @@ enum PermissionSlug: string
     // the Feed-owned ones above.
     case GroupsManageAny = 'groups.manage.any';
 
+    // Storage is a Core module, so this could live in its own enum without
+    // the Core -> Module dependency problem the cases above work around —
+    // kept here anyway for a single source of truth alongside the others.
+    case StorageManage = 'storage.manage';
+
+    // Platform-wide pricing, not per-tenant — deliberately excluded from
+    // tenantAdminDefaults() below. Only a Super Admin (who is synced every
+    // permission) can create/edit plans; a tenant admin only ever reads
+    // their own tenant's current subscription.
+    case PlansManage = 'plans.manage';
+
+    // Changing which plan a tenant subscribes to. In tenantAdminDefaults()
+    // below (unlike PlansManage) so a tenant's own admin can self-serve a
+    // plan change — a regular member cannot.
+    case SubscriptionManage = 'subscription.manage';
+
     public function group(): string
     {
         return match ($this) {
@@ -44,6 +60,9 @@ enum PermissionSlug: string
             self::CommentsDeleteAny => 'comments',
             self::MenuManage => 'menu',
             self::GroupsManageAny => 'groups',
+            self::StorageManage => 'storage',
+            self::PlansManage => 'plans',
+            self::SubscriptionManage => 'subscription',
         };
     }
 
@@ -63,6 +82,8 @@ enum PermissionSlug: string
             self::CommentsDeleteAny,
             self::MenuManage,
             self::GroupsManageAny,
+            self::StorageManage,
+            self::SubscriptionManage,
         ];
     }
 }

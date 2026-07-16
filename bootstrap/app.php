@@ -1,6 +1,7 @@
 <?php
 
 use App\Core\Support\ApiResponse;
+use App\Http\Middleware\EnsureTenantActive;
 use App\Http\Middleware\ResolveTenant;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -23,6 +24,10 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->api(append: [
             ResolveTenant::class,
+        ]);
+
+        $middleware->alias([
+            'tenant.active' => EnsureTenantActive::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

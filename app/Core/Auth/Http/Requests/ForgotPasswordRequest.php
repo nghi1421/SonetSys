@@ -1,0 +1,32 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Core\Auth\Http\Requests;
+
+use App\Core\Auth\Application\DTOs\ForgotPasswordData;
+use App\Core\Tenancy\Application\TenantContext;
+use Illuminate\Foundation\Http\FormRequest;
+
+final class ForgotPasswordRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return [
+            'email' => ['required', 'string', 'email'],
+        ];
+    }
+
+    public function toDto(): ForgotPasswordData
+    {
+        return new ForgotPasswordData(
+            email: (string) $this->validated('email'),
+            tenantId: app(TenantContext::class)->id(),
+        );
+    }
+}

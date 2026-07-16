@@ -50,7 +50,10 @@ return [
     |
     */
 
-    'expiration' => null,
+    // 14 days. No refresh-token flow exists — the frontend's 401 interceptor
+    // already clears session state on an expired token, so this just bounds
+    // how long a leaked token stays valid.
+    'expiration' => 60 * 24 * 14,
 
     /*
     |--------------------------------------------------------------------------

@@ -16,6 +16,7 @@ use App\Core\Tenancy\Application\DTOs\CreateTenantData;
 use App\Core\Tenancy\Domain\Enums\TenantStatus;
 use App\Core\Tenancy\Domain\Events\TenantCreated;
 use App\Core\Tenancy\Domain\Models\Tenant;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -72,5 +73,23 @@ final class TenantService
 
             return ['tenant' => $tenant, 'admin' => $admin];
         });
+    }
+
+    /**
+     * @return Collection<int, Tenant>
+     */
+    public function listAll(): Collection
+    {
+        return $this->tenants->listAll();
+    }
+
+    public function suspend(Tenant $tenant): Tenant
+    {
+        return $this->tenants->update($tenant, ['status' => TenantStatus::Suspended]);
+    }
+
+    public function reactivate(Tenant $tenant): Tenant
+    {
+        return $this->tenants->update($tenant, ['status' => TenantStatus::Active]);
     }
 }

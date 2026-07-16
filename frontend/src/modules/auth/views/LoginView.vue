@@ -69,6 +69,15 @@ async function onSubmit(): Promise<void> {
           :error="fieldErrors.password?.[0]"
         />
 
+        <p class="text-right">
+          <RouterLink
+            :to="{ name: 'forgot-password' }"
+            class="font-mono text-xs text-cyber-muted transition-colors duration-300 hover:text-cyber-neon-cyan"
+          >
+            Forgot password?
+          </RouterLink>
+        </p>
+
         <AppButton type="submit" label="Sign in" :loading="loading" class="w-full" />
       </form>
 
@@ -79,6 +88,15 @@ async function onSubmit(): Promise<void> {
           class="font-bold text-cyber-neon-cyan transition-colors duration-300 hover:text-cyber-neon-indigo"
         >
           Register
+        </RouterLink>
+      </p>
+      <p class="text-center font-mono text-xs text-cyber-muted">
+        Starting a new company?
+        <RouterLink
+          :to="{ name: 'pricing' }"
+          class="font-bold text-cyber-neon-indigo transition-colors duration-300 hover:text-cyber-neon-cyan"
+        >
+          Create a workspace
         </RouterLink>
       </p>
     </div>
