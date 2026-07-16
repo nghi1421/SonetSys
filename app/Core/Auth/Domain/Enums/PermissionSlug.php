@@ -30,6 +30,10 @@ enum PermissionSlug: string
     // ones above — avoids a Core -> Module dependency from TenantService.
     case MenuManage = 'menu.manage';
 
+    // Group-owned moderation permission, kept here for the same reason as
+    // the Feed-owned ones above.
+    case GroupsManageAny = 'groups.manage.any';
+
     public function group(): string
     {
         return match ($this) {
@@ -39,6 +43,7 @@ enum PermissionSlug: string
             self::PostsDeleteAny => 'posts',
             self::CommentsDeleteAny => 'comments',
             self::MenuManage => 'menu',
+            self::GroupsManageAny => 'groups',
         };
     }
 
@@ -57,6 +62,7 @@ enum PermissionSlug: string
             self::PostsDeleteAny,
             self::CommentsDeleteAny,
             self::MenuManage,
+            self::GroupsManageAny,
         ];
     }
 }

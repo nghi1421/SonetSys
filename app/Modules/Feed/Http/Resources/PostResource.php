@@ -16,6 +16,7 @@ final class PostResource extends JsonResource
         return [
             'id' => $this->id,
             'tenant_id' => $this->tenant_id,
+            'group_id' => $this->group_id,
             'body' => $this->body,
             'visibility' => $this->visibility->value,
             'metadata' => $this->metadata,
