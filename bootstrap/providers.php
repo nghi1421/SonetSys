@@ -1,6 +1,7 @@
 <?php
 
 use App\Core\Auth\CoreAuthServiceProvider;
+use App\Core\Storage\CoreStorageServiceProvider;
 use App\Core\Tenancy\CoreTenancyServiceProvider;
 use App\Modules\Feed\FeedServiceProvider;
 use App\Modules\Group\GroupServiceProvider;
@@ -12,6 +13,7 @@ return [
     AppServiceProvider::class,
     CoreAuthServiceProvider::class,
     CoreTenancyServiceProvider::class,
+    CoreStorageServiceProvider::class,
     FeedServiceProvider::class,
     GroupServiceProvider::class,
     MenuServiceProvider::class,

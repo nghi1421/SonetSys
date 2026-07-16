@@ -34,6 +34,11 @@ enum PermissionSlug: string
     // the Feed-owned ones above.
     case GroupsManageAny = 'groups.manage.any';
 
+    // Storage is a Core module, so this could live in its own enum without
+    // the Core -> Module dependency problem the cases above work around —
+    // kept here anyway for a single source of truth alongside the others.
+    case StorageManage = 'storage.manage';
+
     public function group(): string
     {
         return match ($this) {
@@ -44,6 +49,7 @@ enum PermissionSlug: string
             self::CommentsDeleteAny => 'comments',
             self::MenuManage => 'menu',
             self::GroupsManageAny => 'groups',
+            self::StorageManage => 'storage',
         };
     }
 
@@ -63,6 +69,7 @@ enum PermissionSlug: string
             self::CommentsDeleteAny,
             self::MenuManage,
             self::GroupsManageAny,
+            self::StorageManage,
         ];
     }
 }

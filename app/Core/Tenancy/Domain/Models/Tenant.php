@@ -21,6 +21,7 @@ final class Tenant extends Model
         'status',
         'enabled_modules',
         'settings',
+        'storage_config',
     ];
 
     protected function casts(): array
@@ -29,6 +30,7 @@ final class Tenant extends Model
             'status' => TenantStatus::class,
             'enabled_modules' => 'array',
             'settings' => 'array',
+            'storage_config' => 'array',
         ];
     }
 

@@ -13,4 +13,16 @@ final class EloquentTenantRepository implements TenantRepositoryInterface
     {
         return Tenant::query()->create($attributes);
     }
+
+    public function findById(int $id): ?Tenant
+    {
+        return Tenant::query()->find($id);
+    }
+
+    public function update(Tenant $tenant, array $attributes): Tenant
+    {
+        $tenant->fill($attributes)->save();
+
+        return $tenant;
+    }
 }
