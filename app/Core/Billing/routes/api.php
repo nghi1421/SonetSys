@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Route;
 
 // Public — pricing page + self-service signup, no auth required.
 Route::get('plans', [PlanController::class, 'index']);
-Route::post('tenant-registrations', [TenantRegistrationController::class, 'store']);
+Route::post('tenant-registrations', [TenantRegistrationController::class, 'store'])
+    ->middleware('throttle:tenant-registration');
 
 // tenant.active NOT applied here: a suspended tenant's admin must still be
 // able to view their subscription and self-recover by changing plan.
