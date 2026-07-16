@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
-import { FileText, Home, Megaphone, Settings, Users } from '@lucide/vue'
+import { Cloud, FileText, Home, Image, Megaphone, Settings, Users } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import { useMenuStore } from '@/modules/menu/store/menuStore'
 import type { MenuItem } from '@/modules/menu/types'
@@ -49,15 +49,34 @@ function targetFor(item: MenuItem) {
       </RouterLink>
     </nav>
 
-    <RouterLink
-      v-if="isAdmin"
-      :to="{ name: 'admin-menu' }"
-      title="Manage Menu"
-      class="mt-6 flex items-center justify-center gap-2.5 border-t border-cyber-border px-2 pt-4 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-indigo sm:justify-start sm:px-3"
-      active-class="text-cyber-neon-indigo"
-    >
-      <Settings class="h-4 w-4 shrink-0" />
-      <span class="hidden sm:inline">Manage Menu</span>
-    </RouterLink>
+    <template v-if="isAdmin">
+      <RouterLink
+        :to="{ name: 'admin-menu' }"
+        title="Manage Menu"
+        class="mt-6 flex items-center justify-center gap-2.5 border-t border-cyber-border px-2 pt-4 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-indigo sm:justify-start sm:px-3"
+        active-class="text-cyber-neon-indigo"
+      >
+        <Settings class="h-4 w-4 shrink-0" />
+        <span class="hidden sm:inline">Manage Menu</span>
+      </RouterLink>
+      <RouterLink
+        :to="{ name: 'admin-storage-settings' }"
+        title="Storage Settings"
+        class="mt-1 flex items-center justify-center gap-2.5 px-2 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-indigo sm:justify-start sm:px-3"
+        active-class="text-cyber-neon-indigo"
+      >
+        <Cloud class="h-4 w-4 shrink-0" />
+        <span class="hidden sm:inline">Storage Settings</span>
+      </RouterLink>
+      <RouterLink
+        :to="{ name: 'admin-media-library' }"
+        title="Media Library"
+        class="mt-1 flex items-center justify-center gap-2.5 px-2 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-indigo sm:justify-start sm:px-3"
+        active-class="text-cyber-neon-indigo"
+      >
+        <Image class="h-4 w-4 shrink-0" />
+        <span class="hidden sm:inline">Media Library</span>
+      </RouterLink>
+    </template>
   </aside>
 </template>

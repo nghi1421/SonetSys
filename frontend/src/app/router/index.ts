@@ -54,6 +54,18 @@ const router = createRouter({
       component: () => import('@/modules/menu/views/AdminMenuView.vue'),
       meta: { requiresAuth: true, requiresAdmin: true },
     },
+    {
+      path: '/admin/storage',
+      name: 'admin-storage-settings',
+      component: () => import('@/modules/storage/views/StorageSettingsView.vue'),
+      meta: { requiresAuth: true, requiresAdmin: true },
+    },
+    {
+      path: '/admin/media',
+      name: 'admin-media-library',
+      component: () => import('@/modules/storage/views/MediaLibraryView.vue'),
+      meta: { requiresAuth: true, requiresAdmin: true },
+    },
   ],
 })
 
