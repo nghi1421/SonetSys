@@ -81,6 +81,15 @@ async function onSubmit(): Promise<void> {
           Register
         </RouterLink>
       </p>
+      <p class="text-center font-mono text-xs text-cyber-muted">
+        Starting a new company?
+        <RouterLink
+          :to="{ name: 'pricing' }"
+          class="font-bold text-cyber-neon-indigo transition-colors duration-300 hover:text-cyber-neon-cyan"
+        >
+          Create a workspace
+        </RouterLink>
+      </p>
     </div>
   </div>
 </template>
