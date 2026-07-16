@@ -39,6 +39,12 @@ enum PermissionSlug: string
     // kept here anyway for a single source of truth alongside the others.
     case StorageManage = 'storage.manage';
 
+    // Platform-wide pricing, not per-tenant — deliberately excluded from
+    // tenantAdminDefaults() below. Only a Super Admin (who is synced every
+    // permission) can create/edit plans; a tenant admin only ever reads
+    // their own tenant's current subscription.
+    case PlansManage = 'plans.manage';
+
     public function group(): string
     {
         return match ($this) {
@@ -50,6 +56,7 @@ enum PermissionSlug: string
             self::MenuManage => 'menu',
             self::GroupsManageAny => 'groups',
             self::StorageManage => 'storage',
+            self::PlansManage => 'plans',
         };
     }
 
