@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Modules\Feed\Application\Services;
 
+use App\Core\Storage\Application\Services\MediaService;
+use App\Core\Storage\Application\Services\StorageService;
+use App\Core\Storage\Domain\Enums\MediaType as CoreMediaType;
 use App\Modules\Feed\Application\Contracts\InteractionRepositoryInterface;
 use App\Modules\Feed\Application\Contracts\PostRepositoryInterface;
 use App\Modules\Feed\Application\DTOs\CreatePostData;
@@ -14,7 +17,7 @@ use App\Modules\Feed\Domain\Events\PostShared;
 use App\Modules\Feed\Domain\Models\Post;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 final class PostService
 {
@@ -22,6 +25,8 @@ final class PostService
         private readonly PostRepositoryInterface $posts,
         private readonly InteractionRepositoryInterface $interactions,
         private readonly FeedCache $cache,
+        private readonly StorageService $storage,
+        private readonly MediaService $media,
     ) {}
 
     public function create(CreatePostData $data): Post
@@ -44,34 +49,57 @@ final class PostService
                 if ($original !== null) {
                     $sharedPostId = $originalPostId;
                     $originalAuthorId = (int) $original->author_id;
-                    $this->posts->incrementSharesCount($originalPostId);
                 }
             }
         }
 
         $mediaType = null;
         $mediaPath = null;
+        $mediaDisk = null;
+        $stored = null;
 
         if ($data->media !== null && $data->mediaType !== null) {
             $mediaType = $data->mediaType;
-            $mediaPath = $data->media->store('posts/'.$data->tenantId, 'public');
+            $stored = $this->storage->store($data->media, $data->tenantId, 'posts/'.$data->tenantId);
+            $mediaPath = $stored['path'];
+            $mediaDisk = $stored['disk'];
         } elseif ($data->stickerKey !== null) {
             $mediaType = MediaType::Sticker;
             $mediaPath = $data->stickerKey;
         }
 
-        $post = $this->posts->create([
-            'tenant_id' => $data->tenantId,
-            'author_id' => $data->authorId,
-            'shared_post_id' => $sharedPostId,
-            'group_id' => $data->groupId,
-            'body' => $data->body,
-            'visibility' => $data->visibility,
-            'metadata' => $data->metadata,
-            'media_type' => $mediaType,
-            'media_path' => $mediaPath,
-            'published_at' => now(),
-        ]);
+        $post = DB::transaction(function () use ($data, $sharedPostId, $mediaType, $mediaPath, $mediaDisk, $stored): Post {
+            if ($sharedPostId !== null) {
+                $this->posts->incrementSharesCount($sharedPostId);
+            }
+
+            $post = $this->posts->create([
+                'tenant_id' => $data->tenantId,
+                'author_id' => $data->authorId,
+                'shared_post_id' => $sharedPostId,
+                'group_id' => $data->groupId,
+                'body' => $data->body,
+                'visibility' => $data->visibility,
+                'metadata' => $data->metadata,
+                'media_type' => $mediaType,
+                'media_path' => $mediaPath,
+                'media_disk' => $mediaDisk,
+                'published_at' => now(),
+            ]);
+
+            if ($stored !== null) {
+                $this->media->attach(
+                    $stored,
+                    $data->tenantId,
+                    $data->authorId,
+                    $this->toCoreMediaType($mediaType),
+                    $data->media,
+                    $post,
+                );
+            }
+
+            return $post;
+        });
 
         if ($sharedPostId !== null && $originalAuthorId !== null && $originalAuthorId !== $data->authorId) {
             PostShared::dispatch($sharedPostId, $post->id, $data->authorId, $originalAuthorId, $data->tenantId);
@@ -83,6 +111,15 @@ final class PostService
         }
 
         return $post;
+    }
+
+    private function toCoreMediaType(MediaType $type): CoreMediaType
+    {
+        return match ($type) {
+            MediaType::Image => CoreMediaType::Image,
+            MediaType::Video => CoreMediaType::Video,
+            MediaType::Sticker => CoreMediaType::File,
+        };
     }
 
     public function update(Post $post, UpdatePostData $data): Post
@@ -109,7 +146,13 @@ final class PostService
         }
 
         if (in_array($post->media_type, [MediaType::Image, MediaType::Video], true) && $post->media_path !== null) {
-            Storage::disk('public')->delete($post->media_path);
+            $hadMediaRow = $this->media->deleteForMediable($post);
+
+            if (! $hadMediaRow) {
+                // Post created before the media table existed — no row to
+                // clean up, but the file itself still needs deleting.
+                $this->storage->delete((int) $post->tenant_id, $post->media_disk ?? 'local', $post->media_path);
+            }
         }
 
         $this->posts->delete($post);

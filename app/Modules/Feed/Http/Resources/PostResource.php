@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Modules\Feed\Http\Resources;
 
+use App\Core\Storage\Application\Services\StorageService;
 use App\Modules\Feed\Domain\Enums\MediaType;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;
 
 final class PostResource extends JsonResource
 {
@@ -30,8 +30,8 @@ final class PostResource extends JsonResource
             ],
             'shared_post' => $this->shared_post_id !== null ? self::make($this->sharedPost) : null,
             'media_type' => $this->media_type?->value,
-            'media_url' => in_array($this->media_type, [MediaType::Image, MediaType::Video], true)
-                ? Storage::disk('public')->url($this->media_path)
+            'media_url' => in_array($this->media_type, [MediaType::Image, MediaType::Video], true) && $this->media_path !== null
+                ? app(StorageService::class)->url((int) $this->tenant_id, $this->media_disk ?? 'local', $this->media_path)
                 : null,
             'sticker_key' => $this->media_type === MediaType::Sticker ? $this->media_path : null,
             'published_at' => $this->published_at?->toIso8601String(),

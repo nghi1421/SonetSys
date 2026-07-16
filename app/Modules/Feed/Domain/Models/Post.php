@@ -29,6 +29,7 @@ final class Post extends Model
         'metadata',
         'media_type',
         'media_path',
+        'media_disk',
         'published_at',
     ];
 
