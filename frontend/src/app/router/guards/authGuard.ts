@@ -12,11 +12,7 @@ export const authGuard: NavigationGuardWithThis<undefined> = (to) => {
     return { name: 'dashboard' }
   }
 
-  if (to.meta.requiresAdmin && authStore.user?.role.slug !== 'tenant-admin') {
-    return { name: 'dashboard' }
-  }
-
-  if (to.meta.requiresSuperAdmin && authStore.user?.role.slug !== 'super-admin') {
+  if (to.meta.requiresAdmin && authStore.user?.role.slug !== 'admin') {
     return { name: 'dashboard' }
   }
 

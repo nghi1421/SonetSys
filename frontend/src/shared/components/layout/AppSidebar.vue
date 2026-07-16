@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
-import { Building2, Cloud, CreditCard, FileText, Home, Image, Megaphone, Settings, Tag, Users } from '@lucide/vue'
+import { Cloud, FileText, Home, Image, Megaphone, Settings, Users } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import { useMenuStore } from '@/modules/menu/store/menuStore'
 import type { MenuItem } from '@/modules/menu/types'
@@ -9,8 +9,7 @@ import type { MenuItem } from '@/modules/menu/types'
 const authStore = useAuthStore()
 const menuStore = useMenuStore()
 
-const isAdmin = computed(() => authStore.user?.role.slug === 'tenant-admin')
-const isSuperAdmin = computed(() => authStore.user?.role.slug === 'super-admin')
+const isAdmin = computed(() => authStore.user?.role.slug === 'admin')
 
 onMounted(() => {
   menuStore.fetchMenu()
@@ -78,37 +77,6 @@ function targetFor(item: MenuItem) {
         <Image class="h-4 w-4 shrink-0" />
         <span class="hidden sm:inline">Media Library</span>
       </RouterLink>
-      <RouterLink
-        :to="{ name: 'my-license' }"
-        title="My License"
-        class="mt-1 flex items-center justify-center gap-2.5 px-2 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-indigo sm:justify-start sm:px-3"
-        active-class="text-cyber-neon-indigo"
-      >
-        <CreditCard class="h-4 w-4 shrink-0" />
-        <span class="hidden sm:inline">My License</span>
-      </RouterLink>
     </template>
-
-    <RouterLink
-      v-if="isSuperAdmin"
-      :to="{ name: 'admin-plans' }"
-      title="Manage Pricing"
-      class="mt-6 flex items-center justify-center gap-2.5 border-t border-cyber-border px-2 pt-4 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-indigo sm:justify-start sm:px-3"
-      active-class="text-cyber-neon-indigo"
-    >
-      <Tag class="h-4 w-4 shrink-0" />
-      <span class="hidden sm:inline">Manage Pricing</span>
-    </RouterLink>
-
-    <RouterLink
-      v-if="isSuperAdmin"
-      :to="{ name: 'admin-tenants' }"
-      title="Manage Tenants"
-      class="mt-1 flex items-center justify-center gap-2.5 px-2 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-indigo sm:justify-start sm:px-3"
-      active-class="text-cyber-neon-indigo"
-    >
-      <Building2 class="h-4 w-4 shrink-0" />
-      <span class="hidden sm:inline">Manage Tenants</span>
-    </RouterLink>
   </aside>
 </template>

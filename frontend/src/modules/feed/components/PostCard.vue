@@ -24,7 +24,9 @@ const editBody = ref(props.post.body)
 const confirmingDelete = ref(false)
 
 const isOwner = computed(() => authStore.user?.id === props.post.author.id)
-const canModerate = computed(() => authStore.user?.role.slug === 'tenant-admin')
+const canModerate = computed(
+  () => authStore.user?.role.slug === 'admin' || authStore.user?.role.slug === 'moderator',
+)
 const canDelete = computed(() => isOwner.value || canModerate.value)
 
 async function onToggleLike(): Promise<void> {
