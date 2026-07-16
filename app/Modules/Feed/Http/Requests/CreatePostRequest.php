@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Feed\Http\Requests;
 
+use App\Modules\Feed\Application\Contracts\GroupAccessCheckerInterface;
 use App\Modules\Feed\Application\DTOs\CreatePostData;
 use App\Modules\Feed\Domain\Enums\MediaType;
 use App\Modules\Feed\Domain\Enums\PostVisibility;
@@ -16,6 +17,12 @@ use Illuminate\Validation\Rules\Enum;
 
 final class CreatePostRequest extends FormRequest
 {
+    public function __construct(
+        private readonly GroupAccessCheckerInterface $groupAccess,
+    ) {
+        parent::__construct();
+    }
+
     public function authorize(): bool
     {
         return true;
@@ -58,11 +65,17 @@ final class CreatePostRequest extends FormRequest
             $sharedPost = Post::query()->find($sharedPostId);
             $user = $this->user();
 
-            if (
-                $sharedPost !== null
-                && $sharedPost->visibility === PostVisibility::Private
-                && $sharedPost->author_id !== $user?->id
-            ) {
+            if ($sharedPost === null) {
+                return;
+            }
+
+            $isPrivateToOthers = $sharedPost->visibility === PostVisibility::Private
+                && $sharedPost->author_id !== $user?->id;
+
+            $isInaccessibleGroupPost = $sharedPost->group_id !== null
+                && ! $this->groupAccess->canView((int) $sharedPost->group_id, (int) $user?->id);
+
+            if ($isPrivateToOthers || $isInaccessibleGroupPost) {
                 $validator->errors()->add('shared_post_id', 'You cannot share this post.');
             }
         });

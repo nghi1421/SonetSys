@@ -68,7 +68,7 @@ return new class extends Migration
 
         Schema::table('users', function (Blueprint $table): void {
             $table->dropUnique(['email']);
-            $table->foreignId('tenant_id')->after('id')->constrained()->nullOnDelete();
+            $table->foreignId('tenant_id')->nullable()->after('id')->constrained()->nullOnDelete();
             $table->unique(['tenant_id', 'email']);
         });
 
