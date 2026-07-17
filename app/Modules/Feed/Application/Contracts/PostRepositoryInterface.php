@@ -45,4 +45,6 @@ interface PostRepositoryInterface
     public function incrementSharesCount(int $postId): void;
 
     public function decrementSharesCount(int $postId): void;
+
+    public function count(): int;
 }

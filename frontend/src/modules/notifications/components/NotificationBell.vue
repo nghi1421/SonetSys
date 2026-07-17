@@ -25,7 +25,7 @@ async function onItemClick(notificationId: string): Promise<void> {
   <div class="relative">
     <button
       type="button"
-      class="relative rounded-full border border-cyber-border bg-cyber-glass p-2 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/60 focus:ring-offset-2 focus:ring-offset-cyber-bg"
+      class="relative rounded-full border border-cyber-border bg-cyber-glass p-2 text-cyber-muted backdrop-blur-none transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/60 focus:ring-offset-2 focus:ring-offset-cyber-bg"
       aria-label="Notifications"
       @click="toggle"
     >
@@ -42,7 +42,7 @@ async function onItemClick(notificationId: string): Promise<void> {
 
     <div
       v-if="open"
-      class="fixed inset-x-4 top-16 z-10 rounded-hud border border-cyber-neon-cyan/40 bg-cyber-glass shadow-cyan-glow backdrop-blur-md sm:absolute sm:inset-x-auto sm:right-0 sm:top-auto sm:mt-2 sm:w-80"
+      class="fixed inset-x-4 top-16 z-10 rounded-hud border border-cyber-neon-cyan/40 bg-cyber-surface shadow-cyan-glow sm:absolute sm:inset-x-auto sm:right-0 sm:top-auto sm:mt-2 sm:w-80"
       @click.stop
     >
       <div class="flex items-center justify-between border-b border-cyber-border px-4 py-2.5">

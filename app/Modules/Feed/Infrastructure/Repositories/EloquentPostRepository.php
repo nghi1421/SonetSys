@@ -108,4 +108,9 @@ final class EloquentPostRepository implements PostRepositoryInterface
     {
         Post::query()->whereKey($postId)->decrement('shares_count');
     }
+
+    public function count(): int
+    {
+        return Post::query()->count();
+    }
 }

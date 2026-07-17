@@ -27,4 +27,6 @@ interface GroupRepositoryInterface
     public function incrementMembersCount(int $groupId): void;
 
     public function decrementMembersCount(int $groupId): void;
+
+    public function count(): int;
 }

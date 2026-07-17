@@ -18,4 +18,8 @@ interface MediaRepositoryInterface
     public function delete(Media $media): void;
 
     public function paginate(?string $type, int $perPage, int $page): LengthAwarePaginator;
+
+    public function count(): int;
+
+    public function sumSize(): int;
 }
