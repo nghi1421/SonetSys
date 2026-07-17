@@ -26,6 +26,11 @@ final class NotificationServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // Broadcasting auth route (with auth:sanctum) is registered in
+        // bootstrap/app.php via withBroadcasting() — not here, since a
+        // provider's boot() runs before the framework's own app->booted()
+        // broadcasting registration and would just get overwritten.
+
         // Notification listens to Feed's events — Feed never references
         // Notification, so Feed keeps working if this module is disabled.
         Event::listen(ContentLiked::class, SendLikeNotification::class);

@@ -28,10 +28,11 @@ async function onItemClick(notificationId: string): Promise<void> {
     <button
       type="button"
       class="relative rounded-full border border-cyber-border bg-cyber-glass p-2 text-cyber-muted backdrop-blur-none transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/60 focus:ring-offset-2 focus:ring-offset-cyber-bg"
+      :class="notificationStore.justReceived && 'border-cyber-neon-cyan/60 text-cyber-neon-cyan shadow-cyan-glow'"
       :aria-label="t('notifications.bell.ariaLabel')"
       @click="toggle"
     >
-      <Bell class="h-4 w-4" />
+      <Bell class="h-4 w-4" :class="notificationStore.justReceived && 'animate-pulse'" />
       <span
         v-if="notificationStore.unreadCount > 0"
         class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-cyber-neon-pink px-1 font-mono text-[9px] font-bold text-white shadow-pink-glow"
