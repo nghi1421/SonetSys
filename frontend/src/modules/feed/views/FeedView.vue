@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { Inbox } from '@lucide/vue'
 import AppShell from '@/shared/components/layout/AppShell.vue'
 import AppButton from '@/shared/components/ui/AppButton.vue'
+import StoriesReel from '@/modules/stories/components/StoriesReel.vue'
 import PostCard from '../components/PostCard.vue'
 import PostComposer from '../components/PostComposer.vue'
 import { useFeedStore } from '../store/feedStore'
@@ -19,6 +20,8 @@ onMounted(() => {
 <template>
   <AppShell>
     <div class="mx-auto max-w-2xl space-y-4">
+      <StoriesReel />
+
       <PostComposer :on-submit="feedStore.createPost" />
 
       <div v-if="feedStore.loading" class="space-y-4">

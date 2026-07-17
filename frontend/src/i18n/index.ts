@@ -6,6 +6,7 @@ import feed from './locales/en/feed.json'
 import groups from './locales/en/groups.json'
 import menu from './locales/en/menu.json'
 import notifications from './locales/en/notifications.json'
+import stories from './locales/en/stories.json'
 import storage from './locales/en/storage.json'
 
 export const SUPPORTED_LOCALES = ['en'] as const
@@ -22,6 +23,7 @@ const en = {
   storage,
   admin,
   notifications,
+  stories,
 }
 
 export const i18n = createI18n({

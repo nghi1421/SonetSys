@@ -1,0 +1,27 @@
+{
+  "reel": {
+    "yourStory": "Your story",
+    "addStory": "Add story"
+  },
+  "viewer": {
+    "viewersCount": "{count} views",
+    "viewersButton": "Viewers",
+    "deleteStory": "Delete story",
+    "confirmDeleteTitle": "Delete story?",
+    "confirmDeleteMessage": "This can't be undone."
+  },
+  "viewersList": {
+    "title": "Viewers",
+    "empty": "No views yet"
+  },
+  "createModal": {
+    "title": "Add to your story",
+    "addPhoto": "Add photo",
+    "addVideo": "Add video",
+    "captionPlaceholder": "Add a caption (optional)…",
+    "removeMedia": "Remove media",
+    "submit": "Share story",
+    "publishError": "Could not publish your story. Please try again.",
+    "mediaRequired": "Choose a photo or video to share."
+  }
+}

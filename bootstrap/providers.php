@@ -6,6 +6,7 @@ use App\Modules\Feed\FeedServiceProvider;
 use App\Modules\Group\GroupServiceProvider;
 use App\Modules\Menu\MenuServiceProvider;
 use App\Modules\Notification\NotificationServiceProvider;
+use App\Modules\Story\StoryServiceProvider;
 use App\Providers\AppServiceProvider;
 
 return [
@@ -16,4 +17,5 @@ return [
     GroupServiceProvider::class,
     MenuServiceProvider::class,
     NotificationServiceProvider::class,
+    StoryServiceProvider::class,
 ];
