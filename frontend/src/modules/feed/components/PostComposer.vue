@@ -108,7 +108,7 @@ async function handleSubmit(): Promise<void> {
 
 <template>
   <form
-    class="space-y-3 rounded-hud border border-cyber-border bg-cyber-glass p-4 backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/30"
+    class="relative space-y-3 rounded-hud border border-cyber-border bg-cyber-glass p-4 backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/30 has-[.popover-panel]:z-20"
     @submit.prevent="handleSubmit"
   >
     <textarea
@@ -195,7 +195,7 @@ async function handleSubmit(): Promise<void> {
 
           <div
             v-if="showStickerPicker"
-            class="absolute left-0 z-10 mt-2 grid w-56 grid-cols-4 gap-1 rounded-hud border border-cyber-border bg-cyber-glass p-2 backdrop-blur-md"
+            class="popover-panel absolute left-0 z-10 mt-2 grid w-44 grid-cols-3 gap-1 rounded-hud border border-cyber-border bg-cyber-glass p-2 backdrop-blur-md sm:w-56 sm:grid-cols-4"
             @click.stop
           >
             <button

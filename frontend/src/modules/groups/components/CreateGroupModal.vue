@@ -38,6 +38,7 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
+  <Teleport to="body">
   <div
     class="fixed inset-0 z-50 flex items-center justify-center bg-cyber-bg/80 px-4 backdrop-blur-sm"
     @click="emit('close')"
@@ -112,4 +113,5 @@ async function onSubmit(): Promise<void> {
       </div>
     </form>
   </div>
+  </Teleport>
 </template>

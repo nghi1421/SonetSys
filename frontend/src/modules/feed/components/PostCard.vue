@@ -65,7 +65,7 @@ async function saveEdit(): Promise<void> {
 
 <template>
   <article
-    class="rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
+    class="relative rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow has-[.popover-panel]:z-20"
   >
     <header class="flex items-start justify-between">
       <div>
@@ -90,7 +90,7 @@ async function saveEdit(): Promise<void> {
 
         <div
           v-if="showActionsMenu"
-          class="absolute right-0 z-10 mt-1 w-36 rounded-hud border border-cyber-border bg-cyber-glass py-1 backdrop-blur-md"
+          class="popover-panel absolute right-0 z-10 mt-1 w-36 rounded-hud border border-cyber-border bg-cyber-glass py-1 backdrop-blur-md"
           @click.stop
         >
           <button
