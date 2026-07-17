@@ -11,6 +11,11 @@ export const useFeedStore = defineStore('feed', () => {
   const loadingMore = ref(false)
   const notFound = ref(false)
 
+  const followingPosts = ref<Post[]>([])
+  const followingNextCursor = ref<string | null>(null)
+  const followingLoading = ref(false)
+  const followingLoadingMore = ref(false)
+
   async function fetchFeed(): Promise<void> {
     loading.value = true
     try {
@@ -53,6 +58,29 @@ export const useFeedStore = defineStore('feed', () => {
     const response = await feedApi.createPost(payload)
     if (response.data) {
       posts.value = [response.data, ...posts.value]
+    }
+  }
+
+  async function fetchFollowingFeed(): Promise<void> {
+    followingLoading.value = true
+    try {
+      const response = await feedApi.fetchFollowingFeed(null)
+      followingPosts.value = response.data ?? []
+      followingNextCursor.value = (response.meta?.next_cursor as string | null) ?? null
+    } finally {
+      followingLoading.value = false
+    }
+  }
+
+  async function fetchMoreFollowingFeed(): Promise<void> {
+    if (!followingNextCursor.value || followingLoadingMore.value) return
+    followingLoadingMore.value = true
+    try {
+      const response = await feedApi.fetchFollowingFeed(followingNextCursor.value)
+      followingPosts.value = [...followingPosts.value, ...(response.data ?? [])]
+      followingNextCursor.value = (response.meta?.next_cursor as string | null) ?? null
+    } finally {
+      followingLoadingMore.value = false
     }
   }
 
@@ -148,10 +176,16 @@ export const useFeedStore = defineStore('feed', () => {
     loading,
     loadingMore,
     notFound,
+    followingPosts,
+    followingNextCursor,
+    followingLoading,
+    followingLoadingMore,
     fetchFeed,
     fetchMore,
     fetchPost,
     createPost,
+    fetchFollowingFeed,
+    fetchMoreFollowingFeed,
     fetchGroupFeed,
     fetchMoreGroupFeed,
     createGroupPost,

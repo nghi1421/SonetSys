@@ -75,6 +75,13 @@ export const feedApi = {
     return data
   },
 
+  async fetchFollowingFeed(cursor: string | null) {
+    const { data } = await http.get<ApiResponse<Post[]>>('/posts/following', {
+      params: cursor ? { cursor } : {},
+    })
+    return data
+  },
+
   async fetchGroupFeed(groupId: number, cursor: string | null) {
     const { data } = await http.get<ApiResponse<Post[]>>(`/groups/${groupId}/posts`, {
       params: cursor ? { cursor } : {},

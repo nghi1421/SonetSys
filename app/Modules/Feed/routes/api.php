@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->group(function (): void {
     Route::get('stickers', [StickerController::class, 'index']);
     Route::get('posts', [PostController::class, 'index']);
+    Route::get('posts/following', [PostController::class, 'following']);
     Route::post('posts', [PostController::class, 'store']);
     Route::get('posts/{post}', [PostController::class, 'show']);
     Route::put('posts/{post}', [PostController::class, 'update']);

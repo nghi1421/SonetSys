@@ -45,6 +45,16 @@ interface PostRepositoryInterface
         int $limit,
     ): Collection;
 
+    /**
+     * @return Collection<int, Post>
+     */
+    public function cursorPaginateForFollowing(
+        int $viewerId,
+        ?Carbon $afterPublishedAt,
+        ?int $afterId,
+        int $limit,
+    ): Collection;
+
     public function update(Post $post, array $attributes): Post;
 
     public function delete(Post $post): void;

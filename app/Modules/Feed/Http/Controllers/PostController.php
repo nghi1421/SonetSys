@@ -42,6 +42,22 @@ final class PostController extends Controller
         ]);
     }
 
+    public function following(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        $limit = min((int) $request->query('limit', 20), 50);
+
+        $result = $this->posts->feedForFollowing(
+            $user->id,
+            $request->query('cursor'),
+            $limit,
+        );
+
+        return ApiResponse::success(PostResource::collection($result['items']), [
+            'next_cursor' => $result['next_cursor'],
+        ]);
+    }
+
     public function store(CreatePostRequest $request): JsonResponse
     {
         $post = $this->posts->create($request->toDto());

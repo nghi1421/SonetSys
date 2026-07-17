@@ -2,7 +2,13 @@
   "feedView": {
     "emptyTitle": "No posts yet",
     "emptyDescription": "Be the first to share something with your community.",
-    "loadMore": "Load more"
+    "loadMore": "Load more",
+    "tabs": {
+      "forYou": "For You",
+      "following": "Following"
+    },
+    "followingEmptyTitle": "Nothing here yet",
+    "followingEmptyDescription": "Follow people to see their posts here."
   },
   "postDetail": {
     "unavailable": "This post is unavailable — it may have been deleted, or you don't have permission to view it."

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Follow\Application\Services;
 
 use App\Core\Auth\Domain\Models\User;
+use App\Modules\Feed\Application\Support\FeedCache;
 use App\Modules\Follow\Application\Contracts\FollowRepositoryInterface;
 use App\Modules\Follow\Domain\Events\UserFollowed;
 use App\Modules\Follow\Domain\Models\Follow;
@@ -15,6 +16,7 @@ final class FollowService
 {
     public function __construct(
         private readonly FollowRepositoryInterface $follows,
+        private readonly FeedCache $feedCache,
     ) {}
 
     public function follow(int $followerId, int $followedId): Follow
@@ -29,6 +31,10 @@ final class FollowService
 
         if ($follow->wasRecentlyCreated) {
             UserFollowed::dispatch($followerId, $followedId);
+            // The follower's cached "Following" feed no longer reflects who
+            // they follow, so it must be invalidated immediately rather than
+            // waiting out the cache TTL.
+            $this->feedCache->forgetFeed();
         }
 
         return $follow;
@@ -37,6 +43,7 @@ final class FollowService
     public function unfollow(int $followerId, int $followedId): void
     {
         $this->follows->unfollow($followerId, $followedId);
+        $this->feedCache->forgetFeed();
     }
 
     public function isFollowing(int $followerId, int $followedId): bool
