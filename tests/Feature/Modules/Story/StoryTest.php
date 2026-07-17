@@ -80,6 +80,28 @@ final class StoryTest extends TestCase
         $this->assertCount(1, $storyIds);
     }
 
+    public function test_active_feed_orders_authors_with_unviewed_stories_first(): void
+    {
+        $viewer = User::factory()->create();
+
+        $olderUnviewedAuthor = User::factory()->create();
+        $olderUnviewedStory = $this->createStory($olderUnviewedAuthor, ['published_at' => now()->subHours(2)]);
+
+        $newerViewedAuthor = User::factory()->create();
+        $newerViewedStory = $this->createStory($newerViewedAuthor, ['published_at' => now()->subMinutes(5)]);
+
+        Sanctum::actingAs($viewer);
+        $this->postJson("/api/v1/stories/{$newerViewedStory->id}/view")->assertOk();
+
+        $response = $this->getJson('/api/v1/stories')->assertOk();
+        $authorIds = collect($response->json('data'))->pluck('author.id');
+
+        $this->assertSame(
+            [$olderUnviewedAuthor->id, $newerViewedAuthor->id],
+            $authorIds->all(),
+        );
+    }
+
     public function test_owner_can_delete_their_own_story(): void
     {
         $author = User::factory()->create();
