@@ -1,19 +1,28 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
-import { RouterLink } from 'vue-router'
+import { computed, onMounted, watch } from 'vue'
+import { RouterLink, useRoute } from 'vue-router'
 import { Cloud, FileText, Home, Image, Megaphone, Settings, Users } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import { useMenuStore } from '@/modules/menu/store/menuStore'
 import type { MenuItem } from '@/modules/menu/types'
 
+const props = defineProps<{ open: boolean }>()
+const emit = defineEmits<{ close: [] }>()
+
 const authStore = useAuthStore()
 const menuStore = useMenuStore()
+const route = useRoute()
 
 const isAdmin = computed(() => authStore.user?.role.slug === 'admin')
 
 onMounted(() => {
   menuStore.fetchMenu()
 })
+
+watch(
+  () => route.fullPath,
+  () => emit('close'),
+)
 
 function iconFor(item: MenuItem) {
   if (item.is_home) return Home
@@ -30,7 +39,16 @@ function targetFor(item: MenuItem) {
 </script>
 
 <template>
-  <aside class="w-14 shrink-0 border-r border-cyber-border py-6 pr-2 sm:w-56 sm:pr-4">
+  <div
+    v-if="props.open"
+    class="fixed inset-x-0 bottom-0 top-16 z-10 bg-cyber-bg/70 backdrop-blur-sm sm:hidden"
+    @click="emit('close')"
+  />
+
+  <aside
+    class="fixed inset-y-0 left-0 top-16 z-20 w-56 -translate-x-full overflow-y-auto border-r border-cyber-border bg-cyber-glass py-6 pr-2 pl-4 backdrop-blur-md transition-transform duration-300 sm:static sm:z-auto sm:w-56 sm:translate-x-0 sm:pr-4 sm:pl-0"
+    :class="props.open && 'translate-x-0'"
+  >
     <nav class="space-y-1">
       <div v-if="menuStore.loading" class="space-y-2">
         <div v-for="i in 3" :key="i" class="h-8 animate-pulse rounded-hud bg-cyber-surface/60" />
@@ -41,11 +59,11 @@ function targetFor(item: MenuItem) {
         :key="item.id"
         :to="targetFor(item)"
         :title="item.label"
-        class="flex items-center justify-center gap-2.5 rounded-hud px-2 py-2 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan sm:justify-start sm:px-3"
+        class="flex items-center gap-2.5 rounded-hud px-3 py-2 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
         active-class="text-cyber-neon-cyan bg-cyber-glass border border-cyber-border shadow-cyan-glow"
       >
         <component :is="iconFor(item)" class="h-4 w-4 shrink-0" />
-        <span class="hidden sm:inline">{{ item.label }}</span>
+        <span>{{ item.label }}</span>
       </RouterLink>
     </nav>
 
@@ -53,29 +71,29 @@ function targetFor(item: MenuItem) {
       <RouterLink
         :to="{ name: 'admin-menu' }"
         title="Manage Menu"
-        class="mt-6 flex items-center justify-center gap-2.5 border-t border-cyber-border px-2 pt-4 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-indigo sm:justify-start sm:px-3"
+        class="mt-6 flex items-center gap-2.5 border-t border-cyber-border px-3 pt-4 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-indigo"
         active-class="text-cyber-neon-indigo"
       >
         <Settings class="h-4 w-4 shrink-0" />
-        <span class="hidden sm:inline">Manage Menu</span>
+        <span>Manage Menu</span>
       </RouterLink>
       <RouterLink
         :to="{ name: 'admin-storage-settings' }"
         title="Storage Settings"
-        class="mt-1 flex items-center justify-center gap-2.5 px-2 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-indigo sm:justify-start sm:px-3"
+        class="mt-1 flex items-center gap-2.5 px-3 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-indigo"
         active-class="text-cyber-neon-indigo"
       >
         <Cloud class="h-4 w-4 shrink-0" />
-        <span class="hidden sm:inline">Storage Settings</span>
+        <span>Storage Settings</span>
       </RouterLink>
       <RouterLink
         :to="{ name: 'admin-media-library' }"
         title="Media Library"
-        class="mt-1 flex items-center justify-center gap-2.5 px-2 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-indigo sm:justify-start sm:px-3"
+        class="mt-1 flex items-center gap-2.5 px-3 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-indigo"
         active-class="text-cyber-neon-indigo"
       >
         <Image class="h-4 w-4 shrink-0" />
-        <span class="hidden sm:inline">Media Library</span>
+        <span>Media Library</span>
       </RouterLink>
     </template>
   </aside>
