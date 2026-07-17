@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import axios from 'axios'
 import AppAlert from '@/shared/components/ui/AppAlert.vue'
 import AppButton from '@/shared/components/ui/AppButton.vue'
@@ -11,6 +12,7 @@ import { useAuthStore } from '../store/authStore'
 const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
+const { t } = useI18n()
 
 const token = ref(String(route.query.token ?? ''))
 const email = ref(String(route.query.email ?? ''))
@@ -26,7 +28,7 @@ async function onSubmit(): Promise<void> {
   fieldErrors.value = {}
 
   if (password.value !== passwordConfirmation.value) {
-    fieldErrors.value = { password: ['Passwords do not match.'] }
+    fieldErrors.value = { password: [t('auth.resetPassword.passwordsDoNotMatch')] }
     loading.value = false
     return
   }
@@ -44,7 +46,7 @@ async function onSubmit(): Promise<void> {
       generalError.value = body.error
       fieldErrors.value = body.meta?.errors ?? {}
     } else {
-      generalError.value = 'Something went wrong. Please try again.'
+      generalError.value = t('common.somethingWentWrong')
     }
   } finally {
     loading.value = false
@@ -59,39 +61,39 @@ async function onSubmit(): Promise<void> {
         <h1
           class="bg-gradient-to-r from-cyber-neon-cyan via-cyber-neon-indigo to-cyber-neon-pink bg-clip-text text-sm font-bold uppercase tracking-widest text-transparent"
         >
-          Reset Password
+          {{ t('auth.resetPassword.title') }}
         </h1>
-        <p class="mt-1 font-mono text-xs text-cyber-muted">Choose a new password for your account</p>
+        <p class="mt-1 font-mono text-xs text-cyber-muted">{{ t('auth.resetPassword.subtitle') }}</p>
       </div>
 
       <AppAlert v-if="generalError">{{ generalError }}</AppAlert>
 
       <form class="space-y-4" @submit.prevent="onSubmit">
-        <AppInput v-model="email" type="email" label="Email" autocomplete="email" />
+        <AppInput v-model="email" type="email" :label="t('auth.resetPassword.emailLabel')" autocomplete="email" />
         <AppInput
           v-model="password"
           type="password"
-          label="New Password"
+          :label="t('auth.resetPassword.newPasswordLabel')"
           autocomplete="new-password"
           :error="fieldErrors.password?.[0]"
         />
         <AppInput
           v-model="passwordConfirmation"
           type="password"
-          label="Confirm New Password"
+          :label="t('auth.resetPassword.confirmPasswordLabel')"
           autocomplete="new-password"
         />
 
-        <AppButton type="submit" label="Reset Password" :loading="loading" class="w-full" />
+        <AppButton type="submit" :label="t('auth.resetPassword.submit')" :loading="loading" class="w-full" />
       </form>
 
       <p class="text-center font-mono text-xs text-cyber-muted">
-        Remembered your password?
+        {{ t('auth.resetPassword.rememberedPassword') }}
         <RouterLink
           :to="{ name: 'login' }"
           class="font-bold text-cyber-neon-cyan transition-colors duration-300 hover:text-cyber-neon-indigo"
         >
-          Sign in
+          {{ t('auth.resetPassword.signInLink') }}
         </RouterLink>
       </p>
     </div>

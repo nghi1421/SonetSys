@@ -1,4 +1,4 @@
-const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' })
+import { useLocaleStore } from '@/modules/locale/store/localeStore'
 
 const DIVISIONS: { amount: number; unit: Intl.RelativeTimeFormatUnit }[] = [
   { amount: 60, unit: 'seconds' },
@@ -11,6 +11,9 @@ const DIVISIONS: { amount: number; unit: Intl.RelativeTimeFormatUnit }[] = [
 ]
 
 export function useRelativeTime(iso: string): string {
+  const localeStore = useLocaleStore()
+  const rtf = new Intl.RelativeTimeFormat(localeStore.currentLocale, { numeric: 'auto' })
+
   let duration = (new Date(iso).getTime() - Date.now()) / 1000
 
   for (const division of DIVISIONS) {

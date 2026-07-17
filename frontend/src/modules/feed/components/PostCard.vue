@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { EllipsisVertical, Heart, MessageCircle, Pencil, Trash2 } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import AppButton from '@/shared/components/ui/AppButton.vue'
@@ -16,6 +17,7 @@ const props = defineProps<{ post: Post }>()
 
 const feedStore = useFeedStore()
 const authStore = useAuthStore()
+const { t } = useI18n()
 
 const showComments = ref(false)
 const showActionsMenu = ref(false)
@@ -80,7 +82,7 @@ async function saveEdit(): Promise<void> {
         <button
           type="button"
           class="rounded-full border border-cyber-border bg-cyber-glass p-1.5 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow"
-          aria-label="Post actions"
+          :aria-label="t('feed.postCard.actionsLabel')"
           @click="showActionsMenu = !showActionsMenu"
         >
           <EllipsisVertical class="h-4 w-4" />
@@ -99,7 +101,7 @@ async function saveEdit(): Promise<void> {
             class="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-cyan"
             @click="startEditing"
           >
-            <Pencil class="h-3.5 w-3.5" /> Edit
+            <Pencil class="h-3.5 w-3.5" /> {{ t('common.edit') }}
           </button>
           <button
             v-if="canDelete"
@@ -107,7 +109,7 @@ async function saveEdit(): Promise<void> {
             class="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-xs text-cyber-neon-pink transition-colors duration-300 hover:shadow-pink-glow"
             @click="onDeleteClick"
           >
-            <Trash2 class="h-3.5 w-3.5" /> Delete
+            <Trash2 class="h-3.5 w-3.5" /> {{ t('common.delete') }}
           </button>
         </div>
       </div>
@@ -125,9 +127,9 @@ async function saveEdit(): Promise<void> {
           class="rounded-full border border-cyber-border bg-cyber-glass px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
           @click="editing = false"
         >
-          Cancel
+          {{ t('common.cancel') }}
         </button>
-        <AppButton label="Save" @click="saveEdit" />
+        <AppButton :label="t('common.save')" @click="saveEdit" />
       </div>
     </div>
     <template v-else>
@@ -172,8 +174,8 @@ async function saveEdit(): Promise<void> {
 
     <ConfirmDialog
       :open="confirmingDelete"
-      title="Delete post?"
-      message="This can't be undone."
+      :title="t('feed.postCard.confirmDeleteTitle')"
+      :message="t('feed.postCard.confirmDeleteMessage')"
       @confirm="onConfirmDelete"
       @cancel="confirmingDelete = false"
     />

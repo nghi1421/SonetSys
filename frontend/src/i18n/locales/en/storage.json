@@ -1,0 +1,34 @@
+{
+  "mediaLibrary": {
+    "title": "Media Library",
+    "subtitle": "Files uploaded across the app.",
+    "loadError": "Could not load the media library. Please try again.",
+    "deleteError": "Could not delete this file. Please try again.",
+    "filters": { "all": "All", "image": "Images", "video": "Videos", "file": "Files" },
+    "emptyTitle": "No media yet",
+    "emptyDescription": "Files uploaded across the app will show up here.",
+    "deleteTitle": "Delete",
+    "confirmDeleteTitle": "Delete this file?",
+    "confirmDeleteMessage": "This permanently deletes '{filename}'. This can't be undone."
+  },
+  "settings": {
+    "title": "Storage",
+    "subtitle": "Choose where uploaded files are stored.",
+    "saved": "Storage settings saved.",
+    "saveError": "Could not save storage settings. Please check your credentials and try again.",
+    "driverLabel": "Storage Driver",
+    "localDisk": "Local Disk",
+    "amazonS3": "Amazon S3",
+    "driverHint": "New uploads use this driver. Files already stored elsewhere are not migrated automatically.",
+    "bucketLabel": "Bucket",
+    "regionLabel": "Region",
+    "accessKeyLabel": "Access Key ID",
+    "secretKeyLabel": "Secret Access Key",
+    "secretHintExisting": "A secret is already saved — leave blank to keep it.",
+    "secretHintRequired": "Required.",
+    "endpointLabel": "Custom Endpoint (optional)",
+    "pathStyleLabel": "Use path-style endpoint",
+    "saveButton": "Save Settings",
+    "saving": "Saving…"
+  }
+}

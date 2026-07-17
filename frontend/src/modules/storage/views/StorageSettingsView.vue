@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Cloud, HardDrive } from '@lucide/vue'
 import { useStorageStore } from '../store/storageStore'
 import type { StorageDriver } from '../types'
 
 const storageStore = useStorageStore()
+const { t } = useI18n()
 
 const driver = ref<StorageDriver>('local')
 const bucket = ref('')
@@ -52,7 +54,7 @@ async function onSave(): Promise<void> {
     secret.value = ''
     saved.value = true
   } catch {
-    error.value = 'Could not save storage settings. Please check your credentials and try again.'
+    error.value = t('storage.settings.saveError')
   }
 }
 </script>
@@ -60,13 +62,13 @@ async function onSave(): Promise<void> {
 <template>
   <div class="mx-auto max-w-2xl space-y-6">
     <div>
-      <h1 class="text-lg font-bold text-slate-900">Storage</h1>
-      <p class="mt-1 text-sm text-slate-500">Choose where uploaded files are stored.</p>
+      <h1 class="text-lg font-bold text-slate-900">{{ t('storage.settings.title') }}</h1>
+      <p class="mt-1 text-sm text-slate-500">{{ t('storage.settings.subtitle') }}</p>
     </div>
 
     <p v-if="error" class="rounded-lg border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700">{{ error }}</p>
     <p v-if="saved" class="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-xs text-emerald-700">
-      Storage settings saved.
+      {{ t('storage.settings.saved') }}
     </p>
 
     <div v-if="storageStore.loadingConfig" class="h-64 animate-pulse rounded-xl border border-slate-200 bg-slate-100" />
@@ -77,7 +79,7 @@ async function onSave(): Promise<void> {
       @submit.prevent="onSave"
     >
       <div class="space-y-1.5">
-        <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">Storage Driver</label>
+        <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">{{ t('storage.settings.driverLabel') }}</label>
         <div class="grid grid-cols-2 gap-2">
           <button
             type="button"
@@ -89,7 +91,7 @@ async function onSave(): Promise<void> {
             "
             @click="driver = 'local'"
           >
-            <HardDrive class="h-3.5 w-3.5" /> Local Disk
+            <HardDrive class="h-3.5 w-3.5" /> {{ t('storage.settings.localDisk') }}
           </button>
           <button
             type="button"
@@ -101,17 +103,17 @@ async function onSave(): Promise<void> {
             "
             @click="driver = 's3'"
           >
-            <Cloud class="h-3.5 w-3.5" /> Amazon S3
+            <Cloud class="h-3.5 w-3.5" /> {{ t('storage.settings.amazonS3') }}
           </button>
         </div>
         <p class="text-[11px] text-slate-400">
-          New uploads use this driver. Files already stored elsewhere are not migrated automatically.
+          {{ t('storage.settings.driverHint') }}
         </p>
       </div>
 
       <template v-if="driver === 's3'">
         <div class="space-y-1.5">
-          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">Bucket</label>
+          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">{{ t('storage.settings.bucketLabel') }}</label>
           <input
             v-model="bucket"
             type="text"
@@ -120,7 +122,7 @@ async function onSave(): Promise<void> {
           />
         </div>
         <div class="space-y-1.5">
-          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">Region</label>
+          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">{{ t('storage.settings.regionLabel') }}</label>
           <input
             v-model="region"
             type="text"
@@ -129,7 +131,7 @@ async function onSave(): Promise<void> {
           />
         </div>
         <div class="space-y-1.5">
-          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">Access Key ID</label>
+          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">{{ t('storage.settings.accessKeyLabel') }}</label>
           <input
             v-model="key"
             type="text"
@@ -138,7 +140,7 @@ async function onSave(): Promise<void> {
           />
         </div>
         <div class="space-y-1.5">
-          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">Secret Access Key</label>
+          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">{{ t('storage.settings.secretKeyLabel') }}</label>
           <input
             v-model="secret"
             type="password"
@@ -147,11 +149,11 @@ async function onSave(): Promise<void> {
           />
         </div>
         <p class="-mt-3 text-[11px] text-slate-400">
-          {{ storageStore.config?.has_secret ? 'A secret is already saved — leave blank to keep it.' : 'Required.' }}
+          {{ storageStore.config?.has_secret ? t('storage.settings.secretHintExisting') : t('storage.settings.secretHintRequired') }}
         </p>
         <div class="space-y-1.5">
           <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">
-            Custom Endpoint (optional)
+            {{ t('storage.settings.endpointLabel') }}
           </label>
           <input
             v-model="endpoint"
@@ -162,7 +164,7 @@ async function onSave(): Promise<void> {
         </div>
         <label class="flex items-center gap-2 text-xs text-slate-700">
           <input v-model="usePathStyleEndpoint" type="checkbox" class="rounded border-slate-300" />
-          Use path-style endpoint
+          {{ t('storage.settings.pathStyleLabel') }}
         </label>
       </template>
 
@@ -171,7 +173,7 @@ async function onSave(): Promise<void> {
         :disabled="storageStore.savingConfig"
         class="rounded-lg bg-blue-600 px-4 py-2 text-xs font-medium text-white transition-colors duration-200 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {{ storageStore.savingConfig ? 'Saving…' : 'Save Settings' }}
+        {{ storageStore.savingConfig ? t('storage.settings.saving') : t('storage.settings.saveButton') }}
       </button>
     </form>
   </div>

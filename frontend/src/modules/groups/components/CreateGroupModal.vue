@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import AppAlert from '@/shared/components/ui/AppAlert.vue'
 import AppButton from '@/shared/components/ui/AppButton.vue'
 import AppInput from '@/shared/components/ui/AppInput.vue'
@@ -9,6 +10,7 @@ import type { GroupVisibility } from '../types'
 const emit = defineEmits<{ close: [] }>()
 
 const groupStore = useGroupStore()
+const { t } = useI18n()
 
 const name = ref('')
 const description = ref('')
@@ -30,7 +32,7 @@ async function onSubmit(): Promise<void> {
     })
     if (group) emit('close')
   } catch {
-    error.value = 'Could not create the group. Please try again.'
+    error.value = t('groups.createGroupModal.createError')
   } finally {
     creating.value = false
   }
@@ -48,28 +50,28 @@ async function onSubmit(): Promise<void> {
       @click.stop
       @submit.prevent="onSubmit"
     >
-      <h2 class="font-mono text-xs font-bold uppercase tracking-widest text-cyber-text">// New Group</h2>
+      <h2 class="font-mono text-xs font-bold uppercase tracking-widest text-cyber-text">// {{ t('groups.createGroupModal.title') }}</h2>
 
       <AppAlert v-if="error">{{ error }}</AppAlert>
 
-      <AppInput v-model="name" label="Name" />
+      <AppInput v-model="name" :label="t('groups.createGroupModal.nameLabel')" />
 
       <div class="space-y-1.5">
         <label class="block text-[9px] font-mono uppercase tracking-widest text-cyber-neon-cyan">
-          Description
+          {{ t('groups.createGroupModal.descriptionLabel') }}
         </label>
         <textarea
           v-model="description"
           rows="3"
           maxlength="5000"
-          placeholder="What's this group about?"
+          :placeholder="t('groups.createGroupModal.descriptionPlaceholder')"
           class="block w-full resize-none rounded-hud border border-cyber-border bg-cyber-glass px-3 py-2 font-mono text-xs text-cyber-text backdrop-blur-md transition-all duration-300 placeholder:text-cyber-muted focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40 focus:ring-offset-2 focus:ring-offset-cyber-bg"
         />
       </div>
 
       <div class="space-y-1.5">
         <label class="block text-[9px] font-mono uppercase tracking-widest text-cyber-neon-cyan">
-          Visibility
+          {{ t('groups.createGroupModal.visibilityLabel') }}
         </label>
         <div class="grid grid-cols-2 gap-2">
           <button
@@ -82,8 +84,8 @@ async function onSubmit(): Promise<void> {
             "
             @click="visibility = 'public'"
           >
-            Public
-            <span class="mt-0.5 block font-mono text-[9px] normal-case text-cyber-muted">Anyone can join</span>
+            {{ t('groups.visibility.public') }}
+            <span class="mt-0.5 block font-mono text-[9px] normal-case text-cyber-muted">{{ t('groups.visibility.publicHint') }}</span>
           </button>
           <button
             type="button"
@@ -95,8 +97,8 @@ async function onSubmit(): Promise<void> {
             "
             @click="visibility = 'private'"
           >
-            Private
-            <span class="mt-0.5 block font-mono text-[9px] normal-case text-cyber-muted">Requires approval</span>
+            {{ t('groups.visibility.private') }}
+            <span class="mt-0.5 block font-mono text-[9px] normal-case text-cyber-muted">{{ t('groups.visibility.privateHint') }}</span>
           </button>
         </div>
       </div>
@@ -107,9 +109,9 @@ async function onSubmit(): Promise<void> {
           class="rounded-full border border-cyber-border bg-cyber-glass px-4 py-1.5 font-mono text-xs uppercase tracking-wider text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
           @click="emit('close')"
         >
-          Cancel
+          {{ t('common.cancel') }}
         </button>
-        <AppButton type="submit" label="Create Group" :loading="creating" :disabled="!name.trim()" />
+        <AppButton type="submit" :label="t('groups.createGroupModal.submit')" :loading="creating" :disabled="!name.trim()" />
       </div>
     </form>
   </div>

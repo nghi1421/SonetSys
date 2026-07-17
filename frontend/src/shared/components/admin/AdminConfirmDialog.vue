@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
 defineProps<{ open: boolean; title: string; message: string }>()
 const emit = defineEmits<{ confirm: []; cancel: [] }>()
+const { t } = useI18n()
 </script>
 
 <template>
@@ -20,14 +23,14 @@ const emit = defineEmits<{ confirm: []; cancel: [] }>()
             class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors duration-200 hover:border-slate-300 hover:text-slate-900"
             @click="emit('cancel')"
           >
-            Cancel
+            {{ t('common.cancel') }}
           </button>
           <button
             type="button"
             class="rounded-lg bg-rose-600 px-3 py-1.5 text-xs font-medium text-white transition-colors duration-200 hover:bg-rose-700"
             @click="emit('confirm')"
           >
-            Delete
+            {{ t('common.delete') }}
           </button>
         </div>
       </div>

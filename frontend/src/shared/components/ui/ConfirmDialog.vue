@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
 interface ConfirmDialogProps {
   open: boolean
   title: string
@@ -8,6 +10,7 @@ interface ConfirmDialogProps {
 defineProps<ConfirmDialogProps>()
 
 const emit = defineEmits<{ confirm: []; cancel: [] }>()
+const { t } = useI18n()
 </script>
 
 <template>
@@ -26,14 +29,14 @@ const emit = defineEmits<{ confirm: []; cancel: [] }>()
             class="rounded-full border border-cyber-border bg-cyber-glass px-4 py-1.5 font-mono text-xs uppercase tracking-wider text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
             @click="emit('cancel')"
           >
-            Cancel
+            {{ t('common.cancel') }}
           </button>
           <button
             type="button"
             class="rounded-full border border-cyber-neon-pink/30 bg-cyber-neon-pink/10 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-cyber-neon-pink transition-all duration-300 hover:shadow-pink-glow"
             @click="emit('confirm')"
           >
-            Delete
+            {{ t('common.delete') }}
           </button>
         </div>
       </div>
