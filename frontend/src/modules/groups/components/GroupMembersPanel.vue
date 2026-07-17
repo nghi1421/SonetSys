@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Check, ShieldMinus, ShieldPlus, Users, X } from '@lucide/vue'
 import AppAlert from '@/shared/components/ui/AppAlert.vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
@@ -10,6 +11,7 @@ const props = defineProps<{ group: Group; isOwner: boolean; isManager: boolean }
 
 const groupStore = useGroupStore()
 const authStore = useAuthStore()
+const { t } = useI18n()
 
 const error = ref<string | null>(null)
 const busyUserId = ref<number | null>(null)
@@ -27,7 +29,7 @@ async function withErrorHandling(userId: number, action: () => Promise<void>): P
   try {
     await action()
   } catch {
-    error.value = 'Something went wrong. Please try again.'
+    error.value = t('common.somethingWentWrong')
   } finally {
     busyUserId.value = null
   }
@@ -66,14 +68,14 @@ function canRemove(member: GroupMember): boolean {
     <AppAlert v-if="error">{{ error }}</AppAlert>
 
     <section v-if="isManager" class="rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md">
-      <h2 class="text-xs font-bold uppercase tracking-widest text-cyber-neon-pink">Join Requests</h2>
+      <h2 class="text-xs font-bold uppercase tracking-widest text-cyber-neon-pink">{{ t('groups.groupMembers.joinRequestsTitle') }}</h2>
 
       <div v-if="groupStore.loadingRequests" class="mt-4 space-y-2">
         <div v-for="i in 2" :key="i" class="h-10 animate-pulse rounded-hud bg-cyber-surface/60" />
       </div>
 
       <p v-else-if="groupStore.requests.length === 0" class="mt-3 font-mono text-xs text-cyber-muted">
-        No pending requests.
+        {{ t('groups.groupMembers.noPendingRequests') }}
       </p>
 
       <ul v-else class="mt-4 divide-y divide-cyber-border">
@@ -84,7 +86,7 @@ function canRemove(member: GroupMember): boolean {
               type="button"
               :disabled="busyUserId === member.user.id"
               class="rounded-full border border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 p-1.5 text-cyber-neon-cyan transition-all duration-300 hover:shadow-cyan-glow disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
-              title="Approve"
+              :title="t('groups.groupMembers.approve')"
               @click="member.user.id !== null && onApprove(member.user.id)"
             >
               <Check class="h-3.5 w-3.5" />
@@ -93,7 +95,7 @@ function canRemove(member: GroupMember): boolean {
               type="button"
               :disabled="busyUserId === member.user.id"
               class="rounded-full border border-cyber-neon-pink/30 bg-cyber-neon-pink/10 p-1.5 text-cyber-neon-pink transition-all duration-300 hover:shadow-pink-glow disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
-              title="Reject"
+              :title="t('groups.groupMembers.reject')"
               @click="member.user.id !== null && onReject(member.user.id)"
             >
               <X class="h-3.5 w-3.5" />
@@ -105,7 +107,7 @@ function canRemove(member: GroupMember): boolean {
 
     <section class="rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md">
       <h2 class="text-xs font-bold uppercase tracking-widest text-cyber-neon-cyan">
-        Members · {{ group.members_count }}
+        {{ t('groups.groupMembers.membersTitle') }} · {{ group.members_count }}
       </h2>
 
       <div v-if="groupStore.loadingMembers" class="mt-4 space-y-2">
@@ -114,7 +116,7 @@ function canRemove(member: GroupMember): boolean {
 
       <div v-else-if="groupStore.members.length === 0" class="mt-4 flex flex-col items-center py-8 text-center">
         <Users class="h-6 w-6 text-cyber-muted" />
-        <p class="mt-2 font-mono text-xs text-cyber-muted">No members yet.</p>
+        <p class="mt-2 font-mono text-xs text-cyber-muted">{{ t('groups.groupMembers.noMembersYet') }}</p>
       </div>
 
       <ul v-else class="mt-4 divide-y divide-cyber-border">
@@ -130,7 +132,7 @@ function canRemove(member: GroupMember): boolean {
               type="button"
               :disabled="busyUserId === member.user.id"
               class="rounded-full border border-cyber-border bg-cyber-glass p-1.5 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
-              title="Make admin"
+              :title="t('groups.groupMembers.makeAdmin')"
               @click="member.user.id !== null && onPromote(member.user.id)"
             >
               <ShieldPlus class="h-3.5 w-3.5" />
@@ -140,7 +142,7 @@ function canRemove(member: GroupMember): boolean {
               type="button"
               :disabled="busyUserId === member.user.id"
               class="rounded-full border border-cyber-border bg-cyber-glass p-1.5 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-indigo/50 hover:text-cyber-neon-indigo hover:shadow-cyan-glow disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
-              title="Remove admin"
+              :title="t('groups.groupMembers.removeAdmin')"
               @click="member.user.id !== null && onDemote(member.user.id)"
             >
               <ShieldMinus class="h-3.5 w-3.5" />
@@ -150,7 +152,7 @@ function canRemove(member: GroupMember): boolean {
               type="button"
               :disabled="busyUserId === member.user.id"
               class="rounded-full border border-cyber-border bg-cyber-glass p-1.5 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-pink/50 hover:text-cyber-neon-pink hover:shadow-pink-glow disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
-              title="Remove member"
+              :title="t('groups.groupMembers.removeMember')"
               @click="member.user.id !== null && onRemove(member.user.id)"
             >
               <X class="h-3.5 w-3.5" />

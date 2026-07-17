@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Bell } from '@lucide/vue'
 import { useRelativeTime } from '@/shared/composables/useRelativeTime'
 import { useNotificationStore } from '../store/notificationStore'
 import { describeNotification } from '../utils/describeNotification'
 
 const notificationStore = useNotificationStore()
+const { t } = useI18n()
 const open = ref(false)
 
 onMounted(() => {
@@ -26,7 +28,7 @@ async function onItemClick(notificationId: string): Promise<void> {
     <button
       type="button"
       class="relative rounded-full border border-cyber-border bg-cyber-glass p-2 text-cyber-muted backdrop-blur-none transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/60 focus:ring-offset-2 focus:ring-offset-cyber-bg"
-      aria-label="Notifications"
+      :aria-label="t('notifications.bell.ariaLabel')"
       @click="toggle"
     >
       <Bell class="h-4 w-4" />
@@ -46,14 +48,14 @@ async function onItemClick(notificationId: string): Promise<void> {
       @click.stop
     >
       <div class="flex items-center justify-between border-b border-cyber-border px-4 py-2.5">
-        <p class="font-mono text-[9px] uppercase tracking-widest text-cyber-neon-cyan">Notifications</p>
+        <p class="font-mono text-[9px] uppercase tracking-widest text-cyber-neon-cyan">{{ t('notifications.bell.title') }}</p>
         <button
           v-if="notificationStore.unreadCount > 0"
           type="button"
           class="font-mono text-[10px] uppercase tracking-wider text-cyber-neon-indigo transition-colors duration-300 hover:text-cyber-neon-cyan"
           @click="notificationStore.markAllAsRead"
         >
-          Mark all read
+          {{ t('notifications.bell.markAllRead') }}
         </button>
       </div>
 
@@ -61,7 +63,7 @@ async function onItemClick(notificationId: string): Promise<void> {
         v-if="notificationStore.items.length === 0"
         class="px-4 py-8 text-center font-mono text-xs text-cyber-muted"
       >
-        No notifications yet
+        {{ t('notifications.bell.empty') }}
       </div>
 
       <ul v-else class="max-h-80 divide-y divide-cyber-border overflow-y-auto">
@@ -72,7 +74,7 @@ async function onItemClick(notificationId: string): Promise<void> {
           :class="!item.read_at && 'bg-cyber-neon-indigo/10'"
           @click="onItemClick(item.id)"
         >
-          <p class="font-mono text-xs text-cyber-text/90">{{ describeNotification(item) }}</p>
+          <p class="font-mono text-xs text-cyber-text/90">{{ describeNotification(item, t) }}</p>
           <p class="mt-0.5 font-mono text-[9px] uppercase tracking-widest text-cyber-muted">
             {{ item.created_at ? useRelativeTime(item.created_at) : '' }}
           </p>

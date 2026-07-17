@@ -1,0 +1,73 @@
+{
+  "groupsList": {
+    "title": "Groups",
+    "createButton": "Create Group",
+    "joinError": "Could not join this group. Please try again.",
+    "emptyTitle": "No groups yet",
+    "emptyDescription": "Create the first group for your community."
+  },
+  "groupDetail": {
+    "notFound": "Group not found.",
+    "joinError": "Could not join this group. Please try again.",
+    "leaveError": "Could not leave this group. Please try again.",
+    "membersCount": "{count} members",
+    "leave": "Leave",
+    "privateTitle": "This group is private",
+    "privateDescription": "Join and wait for approval to see its posts.",
+    "joinToPost": "Join this group to post.",
+    "emptyPostsTitle": "No posts yet",
+    "emptyPostsDescription": "Be the first to share something with this group.",
+    "loadMore": "Load more",
+    "joinToSeeMembers": "Join this group to see its members.",
+    "tabs": { "posts": "Posts", "members": "Members", "settings": "Settings" }
+  },
+  "groupCard": {
+    "join": "Join"
+  },
+  "groupSettings": {
+    "title": "Group Settings",
+    "nameLabel": "Name",
+    "descriptionLabel": "Description",
+    "visibilityLabel": "Visibility",
+    "saveButton": "Save Changes",
+    "saveError": "Could not save changes. Please try again.",
+    "dangerZoneTitle": "Danger Zone",
+    "dangerZoneDescription": "Deleting a group removes it and its posts for every member. This can't be undone.",
+    "deleteButton": "Delete Group",
+    "deleteError": "Could not delete this group. Please try again.",
+    "confirmDeleteTitle": "Delete this group?",
+    "confirmDeleteMessage": "This permanently deletes the group and its posts for every member."
+  },
+  "groupMembers": {
+    "joinRequestsTitle": "Join Requests",
+    "noPendingRequests": "No pending requests.",
+    "approve": "Approve",
+    "reject": "Reject",
+    "membersTitle": "Members",
+    "noMembersYet": "No members yet.",
+    "makeAdmin": "Make admin",
+    "removeAdmin": "Remove admin",
+    "removeMember": "Remove member"
+  },
+  "createGroupModal": {
+    "title": "New Group",
+    "nameLabel": "Name",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "What's this group about?",
+    "visibilityLabel": "Visibility",
+    "submit": "Create Group",
+    "createError": "Could not create the group. Please try again."
+  },
+  "roles": {
+    "owner": "Owner",
+    "admin": "Admin",
+    "member": "Member",
+    "requested": "Requested"
+  },
+  "visibility": {
+    "public": "Public",
+    "publicHint": "Anyone can join",
+    "private": "Private",
+    "privateHint": "Requires approval"
+  }
+}

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Users } from '@lucide/vue'
 import AppAlert from '@/shared/components/ui/AppAlert.vue'
 import AppButton from '@/shared/components/ui/AppButton.vue'
@@ -9,6 +10,7 @@ import GroupCard from '../components/GroupCard.vue'
 import { useGroupStore } from '../store/groupStore'
 
 const groupStore = useGroupStore()
+const { t } = useI18n()
 
 const showCreateModal = ref(false)
 const joiningGroupId = ref<number | null>(null)
@@ -25,7 +27,7 @@ async function onJoin(groupId: number): Promise<void> {
     await groupStore.join(groupId)
     await groupStore.fetchGroups()
   } catch {
-    error.value = 'Could not join this group. Please try again.'
+    error.value = t('groups.groupsList.joinError')
   } finally {
     joiningGroupId.value = null
   }
@@ -36,8 +38,8 @@ async function onJoin(groupId: number): Promise<void> {
   <AppShell>
     <div class="mx-auto max-w-4xl space-y-4">
       <div class="flex items-center justify-between">
-        <h1 class="text-sm font-bold tracking-wider text-cyber-text">// Groups</h1>
-        <AppButton label="Create Group" @click="showCreateModal = true" />
+        <h1 class="text-sm font-bold tracking-wider text-cyber-text">// {{ t('groups.groupsList.title') }}</h1>
+        <AppButton :label="t('groups.groupsList.createButton')" @click="showCreateModal = true" />
       </div>
 
       <AppAlert v-if="error">{{ error }}</AppAlert>
@@ -52,8 +54,8 @@ async function onJoin(groupId: number): Promise<void> {
 
       <div v-else-if="groupStore.groups.length === 0" class="flex flex-col items-center py-16 text-center">
         <Users class="h-8 w-8 text-cyber-muted" />
-        <p class="mt-4 text-xs font-bold text-cyber-text">No groups yet</p>
-        <p class="mt-1 font-mono text-xs text-cyber-muted">Create the first group for your community.</p>
+        <p class="mt-4 text-xs font-bold text-cyber-text">{{ t('groups.groupsList.emptyTitle') }}</p>
+        <p class="mt-1 font-mono text-xs text-cyber-muted">{{ t('groups.groupsList.emptyDescription') }}</p>
       </div>
 
       <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2">

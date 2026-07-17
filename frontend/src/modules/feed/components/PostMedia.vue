@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useStickerStore } from '../store/stickerStore'
 import type { Post } from '../types'
 
 const props = defineProps<{ post: Post }>()
 
 const stickerStore = useStickerStore()
+const { t } = useI18n()
 
 const stickerEmoji = computed(
   () => stickerStore.stickers.find((sticker) => sticker.key === props.post.sticker_key)?.emoji ?? null,
@@ -22,7 +24,7 @@ onMounted(() => {
   <img
     v-if="post.media_type === 'image' && post.media_url"
     :src="post.media_url"
-    alt="Post attachment"
+    :alt="t('feed.postMedia.attachmentAlt')"
     class="max-h-96 w-full rounded-hud border border-cyber-border object-cover"
   />
   <video

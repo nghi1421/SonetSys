@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Heart, Trash2 } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import AppButton from '@/shared/components/ui/AppButton.vue'
@@ -12,6 +13,7 @@ const props = defineProps<{ postId: number }>()
 
 const feedStore = useFeedStore()
 const authStore = useAuthStore()
+const { t } = useI18n()
 
 const newComment = ref('')
 const replyingTo = ref<number | null>(null)
@@ -77,14 +79,14 @@ async function onConfirmDelete(): Promise<void> {
               <Heart class="h-3 w-3" :fill="comment.liked_by_me ? 'currentColor' : 'none'" />
               {{ comment.likes_count }}
             </button>
-            <button type="button" class="hover:text-cyber-neon-cyan" @click="replyingTo = comment.id">Reply</button>
+            <button type="button" class="hover:text-cyber-neon-cyan" @click="replyingTo = comment.id">{{ t('feed.commentThread.reply') }}</button>
           </div>
         </div>
         <button
           v-if="canDelete(comment)"
           type="button"
           class="rounded-full border border-cyber-border bg-cyber-glass p-1 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-pink/50 hover:text-cyber-neon-pink hover:shadow-pink-glow"
-          aria-label="Delete comment"
+          :aria-label="t('feed.commentThread.deleteComment')"
           @click="pendingDeleteId = comment.id"
         >
           <Trash2 class="h-3 w-3" />
@@ -118,7 +120,7 @@ async function onConfirmDelete(): Promise<void> {
           v-if="canDelete(reply)"
           type="button"
           class="rounded-full border border-cyber-border bg-cyber-glass p-1 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-pink/50 hover:text-cyber-neon-pink hover:shadow-pink-glow"
-          aria-label="Delete reply"
+          :aria-label="t('feed.commentThread.deleteReply')"
           @click="pendingDeleteId = reply.id"
         >
           <Trash2 class="h-3 w-3" />
@@ -129,16 +131,16 @@ async function onConfirmDelete(): Promise<void> {
         <input
           v-model="newComment"
           type="text"
-          placeholder="Write a reply…"
+          :placeholder="t('feed.commentThread.replyPlaceholder')"
           class="flex-1 rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-1.5 font-mono text-xs text-cyber-text backdrop-blur-md focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
         />
-        <AppButton type="submit" label="Reply" :loading="submitting" />
+        <AppButton type="submit" :label="t('feed.commentThread.submitReply')" :loading="submitting" />
         <button
           type="button"
           class="font-mono text-xs text-cyber-muted transition-colors duration-300 hover:text-cyber-text"
           @click="replyingTo = null"
         >
-          Cancel
+          {{ t('common.cancel') }}
         </button>
       </form>
     </div>
@@ -147,16 +149,16 @@ async function onConfirmDelete(): Promise<void> {
       <input
         v-model="newComment"
         type="text"
-        placeholder="Write a comment…"
+        :placeholder="t('feed.commentThread.commentPlaceholder')"
         class="flex-1 rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-1.5 font-mono text-xs text-cyber-text backdrop-blur-md focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
       />
-      <AppButton type="submit" label="Comment" :loading="submitting" />
+      <AppButton type="submit" :label="t('feed.commentThread.submitComment')" :loading="submitting" />
     </form>
 
     <ConfirmDialog
       :open="pendingDeleteId !== null"
-      title="Delete comment?"
-      message="This can't be undone."
+      :title="t('feed.commentThread.confirmDeleteTitle')"
+      :message="t('feed.commentThread.confirmDeleteMessage')"
       @confirm="onConfirmDelete"
       @cancel="pendingDeleteId = null"
     />

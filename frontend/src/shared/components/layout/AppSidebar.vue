@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { FileText, Home, LayoutDashboard, Megaphone, Users } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import { useMenuStore } from '@/modules/menu/store/menuStore'
@@ -12,6 +13,7 @@ const emit = defineEmits<{ close: [] }>()
 const authStore = useAuthStore()
 const menuStore = useMenuStore()
 const route = useRoute()
+const { t } = useI18n()
 
 const isAdmin = computed(() => authStore.user?.role.slug === 'admin')
 
@@ -70,11 +72,11 @@ function targetFor(item: MenuItem) {
     <RouterLink
       v-if="isAdmin"
       :to="{ name: 'admin-dashboard' }"
-      title="Admin Panel"
+      :title="t('common.adminPanel')"
       class="mt-6 flex items-center gap-2.5 rounded-hud border-t border-cyber-border px-3 pt-4 font-mono text-xs font-bold uppercase tracking-wider text-cyber-neon-indigo transition-all duration-300 hover:text-cyber-neon-cyan"
     >
       <LayoutDashboard class="h-4 w-4 shrink-0" />
-      <span>Admin Panel</span>
+      <span>{{ t('common.adminPanel') }}</span>
     </RouterLink>
   </aside>
 </template>

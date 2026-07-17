@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { Globe, Lock, LogOut, Users } from '@lucide/vue'
 import AppAlert from '@/shared/components/ui/AppAlert.vue'
 import AppButton from '@/shared/components/ui/AppButton.vue'
@@ -15,6 +16,7 @@ import { useGroupStore } from '../store/groupStore'
 const route = useRoute()
 const groupStore = useGroupStore()
 const feedStore = useFeedStore()
+const { t } = useI18n()
 
 type Tab = 'posts' | 'members' | 'settings'
 const tabs: Tab[] = ['posts', 'members', 'settings']
@@ -47,7 +49,7 @@ async function onJoin(): Promise<void> {
     await groupStore.join(group.value.id)
     if (canViewPosts.value) await feedStore.fetchGroupFeed(group.value.id)
   } catch {
-    joinLeaveError.value = 'Could not join this group. Please try again.'
+    joinLeaveError.value = t('groups.groupDetail.joinError')
   } finally {
     joiningOrLeaving.value = false
   }
@@ -60,7 +62,7 @@ async function onLeave(): Promise<void> {
   try {
     await groupStore.leave(group.value.id)
   } catch {
-    joinLeaveError.value = 'Could not leave this group. Please try again.'
+    joinLeaveError.value = t('groups.groupDetail.leaveError')
   } finally {
     joiningOrLeaving.value = false
   }
@@ -77,7 +79,7 @@ function createGroupPost(payload: Parameters<typeof feedStore.createGroupPost>[1
     <div class="mx-auto max-w-2xl space-y-4">
       <div v-if="groupStore.loadingCurrent" class="h-40 animate-pulse rounded-hud border border-cyber-border bg-cyber-surface/60" />
 
-      <AppAlert v-else-if="!group">Group not found.</AppAlert>
+      <AppAlert v-else-if="!group">{{ t('groups.groupDetail.notFound') }}</AppAlert>
 
       <template v-else>
         <header class="rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md">
@@ -95,18 +97,18 @@ function createGroupPost(payload: Parameters<typeof feedStore.createGroupPost>[1
                 >
                   <Globe v-if="group.visibility === 'public'" class="h-2.5 w-2.5" />
                   <Lock v-else class="h-2.5 w-2.5" />
-                  {{ group.visibility }}
+                  {{ t(`groups.visibility.${group.visibility}`) }}
                 </span>
                 <span class="inline-flex items-center gap-1.5 font-mono text-[10px] tabular-nums text-cyber-muted">
                   <Users class="h-3 w-3" />
-                  {{ group.members_count }} members
+                  {{ t('groups.groupDetail.membersCount', { count: group.members_count }) }}
                 </span>
               </div>
             </div>
 
             <AppButton
               v-if="!group.viewer_membership"
-              label="Join"
+              :label="t('groups.groupCard.join')"
               :loading="joiningOrLeaving"
               @click="onJoin"
             />
@@ -116,7 +118,7 @@ function createGroupPost(payload: Parameters<typeof feedStore.createGroupPost>[1
               disabled
               class="shrink-0 rounded-full border border-amber-500/30 bg-amber-500/10 px-4 py-2 font-mono text-xs uppercase tracking-wider text-amber-400"
             >
-              Requested
+              {{ t('groups.roles.requested') }}
             </button>
             <button
               v-else-if="!isOwner"
@@ -125,7 +127,7 @@ function createGroupPost(payload: Parameters<typeof feedStore.createGroupPost>[1
               class="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-cyber-border bg-cyber-glass px-4 py-2 font-mono text-xs uppercase tracking-wider text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-pink/50 hover:text-cyber-neon-pink hover:shadow-pink-glow disabled:cursor-not-allowed disabled:opacity-40"
               @click="onLeave"
             >
-              <LogOut class="h-3.5 w-3.5" /> Leave
+              <LogOut class="h-3.5 w-3.5" /> {{ t('groups.groupDetail.leave') }}
             </button>
           </div>
 
@@ -150,20 +152,20 @@ function createGroupPost(payload: Parameters<typeof feedStore.createGroupPost>[1
             "
             @click="activeTab = tab"
           >
-            {{ tab }}
+            {{ t(`groups.groupDetail.tabs.${tab}`) }}
           </button>
         </nav>
 
         <div v-if="activeTab === 'posts'">
           <div v-if="!canViewPosts" class="flex flex-col items-center py-16 text-center">
             <Lock class="h-8 w-8 text-cyber-muted" />
-            <p class="mt-4 text-xs font-bold text-cyber-text">This group is private</p>
-            <p class="mt-1 font-mono text-xs text-cyber-muted">Join and wait for approval to see its posts.</p>
+            <p class="mt-4 text-xs font-bold text-cyber-text">{{ t('groups.groupDetail.privateTitle') }}</p>
+            <p class="mt-1 font-mono text-xs text-cyber-muted">{{ t('groups.groupDetail.privateDescription') }}</p>
           </div>
 
           <div v-else class="space-y-4">
             <PostComposer v-if="isApprovedMember" :on-submit="createGroupPost" />
-            <AppAlert v-else variant="warning">Join this group to post.</AppAlert>
+            <AppAlert v-else variant="warning">{{ t('groups.groupDetail.joinToPost') }}</AppAlert>
 
             <div v-if="feedStore.loading" class="space-y-4">
               <div
@@ -174,8 +176,8 @@ function createGroupPost(payload: Parameters<typeof feedStore.createGroupPost>[1
             </div>
 
             <div v-else-if="feedStore.posts.length === 0" class="flex flex-col items-center py-16 text-center">
-              <p class="text-xs font-bold text-cyber-text">No posts yet</p>
-              <p class="mt-1 font-mono text-xs text-cyber-muted">Be the first to share something with this group.</p>
+              <p class="text-xs font-bold text-cyber-text">{{ t('groups.groupDetail.emptyPostsTitle') }}</p>
+              <p class="mt-1 font-mono text-xs text-cyber-muted">{{ t('groups.groupDetail.emptyPostsDescription') }}</p>
             </div>
 
             <template v-else>
@@ -183,7 +185,7 @@ function createGroupPost(payload: Parameters<typeof feedStore.createGroupPost>[1
 
               <div v-if="feedStore.nextCursor" class="flex justify-center pt-2">
                 <AppButton
-                  label="Load more"
+                  :label="t('groups.groupDetail.loadMore')"
                   variant="secondary"
                   :loading="feedStore.loadingMore"
                   @click="feedStore.fetchMoreGroupFeed(group.id)"
@@ -199,7 +201,7 @@ function createGroupPost(payload: Parameters<typeof feedStore.createGroupPost>[1
           :is-owner="isOwner"
           :is-manager="isManager"
         />
-        <AppAlert v-else-if="activeTab === 'members'">Join this group to see its members.</AppAlert>
+        <AppAlert v-else-if="activeTab === 'members'">{{ t('groups.groupDetail.joinToSeeMembers') }}</AppAlert>
 
         <GroupSettingsPanel v-else-if="activeTab === 'settings' && isManager" :group="group" :is-owner="isOwner" />
       </template>

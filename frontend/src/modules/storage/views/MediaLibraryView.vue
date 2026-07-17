@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { File, Image as ImageIcon, Play, Trash2 } from '@lucide/vue'
 import AdminConfirmDialog from '@/shared/components/admin/AdminConfirmDialog.vue'
 import AdminMediaPreviewDialog from '@/shared/components/admin/AdminMediaPreviewDialog.vue'
@@ -8,6 +9,7 @@ import { useStorageStore } from '../store/storageStore'
 import type { Media, MediaKind } from '../types'
 
 const storageStore = useStorageStore()
+const { t } = useI18n()
 
 const activeType = ref<MediaKind | 'all'>('all')
 const page = ref(1)
@@ -16,12 +18,12 @@ const pendingDelete = ref<Media | null>(null)
 const previewItem = ref<Media | null>(null)
 const deleting = ref(false)
 
-const filters: Array<{ value: MediaKind | 'all'; label: string }> = [
-  { value: 'all', label: 'All' },
-  { value: 'image', label: 'Images' },
-  { value: 'video', label: 'Videos' },
-  { value: 'file', label: 'Files' },
-]
+const filters = computed<Array<{ value: MediaKind | 'all'; label: string }>>(() => [
+  { value: 'all', label: t('storage.mediaLibrary.filters.all') },
+  { value: 'image', label: t('storage.mediaLibrary.filters.image') },
+  { value: 'video', label: t('storage.mediaLibrary.filters.video') },
+  { value: 'file', label: t('storage.mediaLibrary.filters.file') },
+])
 
 const hasNextPage = computed(
   () => !!storageStore.mediaMeta && storageStore.mediaMeta.current_page < storageStore.mediaMeta.last_page,
@@ -34,7 +36,7 @@ async function load(): Promise<void> {
   try {
     await storageStore.fetchMedia(page.value, activeType.value === 'all' ? undefined : activeType.value)
   } catch {
-    error.value = 'Could not load the media library. Please try again.'
+    error.value = t('storage.mediaLibrary.loadError')
   }
 }
 
@@ -55,7 +57,7 @@ async function onConfirmDelete(): Promise<void> {
   try {
     await storageStore.deleteMedia(pendingDelete.value.id)
   } catch {
-    error.value = 'Could not delete this file. Please try again.'
+    error.value = t('storage.mediaLibrary.deleteError')
   } finally {
     deleting.value = false
     pendingDelete.value = null
@@ -66,8 +68,8 @@ async function onConfirmDelete(): Promise<void> {
 <template>
   <div class="mx-auto max-w-4xl space-y-6">
     <div>
-      <h1 class="text-lg font-bold text-slate-900">Media Library</h1>
-      <p class="mt-1 text-sm text-slate-500">Files uploaded across the app.</p>
+      <h1 class="text-lg font-bold text-slate-900">{{ t('storage.mediaLibrary.title') }}</h1>
+      <p class="mt-1 text-sm text-slate-500">{{ t('storage.mediaLibrary.subtitle') }}</p>
     </div>
 
     <p v-if="error" class="rounded-lg border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700">{{ error }}</p>
@@ -95,8 +97,8 @@ async function onConfirmDelete(): Promise<void> {
 
     <div v-else-if="storageStore.media.length === 0" class="flex flex-col items-center py-16 text-center">
       <ImageIcon class="h-8 w-8 text-slate-300" />
-      <p class="mt-4 text-xs font-bold text-slate-900">No media yet</p>
-      <p class="mt-1 text-xs text-slate-400">Files uploaded across the app will show up here.</p>
+      <p class="mt-4 text-xs font-bold text-slate-900">{{ t('storage.mediaLibrary.emptyTitle') }}</p>
+      <p class="mt-1 text-xs text-slate-400">{{ t('storage.mediaLibrary.emptyDescription') }}</p>
     </div>
 
     <template v-else>
@@ -132,7 +134,7 @@ async function onConfirmDelete(): Promise<void> {
           <button
             type="button"
             class="absolute right-1.5 top-1.5 rounded-full border border-slate-200 bg-white p-1.5 text-slate-400 opacity-0 shadow-sm transition-all duration-200 hover:border-rose-300 hover:text-rose-600 group-hover:opacity-100"
-            title="Delete"
+            :title="t('storage.mediaLibrary.deleteTitle')"
             @click.stop="pendingDelete = item"
           >
             <Trash2 class="h-3.5 w-3.5" />
@@ -147,7 +149,7 @@ async function onConfirmDelete(): Promise<void> {
           class="rounded-lg border border-slate-200 bg-white px-4 py-1.5 text-xs font-medium text-slate-600 transition-colors duration-200 hover:border-slate-300 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-40"
           @click="goToPage(page - 1)"
         >
-          Previous
+          {{ t('common.previous') }}
         </button>
         <span class="text-[11px] tabular-nums text-slate-400">
           Page {{ storageStore.mediaMeta.current_page }} / {{ storageStore.mediaMeta.last_page }}
@@ -158,7 +160,7 @@ async function onConfirmDelete(): Promise<void> {
           class="rounded-lg border border-slate-200 bg-white px-4 py-1.5 text-xs font-medium text-slate-600 transition-colors duration-200 hover:border-slate-300 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-40"
           @click="goToPage(page + 1)"
         >
-          Next
+          {{ t('common.next') }}
         </button>
       </div>
     </template>
@@ -167,8 +169,8 @@ async function onConfirmDelete(): Promise<void> {
 
     <AdminConfirmDialog
       :open="!!pendingDelete"
-      title="Delete this file?"
-      :message="`This permanently deletes '${pendingDelete?.original_name}'. This can't be undone.`"
+      :title="t('storage.mediaLibrary.confirmDeleteTitle')"
+      :message="t('storage.mediaLibrary.confirmDeleteMessage', { filename: pendingDelete?.original_name })"
       @confirm="onConfirmDelete"
       @cancel="pendingDelete = null"
     />

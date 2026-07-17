@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { FileQuestion, TriangleAlert } from '@lucide/vue'
 import AppShell from '@/shared/components/layout/AppShell.vue'
 import { menuApi } from '../api/menuApi'
 import type { MenuItem } from '../types'
 
 const route = useRoute()
+const { t } = useI18n()
 
 const item = ref<MenuItem | null>(null)
 const loading = ref(true)
@@ -50,7 +52,7 @@ watch(
         class="rounded-hud border border-cyber-neon-pink/30 bg-cyber-neon-pink/10 p-5 font-mono text-xs text-cyber-neon-pink"
       >
         <TriangleAlert class="mb-2 h-5 w-5" />
-        Could not load this page. Please try again later.
+        {{ t('menu.page.loadError') }}
       </div>
 
       <div v-else-if="item" class="rounded-hud border border-cyber-border bg-cyber-glass p-6 backdrop-blur-md">
@@ -65,8 +67,8 @@ watch(
 
         <div v-else class="mt-8 flex flex-col items-center py-10 text-center">
           <FileQuestion class="h-8 w-8 text-cyber-muted" />
-          <p class="mt-4 text-xs font-bold text-cyber-text">No content yet</p>
-          <p class="mt-1 font-mono text-xs text-cyber-muted">An admin hasn't attached a page to this section yet.</p>
+          <p class="mt-4 text-xs font-bold text-cyber-text">{{ t('menu.page.emptyTitle') }}</p>
+          <p class="mt-1 font-mono text-xs text-cyber-muted">{{ t('menu.page.emptyDescription') }}</p>
         </div>
       </div>
     </div>

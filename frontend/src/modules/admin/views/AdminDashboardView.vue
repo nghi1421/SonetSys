@@ -1,29 +1,31 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Cloud, FileText, HardDrive, Image, Newspaper, Users, UsersRound } from '@lucide/vue'
 import { formatBytes } from '@/shared/utils/formatBytes'
 import { useAdminStore } from '../store/adminStore'
 
 const adminStore = useAdminStore()
+const { t } = useI18n()
 
 const statCards = computed(() => [
-  { label: 'Users', value: adminStore.stats?.users ?? 0, icon: Users },
-  { label: 'Posts', value: adminStore.stats?.posts ?? 0, icon: Newspaper },
-  { label: 'Groups', value: adminStore.stats?.groups ?? 0, icon: UsersRound },
-  { label: 'Media Files', value: adminStore.stats?.media ?? 0, icon: Image },
+  { label: t('admin.dashboard.stats.users'), value: adminStore.stats?.users ?? 0, icon: Users },
+  { label: t('admin.dashboard.stats.posts'), value: adminStore.stats?.posts ?? 0, icon: Newspaper },
+  { label: t('admin.dashboard.stats.groups'), value: adminStore.stats?.groups ?? 0, icon: UsersRound },
+  { label: t('admin.dashboard.stats.media'), value: adminStore.stats?.media ?? 0, icon: Image },
   {
-    label: 'Storage Used',
+    label: t('admin.dashboard.stats.storage'),
     value: formatBytes(adminStore.stats?.storage_bytes ?? 0),
     icon: HardDrive,
   },
 ])
 
-const quickLinks = [
-  { to: { name: 'admin-menu' }, label: 'Menu & Pages', description: 'Edit navigation and static pages', icon: FileText },
-  { to: { name: 'admin-storage-settings' }, label: 'Storage', description: 'Configure the upload driver', icon: Cloud },
-  { to: { name: 'admin-media-library' }, label: 'Media Library', description: 'Browse and remove uploaded files', icon: Image },
-  { to: { name: 'admin-users' }, label: 'Users', description: 'Browse registered accounts', icon: Users },
-]
+const quickLinks = computed(() => [
+  { to: { name: 'admin-menu' }, label: t('admin.dashboard.links.menu.label'), description: t('admin.dashboard.links.menu.description'), icon: FileText },
+  { to: { name: 'admin-storage-settings' }, label: t('admin.dashboard.links.storage.label'), description: t('admin.dashboard.links.storage.description'), icon: Cloud },
+  { to: { name: 'admin-media-library' }, label: t('admin.dashboard.links.media.label'), description: t('admin.dashboard.links.media.description'), icon: Image },
+  { to: { name: 'admin-users' }, label: t('admin.dashboard.links.users.label'), description: t('admin.dashboard.links.users.description'), icon: Users },
+])
 
 onMounted(() => {
   adminStore.fetchStats()
@@ -33,8 +35,8 @@ onMounted(() => {
 <template>
   <div class="mx-auto max-w-5xl space-y-6">
     <div>
-      <h1 class="text-lg font-bold text-slate-900">Dashboard</h1>
-      <p class="mt-1 text-sm text-slate-500">An overview of your community.</p>
+      <h1 class="text-lg font-bold text-slate-900">{{ t('admin.dashboard.title') }}</h1>
+      <p class="mt-1 text-sm text-slate-500">{{ t('admin.dashboard.subtitle') }}</p>
     </div>
 
     <div
@@ -58,7 +60,7 @@ onMounted(() => {
     </div>
 
     <div>
-      <h2 class="text-xs font-bold uppercase tracking-widest text-slate-500">Manage</h2>
+      <h2 class="text-xs font-bold uppercase tracking-widest text-slate-500">{{ t('admin.dashboard.manageTitle') }}</h2>
       <div class="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <RouterLink
           v-for="link in quickLinks"

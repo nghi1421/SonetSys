@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import { File, X } from '@lucide/vue'
 import { formatBytes } from '@/shared/utils/formatBytes'
 import type { Media } from '@/modules/storage/types'
 
 defineProps<{ media: Media | null }>()
 const emit = defineEmits<{ close: [] }>()
+const { t } = useI18n()
 </script>
 
 <template>
@@ -20,7 +22,7 @@ const emit = defineEmits<{ close: [] }>()
           <button
             type="button"
             class="rounded-lg p-1.5 text-slate-400 transition-colors duration-200 hover:text-slate-700"
-            aria-label="Close preview"
+            :aria-label="t('common.mediaPreview.closePreview')"
             @click="emit('close')"
           >
             <X class="h-4 w-4" />
@@ -43,20 +45,20 @@ const emit = defineEmits<{ close: [] }>()
           />
           <div v-else class="flex flex-col items-center py-10 text-slate-400">
             <File class="h-10 w-10" />
-            <p class="mt-2 text-xs">Preview not available for this file type.</p>
+            <p class="mt-2 text-xs">{{ t('common.mediaPreview.notAvailable') }}</p>
           </div>
         </div>
 
         <div class="flex items-center justify-between gap-3 border-t border-slate-200 px-4 py-3">
           <p class="text-[11px] text-slate-400">
-            {{ formatBytes(media.size) }} · uploaded by {{ media.uploaded_by.name ?? 'Unknown' }}
+            {{ t('common.mediaPreview.uploadedBy', { size: formatBytes(media.size), name: media.uploaded_by.name ?? t('common.mediaPreview.unknown') }) }}
           </p>
           <RouterLink
             v-if="media.mediable_type === 'post' && media.mediable_id"
             :to="{ name: 'post-detail', params: { id: media.mediable_id } }"
             class="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white transition-colors duration-200 hover:bg-blue-700"
           >
-            View post
+            {{ t('common.mediaPreview.viewPost') }}
           </RouterLink>
         </div>
       </div>

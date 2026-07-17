@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Copy, Globe, Repeat2, Share2 } from '@lucide/vue'
 import RepostDialog from './RepostDialog.vue'
 import SocialShareDialog from './SocialShareDialog.vue'
@@ -7,6 +8,7 @@ import { copyToClipboard, postPermalink } from '../utils/shareIntents'
 import type { Post } from '../types'
 
 const props = defineProps<{ post: Post }>()
+const { t } = useI18n()
 
 const open = ref(false)
 const showRepostDialog = ref(false)
@@ -68,14 +70,14 @@ async function onCopyLink(): Promise<void> {
         class="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-cyan"
         @click="openRepostDialog"
       >
-        <Repeat2 class="h-4 w-4" /> Share to Profile
+        <Repeat2 class="h-4 w-4" /> {{ t('feed.shareMenu.shareToProfile') }}
       </button>
       <button
         type="button"
         class="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-cyan"
         @click="openSocialDialog"
       >
-        <Globe class="h-4 w-4" /> Share to Social Media
+        <Globe class="h-4 w-4" /> {{ t('feed.shareMenu.shareToSocial') }}
       </button>
       <button
         type="button"
@@ -83,7 +85,7 @@ async function onCopyLink(): Promise<void> {
         @click="onCopyLink"
       >
         <Copy class="h-4 w-4" />
-        {{ copyError ? 'Could not copy' : copied ? 'Link copied!' : 'Copy link' }}
+        {{ copyError ? t('feed.shareMenu.copyError') : copied ? t('feed.shareMenu.copied') : t('feed.shareMenu.copyLink') }}
       </button>
     </div>
 

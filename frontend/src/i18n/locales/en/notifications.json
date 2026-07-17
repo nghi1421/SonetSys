@@ -1,0 +1,15 @@
+{
+  "bell": {
+    "ariaLabel": "Notifications",
+    "title": "Notifications",
+    "markAllRead": "Mark all read",
+    "empty": "No notifications yet"
+  },
+  "types": {
+    "postLiked": "{actor} liked your post",
+    "commentLiked": "{actor} liked your comment",
+    "commentPosted": "{actor} commented on your post",
+    "postShared": "{actor} shared your post",
+    "default": "{actor} interacted with your content"
+  }
+}

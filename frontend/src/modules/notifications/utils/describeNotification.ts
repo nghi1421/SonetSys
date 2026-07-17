@@ -1,18 +1,20 @@
 import type { AppNotification } from '../types'
 
-export function describeNotification(notification: AppNotification): string {
+type Translate = (key: string, params?: Record<string, unknown>) => string
+
+export function describeNotification(notification: AppNotification, t: Translate): string {
   const actor = notification.actor.name ?? 'Someone'
 
   switch (notification.type) {
     case 'post.liked':
-      return `${actor} liked your post`
+      return t('notifications.types.postLiked', { actor })
     case 'comment.liked':
-      return `${actor} liked your comment`
+      return t('notifications.types.commentLiked', { actor })
     case 'comment.posted':
-      return `${actor} commented on your post`
+      return t('notifications.types.commentPosted', { actor })
     case 'post.shared':
-      return `${actor} shared your post`
+      return t('notifications.types.postShared', { actor })
     default:
-      return `${actor} interacted with your content`
+      return t('notifications.types.default', { actor })
   }
 }

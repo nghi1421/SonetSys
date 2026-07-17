@@ -1,0 +1,7 @@
+{
+  "page": {
+    "loadError": "Could not load this page. Please try again later.",
+    "emptyTitle": "No content yet",
+    "emptyDescription": "An admin hasn't attached a page to this section yet."
+  }
+}
