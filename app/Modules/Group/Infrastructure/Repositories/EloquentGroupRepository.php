@@ -54,4 +54,9 @@ final class EloquentGroupRepository implements GroupRepositoryInterface
     {
         Group::query()->whereKey($groupId)->decrement('members_count');
     }
+
+    public function count(): int
+    {
+        return Group::query()->count();
+    }
 }

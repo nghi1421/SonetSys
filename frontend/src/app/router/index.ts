@@ -42,6 +42,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/posts/:id',
+      name: 'post-detail',
+      component: () => import('@/modules/feed/views/PostDetailView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/m/:slug',
       name: 'menu-page',
       component: () => import('@/modules/menu/views/MenuPageView.vue'),
@@ -60,22 +66,36 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: '/admin/menu',
-      name: 'admin-menu',
-      component: () => import('@/modules/menu/views/AdminMenuView.vue'),
+      path: '/admin',
+      component: () => import('@/shared/components/layout/AdminShell.vue'),
       meta: { requiresAuth: true, requiresAdmin: true },
-    },
-    {
-      path: '/admin/storage',
-      name: 'admin-storage-settings',
-      component: () => import('@/modules/storage/views/StorageSettingsView.vue'),
-      meta: { requiresAuth: true, requiresAdmin: true },
-    },
-    {
-      path: '/admin/media',
-      name: 'admin-media-library',
-      component: () => import('@/modules/storage/views/MediaLibraryView.vue'),
-      meta: { requiresAuth: true, requiresAdmin: true },
+      children: [
+        {
+          path: '',
+          name: 'admin-dashboard',
+          component: () => import('@/modules/admin/views/AdminDashboardView.vue'),
+        },
+        {
+          path: 'menu',
+          name: 'admin-menu',
+          component: () => import('@/modules/menu/views/AdminMenuView.vue'),
+        },
+        {
+          path: 'storage',
+          name: 'admin-storage-settings',
+          component: () => import('@/modules/storage/views/StorageSettingsView.vue'),
+        },
+        {
+          path: 'media',
+          name: 'admin-media-library',
+          component: () => import('@/modules/storage/views/MediaLibraryView.vue'),
+        },
+        {
+          path: 'users',
+          name: 'admin-users',
+          component: () => import('@/modules/users/views/AdminUsersView.vue'),
+        },
+      ],
     },
   ],
 })

@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
 import { Cloud, HardDrive } from '@lucide/vue'
-import AppShell from '@/shared/components/layout/AppShell.vue'
-import AppAlert from '@/shared/components/ui/AppAlert.vue'
-import AppButton from '@/shared/components/ui/AppButton.vue'
-import AppInput from '@/shared/components/ui/AppInput.vue'
 import { useStorageStore } from '../store/storageStore'
 import type { StorageDriver } from '../types'
 
@@ -62,73 +58,121 @@ async function onSave(): Promise<void> {
 </script>
 
 <template>
-  <AppShell>
-    <div class="mx-auto max-w-2xl space-y-6">
-      <h1 class="text-sm font-bold tracking-wider text-cyber-text">// Storage Settings</h1>
+  <div class="mx-auto max-w-2xl space-y-6">
+    <div>
+      <h1 class="text-lg font-bold text-slate-900">Storage</h1>
+      <p class="mt-1 text-sm text-slate-500">Choose where uploaded files are stored.</p>
+    </div>
 
-      <AppAlert v-if="error">{{ error }}</AppAlert>
-      <AppAlert v-if="saved" variant="success">Storage settings saved.</AppAlert>
+    <p v-if="error" class="rounded-lg border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700">{{ error }}</p>
+    <p v-if="saved" class="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-xs text-emerald-700">
+      Storage settings saved.
+    </p>
 
-      <div v-if="storageStore.loadingConfig" class="h-64 animate-pulse rounded-hud border border-cyber-border bg-cyber-surface/60" />
+    <div v-if="storageStore.loadingConfig" class="h-64 animate-pulse rounded-xl border border-slate-200 bg-slate-100" />
 
-      <form v-else class="space-y-5 rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md" @submit.prevent="onSave">
-        <div class="space-y-1.5">
-          <label class="block text-[9px] font-mono uppercase tracking-widest text-cyber-neon-cyan">
-            Storage Driver
-          </label>
-          <div class="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              class="flex items-center justify-center gap-2 rounded-hud border px-3 py-3 font-mono text-xs transition-all duration-300"
-              :class="
-                driver === 'local'
-                  ? 'border-cyber-neon-cyan/50 bg-cyber-neon-cyan/10 text-cyber-neon-cyan shadow-cyan-glow'
-                  : 'border-cyber-border bg-cyber-surface/60 text-cyber-muted hover:border-cyber-neon-cyan/30'
-              "
-              @click="driver = 'local'"
-            >
-              <HardDrive class="h-3.5 w-3.5" /> Local Disk
-            </button>
-            <button
-              type="button"
-              class="flex items-center justify-center gap-2 rounded-hud border px-3 py-3 font-mono text-xs transition-all duration-300"
-              :class="
-                driver === 's3'
-                  ? 'border-cyber-neon-indigo/50 bg-cyber-neon-indigo/10 text-cyber-neon-indigo shadow-cyan-glow'
-                  : 'border-cyber-border bg-cyber-surface/60 text-cyber-muted hover:border-cyber-neon-indigo/30'
-              "
-              @click="driver = 's3'"
-            >
-              <Cloud class="h-3.5 w-3.5" /> Amazon S3
-            </button>
-          </div>
-          <p class="font-mono text-[10px] text-cyber-muted">
-            New uploads use this driver. Files already stored elsewhere are not migrated automatically.
-          </p>
+    <form
+      v-else
+      class="space-y-5 rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
+      @submit.prevent="onSave"
+    >
+      <div class="space-y-1.5">
+        <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">Storage Driver</label>
+        <div class="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            class="flex items-center justify-center gap-2 rounded-lg border px-3 py-3 text-xs font-medium transition-colors duration-200"
+            :class="
+              driver === 'local'
+                ? 'border-blue-300 bg-blue-50 text-blue-700'
+                : 'border-slate-200 text-slate-500 hover:border-slate-300'
+            "
+            @click="driver = 'local'"
+          >
+            <HardDrive class="h-3.5 w-3.5" /> Local Disk
+          </button>
+          <button
+            type="button"
+            class="flex items-center justify-center gap-2 rounded-lg border px-3 py-3 text-xs font-medium transition-colors duration-200"
+            :class="
+              driver === 's3'
+                ? 'border-blue-300 bg-blue-50 text-blue-700'
+                : 'border-slate-200 text-slate-500 hover:border-slate-300'
+            "
+            @click="driver = 's3'"
+          >
+            <Cloud class="h-3.5 w-3.5" /> Amazon S3
+          </button>
         </div>
+        <p class="text-[11px] text-slate-400">
+          New uploads use this driver. Files already stored elsewhere are not migrated automatically.
+        </p>
+      </div>
 
-        <template v-if="driver === 's3'">
-          <AppInput v-model="bucket" label="Bucket" autocomplete="off" />
-          <AppInput v-model="region" label="Region" autocomplete="off" />
-          <AppInput v-model="key" label="Access Key ID" autocomplete="off" />
-          <AppInput
+      <template v-if="driver === 's3'">
+        <div class="space-y-1.5">
+          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">Bucket</label>
+          <input
+            v-model="bucket"
+            type="text"
+            autocomplete="off"
+            class="block w-full rounded-lg border border-slate-200 px-3 py-2 text-xs text-slate-900 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-600/30"
+          />
+        </div>
+        <div class="space-y-1.5">
+          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">Region</label>
+          <input
+            v-model="region"
+            type="text"
+            autocomplete="off"
+            class="block w-full rounded-lg border border-slate-200 px-3 py-2 text-xs text-slate-900 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-600/30"
+          />
+        </div>
+        <div class="space-y-1.5">
+          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">Access Key ID</label>
+          <input
+            v-model="key"
+            type="text"
+            autocomplete="off"
+            class="block w-full rounded-lg border border-slate-200 px-3 py-2 text-xs text-slate-900 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-600/30"
+          />
+        </div>
+        <div class="space-y-1.5">
+          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">Secret Access Key</label>
+          <input
             v-model="secret"
-            label="Secret Access Key"
             type="password"
             autocomplete="new-password"
+            class="block w-full rounded-lg border border-slate-200 px-3 py-2 text-xs text-slate-900 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-600/30"
           />
-          <p class="-mt-3 font-mono text-[10px] text-cyber-muted">
-            {{ storageStore.config?.has_secret ? 'A secret is already saved — leave blank to keep it.' : 'Required.' }}
-          </p>
-          <AppInput v-model="endpoint" label="Custom Endpoint (optional)" autocomplete="off" />
-          <label class="flex items-center gap-2 font-mono text-xs text-cyber-text">
-            <input v-model="usePathStyleEndpoint" type="checkbox" class="rounded border-cyber-border" />
-            Use path-style endpoint
+        </div>
+        <p class="-mt-3 text-[11px] text-slate-400">
+          {{ storageStore.config?.has_secret ? 'A secret is already saved — leave blank to keep it.' : 'Required.' }}
+        </p>
+        <div class="space-y-1.5">
+          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">
+            Custom Endpoint (optional)
           </label>
-        </template>
+          <input
+            v-model="endpoint"
+            type="text"
+            autocomplete="off"
+            class="block w-full rounded-lg border border-slate-200 px-3 py-2 text-xs text-slate-900 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-600/30"
+          />
+        </div>
+        <label class="flex items-center gap-2 text-xs text-slate-700">
+          <input v-model="usePathStyleEndpoint" type="checkbox" class="rounded border-slate-300" />
+          Use path-style endpoint
+        </label>
+      </template>
 
-        <AppButton type="submit" label="Save Settings" :loading="storageStore.savingConfig" />
-      </form>
-    </div>
-  </AppShell>
+      <button
+        type="submit"
+        :disabled="storageStore.savingConfig"
+        class="rounded-lg bg-blue-600 px-4 py-2 text-xs font-medium text-white transition-colors duration-200 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        {{ storageStore.savingConfig ? 'Saving…' : 'Save Settings' }}
+      </button>
+    </form>
+  </div>
 </template>

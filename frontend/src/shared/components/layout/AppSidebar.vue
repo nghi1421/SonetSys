@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
-import { Cloud, FileText, Home, Image, Megaphone, Settings, Users } from '@lucide/vue'
+import { FileText, Home, LayoutDashboard, Megaphone, Users } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import { useMenuStore } from '@/modules/menu/store/menuStore'
 import type { MenuItem } from '@/modules/menu/types'
@@ -46,7 +46,7 @@ function targetFor(item: MenuItem) {
   />
 
   <aside
-    class="fixed inset-y-0 left-0 top-16 z-20 w-56 -translate-x-full overflow-y-auto border-r border-cyber-border bg-cyber-glass py-6 pr-2 pl-4 backdrop-blur-md transition-transform duration-300 sm:static sm:z-auto sm:w-56 sm:translate-x-0 sm:pr-4 sm:pl-0"
+    class="fixed inset-y-0 left-0 top-16 z-20 w-56 -translate-x-full overflow-y-auto border-r border-cyber-border bg-cyber-glass py-6 pr-2 pl-4 backdrop-blur-md transition-transform duration-300 sm:static sm:z-auto sm:w-56 sm:translate-x-0 sm:px-4 sm:pl-0"
     :class="props.open && 'translate-x-0'"
   >
     <nav class="space-y-1">
@@ -67,34 +67,14 @@ function targetFor(item: MenuItem) {
       </RouterLink>
     </nav>
 
-    <template v-if="isAdmin">
-      <RouterLink
-        :to="{ name: 'admin-menu' }"
-        title="Manage Menu"
-        class="mt-6 flex items-center gap-2.5 border-t border-cyber-border px-3 pt-4 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-indigo"
-        active-class="text-cyber-neon-indigo"
-      >
-        <Settings class="h-4 w-4 shrink-0" />
-        <span>Manage Menu</span>
-      </RouterLink>
-      <RouterLink
-        :to="{ name: 'admin-storage-settings' }"
-        title="Storage Settings"
-        class="mt-1 flex items-center gap-2.5 px-3 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-indigo"
-        active-class="text-cyber-neon-indigo"
-      >
-        <Cloud class="h-4 w-4 shrink-0" />
-        <span>Storage Settings</span>
-      </RouterLink>
-      <RouterLink
-        :to="{ name: 'admin-media-library' }"
-        title="Media Library"
-        class="mt-1 flex items-center gap-2.5 px-3 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-indigo"
-        active-class="text-cyber-neon-indigo"
-      >
-        <Image class="h-4 w-4 shrink-0" />
-        <span>Media Library</span>
-      </RouterLink>
-    </template>
+    <RouterLink
+      v-if="isAdmin"
+      :to="{ name: 'admin-dashboard' }"
+      title="Admin Panel"
+      class="mt-6 flex items-center gap-2.5 rounded-hud border-t border-cyber-border px-3 pt-4 font-mono text-xs font-bold uppercase tracking-wider text-cyber-neon-indigo transition-all duration-300 hover:text-cyber-neon-cyan"
+    >
+      <LayoutDashboard class="h-4 w-4 shrink-0" />
+      <span>Admin Panel</span>
+    </RouterLink>
   </aside>
 </template>

@@ -41,4 +41,14 @@ final class EloquentMediaRepository implements MediaRepositoryInterface
             ->orderByDesc('created_at')
             ->paginate($perPage, page: $page);
     }
+
+    public function count(): int
+    {
+        return Media::query()->count();
+    }
+
+    public function sumSize(): int
+    {
+        return (int) Media::query()->sum('size');
+    }
 }

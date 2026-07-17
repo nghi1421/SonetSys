@@ -35,6 +35,11 @@ export const feedApi = {
     return data
   },
 
+  async fetchPost(postId: number) {
+    const { data } = await http.get<ApiResponse<Post>>(`/posts/${postId}`)
+    return data
+  },
+
   async updatePost(postId: number, payload: UpdatePostPayload) {
     const { data } = await http.put<ApiResponse<Post>>(`/posts/${postId}`, payload)
     return data
