@@ -14,7 +14,7 @@ async function onLogout(): Promise<void> {
 </script>
 
 <template>
-  <header class="border-b border-cyber-border bg-cyber-glass backdrop-blur-md">
+  <header class="sticky top-0 z-20 border-b border-cyber-border bg-cyber-glass backdrop-blur-md">
     <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
       <div>
         <h1
