@@ -42,7 +42,7 @@ async function onItemClick(notificationId: string): Promise<void> {
 
     <div
       v-if="open"
-      class="fixed inset-x-4 top-16 z-10 rounded-hud border border-cyber-border bg-cyber-glass backdrop-blur-md sm:absolute sm:inset-x-auto sm:right-0 sm:top-auto sm:mt-2 sm:w-80"
+      class="fixed inset-x-4 top-16 z-10 rounded-hud border border-cyber-neon-cyan/40 bg-cyber-glass shadow-cyan-glow backdrop-blur-md sm:absolute sm:inset-x-auto sm:right-0 sm:top-auto sm:mt-2 sm:w-80"
       @click.stop
     >
       <div class="flex items-center justify-between border-b border-cyber-border px-4 py-2.5">
