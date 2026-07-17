@@ -74,9 +74,6 @@ async function saveEdit(): Promise<void> {
           <span class="font-mono text-[9px] uppercase tracking-widest text-cyber-muted">
             {{ useRelativeTime(post.created_at) }}
           </span>
-          <span class="rounded border border-cyber-border bg-cyber-surface px-2 py-0.5 font-mono text-[9px] text-cyber-muted">
-            POST-{{ post.id }}
-          </span>
         </div>
       </div>
       <div v-if="isOwner || canDelete" class="relative">
