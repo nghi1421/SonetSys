@@ -22,11 +22,13 @@ final class DatabaseSeeder extends Seeder
 
         $adminRole = Role::query()->where('slug', RoleSlug::Admin->value)->firstOrFail();
 
-        User::factory()->create([
-            'role_id' => $adminRole->id,
-            'name' => 'Admin',
-            'email' => 'admin@sonetsys.test',
-        ]);
+        if (! User::query()->where('email', 'admin@sonetsys.test')->exists()) {
+            User::factory()->create([
+                'role_id' => $adminRole->id,
+                'name' => 'Admin',
+                'email' => 'admin@sonetsys.test',
+            ]);
+        }
 
         app(MenuService::class)->seedDefaults();
     }
