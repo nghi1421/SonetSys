@@ -20,11 +20,11 @@ function initialOf(name: string | null): string {
 }
 
 function hasUnviewed(groupIndex: number): boolean {
-  return groups.value[groupIndex].stories.some((story) => !story.viewed_by_me)
+  return groups.value[groupIndex]?.stories.some((story) => !story.viewed_by_me) ?? false
 }
 
 function isMine(groupIndex: number): boolean {
-  return groups.value[groupIndex].author.id === authStore.user?.id
+  return groups.value[groupIndex]?.author.id === authStore.user?.id
 }
 
 onMounted(() => {
