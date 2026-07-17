@@ -27,13 +27,21 @@ final class StoryController extends Controller
     {
         $stories = $this->stories->listActiveFeed((int) $request->user()->id);
 
-        $groups = $stories->groupBy('author_id')->map(fn (Collection $group) => [
-            'author' => [
-                'id' => $group->first()->author->id,
-                'name' => $group->first()->author->name,
-            ],
-            'stories' => StoryResource::collection($group->values()),
-        ])->values();
+        $groups = $stories->groupBy('author_id')
+            ->map(fn (Collection $group) => [
+                'author' => [
+                    'id' => $group->first()->author->id,
+                    'name' => $group->first()->author->name,
+                ],
+                'has_unviewed' => $group->contains(fn (Story $story) => ! $story->viewed_by_me),
+                'stories' => StoryResource::collection($group->values()),
+            ])
+            ->sortBy(fn (array $group) => $group['has_unviewed'] ? 0 : 1)
+            ->values()
+            ->map(fn (array $group) => [
+                'author' => $group['author'],
+                'stories' => $group['stories'],
+            ]);
 
         return ApiResponse::success($groups);
     }
