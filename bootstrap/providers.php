@@ -3,6 +3,7 @@
 use App\Core\Auth\CoreAuthServiceProvider;
 use App\Core\Storage\CoreStorageServiceProvider;
 use App\Modules\Feed\FeedServiceProvider;
+use App\Modules\Follow\FollowServiceProvider;
 use App\Modules\Group\GroupServiceProvider;
 use App\Modules\Menu\MenuServiceProvider;
 use App\Modules\Notification\NotificationServiceProvider;
@@ -14,6 +15,7 @@ return [
     CoreAuthServiceProvider::class,
     CoreStorageServiceProvider::class,
     FeedServiceProvider::class,
+    FollowServiceProvider::class,
     GroupServiceProvider::class,
     MenuServiceProvider::class,
     NotificationServiceProvider::class,

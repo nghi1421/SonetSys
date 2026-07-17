@@ -3,6 +3,7 @@ import admin from './locales/en/admin.json'
 import auth from './locales/en/auth.json'
 import common from './locales/en/common.json'
 import feed from './locales/en/feed.json'
+import follow from './locales/en/follow.json'
 import groups from './locales/en/groups.json'
 import menu from './locales/en/menu.json'
 import notifications from './locales/en/notifications.json'
@@ -24,6 +25,7 @@ const en = {
   admin,
   notifications,
   stories,
+  follow,
 }
 
 export const i18n = createI18n({

@@ -1,0 +1,13 @@
+{
+  "follow": "Follow",
+  "unfollow": "Unfollow",
+  "followers": "Followers",
+  "following": "Following",
+  "followersTitle": "Followers",
+  "followingTitle": "Following",
+  "noFollowers": "No followers yet",
+  "noFollowing": "Not following anyone yet",
+  "joined": "Joined",
+  "noPosts": "No posts yet",
+  "profileUnavailable": "This profile is unavailable — it may not exist, or you don't have permission to view it."
+}

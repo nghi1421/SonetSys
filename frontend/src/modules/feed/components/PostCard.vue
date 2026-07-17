@@ -71,7 +71,17 @@ async function saveEdit(): Promise<void> {
   >
     <header class="flex items-start justify-between">
       <div>
-        <h4 class="text-xs font-bold tracking-wider text-cyber-text">// {{ post.author.name }}</h4>
+        <h4 class="text-xs font-bold tracking-wider text-cyber-text">
+          //
+          <router-link
+            v-if="post.author.id"
+            :to="`/users/${post.author.id}`"
+            class="transition-colors duration-300 hover:text-cyber-neon-cyan"
+          >
+            {{ post.author.name }}
+          </router-link>
+          <template v-else>{{ post.author.name }}</template>
+        </h4>
         <div class="mt-1 flex items-center gap-2">
           <span class="font-mono text-[9px] uppercase tracking-widest text-cyber-muted">
             {{ useRelativeTime(post.created_at) }}
