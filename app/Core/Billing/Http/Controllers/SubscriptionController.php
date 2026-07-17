@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace App\Core\Billing\Http\Controllers;
 
-use App\Core\Auth\Domain\Enums\PermissionSlug;
-use App\Core\Billing\Application\Contracts\PlanRepositoryInterface;
 use App\Core\Billing\Application\Services\SubscriptionService;
-use App\Core\Billing\Http\Requests\UpdateSubscriptionRequest;
 use App\Core\Billing\Http\Resources\TenantSubscriptionResource;
 use App\Core\Support\ApiResponse;
 use App\Http\Controllers\Controller;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use App\Core\Auth\Domain\Enums\PermissionSlug;
+use App\Core\Billing\Application\Contracts\PlanRepositoryInterface;
+use App\Core\Billing\Http\Requests\UpdateSubscriptionRequest;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Gate;
 
 final class SubscriptionController extends Controller
