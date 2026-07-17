@@ -14,13 +14,6 @@ http.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${token}`
   }
 
-  // MVP simplification: tenant resolved from a fixed env var rather than
-  // subdomain routing — see docs/ARCHITECTURE.md's ResolveTenant middleware.
-  const tenantSlug = import.meta.env.VITE_TENANT_SLUG as string | undefined
-  if (tenantSlug) {
-    config.headers['X-Tenant-Slug'] = tenantSlug
-  }
-
   return config
 })
 

@@ -6,7 +6,6 @@ export interface Role {
 
 export interface User {
   id: number
-  tenant_id: number | null
   name: string
   email: string
   status: 'active' | 'suspended' | 'banned'

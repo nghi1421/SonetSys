@@ -43,7 +43,6 @@ final class PostMediaTest extends TestCase
         $this->assertSame('local', $media->disk);
         $this->assertSame($post->media_path, $media->path);
         $this->assertSame('image', $media->type->value);
-        $this->assertSame($user->tenant_id, $media->tenant_id);
         $this->assertSame($user->id, $media->uploaded_by);
 
         $response->assertJsonPath('data.media_url', fn ($url) => str_contains((string) $url, $post->media_path));
@@ -80,11 +79,10 @@ final class PostMediaTest extends TestCase
 
         // Simulate a post created before the `media` table existed: media_path
         // is set directly on the post, with no corresponding Media row.
-        $legacyPath = 'posts/'.$user->tenant_id.'/legacy.jpg';
+        $legacyPath = 'posts/legacy.jpg';
         Storage::disk('public')->put($legacyPath, 'fake-image-bytes');
 
         $post = Post::query()->create([
-            'tenant_id' => $user->tenant_id,
             'author_id' => $user->id,
             'body' => 'Legacy post',
             'visibility' => 'public',

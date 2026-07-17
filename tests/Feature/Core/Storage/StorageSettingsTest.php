@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Core\Storage;
 
-use App\Core\Auth\Domain\Models\Role;
 use App\Core\Auth\Domain\Models\User;
-use App\Core\Tenancy\Domain\Models\Tenant;
+use App\Core\Storage\Domain\Models\StorageSetting;
 use Database\Seeders\PermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
@@ -25,7 +24,7 @@ final class StorageSettingsTest extends TestCase
 
     public function test_default_storage_config_is_local(): void
     {
-        Sanctum::actingAs($this->tenantAdminUser());
+        Sanctum::actingAs(User::factory()->admin()->create());
 
         $this->getJson('/api/v1/storage/settings')
             ->assertOk()
@@ -43,7 +42,7 @@ final class StorageSettingsTest extends TestCase
 
     public function test_rejects_an_s3_endpoint_pointing_at_an_internal_address(): void
     {
-        Sanctum::actingAs($this->tenantAdminUser());
+        Sanctum::actingAs(User::factory()->admin()->create());
 
         $this->putJson('/api/v1/storage/settings', [
             'driver' => 's3',
@@ -66,7 +65,7 @@ final class StorageSettingsTest extends TestCase
 
     public function test_manager_can_switch_to_s3_and_the_secret_is_never_exposed(): void
     {
-        Sanctum::actingAs($this->tenantAdminUser());
+        Sanctum::actingAs(User::factory()->admin()->create());
 
         $response = $this->putJson('/api/v1/storage/settings', [
             'driver' => 's3',
@@ -88,8 +87,7 @@ final class StorageSettingsTest extends TestCase
 
     public function test_updating_config_without_a_secret_keeps_the_previously_saved_one(): void
     {
-        $tenant = $this->tenantAdminUserWithTenant();
-        Sanctum::actingAs($tenant['user']);
+        Sanctum::actingAs(User::factory()->admin()->create());
 
         $this->putJson('/api/v1/storage/settings', [
             'driver' => 's3',
@@ -99,7 +97,7 @@ final class StorageSettingsTest extends TestCase
             'secret' => 'super-secret-value',
         ])->assertOk();
 
-        $storedSecret = $tenant['tenant']->fresh()->storage_config['secret'];
+        $storedSecret = StorageSetting::query()->firstOrFail()->secret;
 
         // Update the bucket only, without resending the secret.
         $this->putJson('/api/v1/storage/settings', [
@@ -112,26 +110,6 @@ final class StorageSettingsTest extends TestCase
             ->assertJsonPath('data.bucket', 'renamed-bucket')
             ->assertJsonPath('data.has_secret', true);
 
-        $this->assertSame($storedSecret, $tenant['tenant']->fresh()->storage_config['secret']);
-    }
-
-    private function tenantAdminUser(): User
-    {
-        return $this->tenantAdminUserWithTenant()['user'];
-    }
-
-    /**
-     * @return array{user: User, tenant: Tenant}
-     */
-    private function tenantAdminUserWithTenant(): array
-    {
-        $role = Role::factory()->tenantAdmin()->create();
-
-        $user = User::factory()->create([
-            'tenant_id' => $role->tenant_id,
-            'role_id' => $role->id,
-        ]);
-
-        return ['user' => $user, 'tenant' => $role->tenant];
+        $this->assertSame($storedSecret, StorageSetting::query()->firstOrFail()->secret);
     }
 }

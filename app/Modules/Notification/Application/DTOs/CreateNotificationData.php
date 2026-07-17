@@ -9,7 +9,6 @@ use App\Modules\Notification\Domain\Enums\NotificationType;
 final readonly class CreateNotificationData
 {
     public function __construct(
-        public int $tenantId,
         public string $notifiableType,
         public int $notifiableId,
         public ?int $actorId,

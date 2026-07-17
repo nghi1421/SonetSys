@@ -24,7 +24,9 @@ const editBody = ref(props.post.body)
 const confirmingDelete = ref(false)
 
 const isOwner = computed(() => authStore.user?.id === props.post.author.id)
-const canModerate = computed(() => authStore.user?.role.slug === 'tenant-admin')
+const canModerate = computed(
+  () => authStore.user?.role.slug === 'admin' || authStore.user?.role.slug === 'moderator',
+)
 const canDelete = computed(() => isOwner.value || canModerate.value)
 
 async function onToggleLike(): Promise<void> {
@@ -63,7 +65,7 @@ async function saveEdit(): Promise<void> {
 
 <template>
   <article
-    class="rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
+    class="relative rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow has-[.popover-panel]:z-20"
   >
     <header class="flex items-start justify-between">
       <div>
@@ -71,9 +73,6 @@ async function saveEdit(): Promise<void> {
         <div class="mt-1 flex items-center gap-2">
           <span class="font-mono text-[9px] uppercase tracking-widest text-cyber-muted">
             {{ useRelativeTime(post.created_at) }}
-          </span>
-          <span class="rounded border border-cyber-border bg-cyber-surface px-2 py-0.5 font-mono text-[9px] text-cyber-muted">
-            POST-{{ post.id }}
           </span>
         </div>
       </div>
@@ -91,7 +90,7 @@ async function saveEdit(): Promise<void> {
 
         <div
           v-if="showActionsMenu"
-          class="absolute right-0 z-10 mt-1 w-36 rounded-hud border border-cyber-border bg-cyber-glass py-1 backdrop-blur-md"
+          class="popover-panel absolute right-0 z-10 mt-1 w-36 rounded-hud border border-cyber-border bg-cyber-glass py-1 backdrop-blur-md"
           @click.stop
         >
           <button

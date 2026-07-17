@@ -20,10 +20,9 @@ final class EloquentNotificationRepository implements NotificationRepositoryInte
         return Notification::query()->find($id);
     }
 
-    public function listForRecipient(int $tenantId, string $notifiableType, int $notifiableId, int $limit): Collection
+    public function listForRecipient(string $notifiableType, int $notifiableId, int $limit): Collection
     {
         return Notification::query()
-            ->where('tenant_id', $tenantId)
             ->where('notifiable_type', $notifiableType)
             ->where('notifiable_id', $notifiableId)
             ->with('actor')
@@ -39,20 +38,18 @@ final class EloquentNotificationRepository implements NotificationRepositoryInte
         }
     }
 
-    public function markAllAsRead(int $tenantId, string $notifiableType, int $notifiableId): void
+    public function markAllAsRead(string $notifiableType, int $notifiableId): void
     {
         Notification::query()
-            ->where('tenant_id', $tenantId)
             ->where('notifiable_type', $notifiableType)
             ->where('notifiable_id', $notifiableId)
             ->whereNull('read_at')
             ->update(['read_at' => now()]);
     }
 
-    public function unreadCount(int $tenantId, string $notifiableType, int $notifiableId): int
+    public function unreadCount(string $notifiableType, int $notifiableId): int
     {
         return Notification::query()
-            ->where('tenant_id', $tenantId)
             ->where('notifiable_type', $notifiableType)
             ->where('notifiable_id', $notifiableId)
             ->whereNull('read_at')

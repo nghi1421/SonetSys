@@ -41,7 +41,6 @@ final class CommentService
             }
 
             $comment = $this->comments->create([
-                'tenant_id' => $data->tenantId,
                 'post_id' => $data->postId,
                 'parent_id' => $parentId,
                 'author_id' => $data->authorId,
@@ -58,7 +57,6 @@ final class CommentService
                 $data->authorId,
                 $directParentAuthorId,
                 (int) $post->author_id,
-                $data->tenantId,
             );
 
             return $comment;

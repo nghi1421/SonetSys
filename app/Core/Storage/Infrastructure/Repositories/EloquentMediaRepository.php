@@ -33,10 +33,9 @@ final class EloquentMediaRepository implements MediaRepositoryInterface
         $media->delete();
     }
 
-    public function paginateForTenant(int $tenantId, ?string $type, int $perPage, int $page): LengthAwarePaginator
+    public function paginate(?string $type, int $perPage, int $page): LengthAwarePaginator
     {
         return Media::query()
-            ->where('tenant_id', $tenantId)
             ->when($type !== null, fn ($query) => $query->where('type', $type))
             ->with('uploader')
             ->orderByDesc('created_at')

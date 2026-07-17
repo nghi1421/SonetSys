@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Modules\Feed\Domain\Models;
 
 use App\Core\Auth\Domain\Models\User;
-use App\Core\Tenancy\Domain\Models\Tenant;
 use App\Modules\Feed\Domain\Enums\MediaType;
 use App\Modules\Feed\Domain\Enums\PostVisibility;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -20,7 +19,6 @@ final class Post extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'tenant_id',
         'author_id',
         'shared_post_id',
         'group_id',
@@ -41,11 +39,6 @@ final class Post extends Model
             'media_type' => MediaType::class,
             'published_at' => 'datetime',
         ];
-    }
-
-    public function tenant(): BelongsTo
-    {
-        return $this->belongsTo(Tenant::class);
     }
 
     public function author(): BelongsTo

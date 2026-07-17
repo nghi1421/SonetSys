@@ -3,7 +3,7 @@ export interface PostAuthor {
   name: string | null
 }
 
-export type PostVisibility = 'public' | 'tenant_only' | 'private'
+export type PostVisibility = 'public' | 'members' | 'private'
 
 export type MediaType = 'image' | 'video' | 'sticker'
 
@@ -14,7 +14,6 @@ export interface Sticker {
 
 export interface Post {
   id: number
-  tenant_id: number
   body: string
   visibility: PostVisibility
   metadata: Record<string, unknown>

@@ -17,5 +17,5 @@ interface MediaRepositoryInterface
 
     public function delete(Media $media): void;
 
-    public function paginateForTenant(int $tenantId, ?string $type, int $perPage, int $page): LengthAwarePaginator;
+    public function paginate(?string $type, int $perPage, int $page): LengthAwarePaginator;
 }

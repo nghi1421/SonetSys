@@ -12,7 +12,6 @@ final readonly class CreateGroupData
         public string $name,
         public ?string $description,
         public GroupVisibility $visibility,
-        public int $tenantId,
         public int $ownerId,
     ) {}
 }

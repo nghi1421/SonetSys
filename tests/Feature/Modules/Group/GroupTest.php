@@ -48,12 +48,12 @@ final class GroupTest extends TestCase
         ]);
     }
 
-    public function test_any_tenant_member_can_join_a_public_group_instantly(): void
+    public function test_any_registered_user_can_join_a_public_group_instantly(): void
     {
         $owner = User::factory()->create();
         $group = $this->createGroup($owner, 'public');
 
-        $joiner = $this->sameTenantUser($owner);
+        $joiner = $this->otherUser();
         Sanctum::actingAs($joiner);
 
         $response = $this->postJson("/api/v1/groups/{$group->id}/join");
@@ -69,7 +69,7 @@ final class GroupTest extends TestCase
         $owner = User::factory()->create();
         $group = $this->createGroup($owner, 'private');
 
-        $joiner = $this->sameTenantUser($owner);
+        $joiner = $this->otherUser();
         Sanctum::actingAs($joiner);
 
         $response = $this->postJson("/api/v1/groups/{$group->id}/join");
@@ -86,7 +86,7 @@ final class GroupTest extends TestCase
         $owner = User::factory()->create();
         $group = $this->createGroup($owner, 'private');
 
-        $joiner = $this->sameTenantUser($owner);
+        $joiner = $this->otherUser();
         $this->joinAsPending($group, $joiner);
 
         Sanctum::actingAs($owner);
@@ -103,10 +103,10 @@ final class GroupTest extends TestCase
         $owner = User::factory()->create();
         $group = $this->createGroup($owner, 'private');
 
-        $joiner = $this->sameTenantUser($owner);
+        $joiner = $this->otherUser();
         $this->joinAsPending($group, $joiner);
 
-        $bystander = $this->sameTenantUser($owner);
+        $bystander = $this->otherUser();
         Sanctum::actingAs($bystander);
 
         $response = $this->postJson("/api/v1/groups/{$group->id}/requests/{$joiner->id}/approve");
@@ -119,7 +119,7 @@ final class GroupTest extends TestCase
         $owner = User::factory()->create();
         $group = $this->createGroup($owner, 'public');
 
-        $member = $this->sameTenantUser($owner);
+        $member = $this->otherUser();
         $this->joinAsApproved($group, $member);
 
         Sanctum::actingAs($owner);
@@ -147,7 +147,7 @@ final class GroupTest extends TestCase
         $owner = User::factory()->create();
         $group = $this->createGroup($owner, 'public');
 
-        $member = $this->sameTenantUser($owner);
+        $member = $this->otherUser();
         $this->joinAsApproved($group, $member);
 
         Sanctum::actingAs($member);
@@ -163,7 +163,7 @@ final class GroupTest extends TestCase
         $owner = User::factory()->create();
         $group = $this->createGroup($owner, 'public');
 
-        $bystander = $this->sameTenantUser($owner);
+        $bystander = $this->otherUser();
         Sanctum::actingAs($bystander);
 
         $this->putJson("/api/v1/groups/{$group->id}", [
@@ -172,18 +172,6 @@ final class GroupTest extends TestCase
         ])->assertForbidden();
 
         $this->deleteJson("/api/v1/groups/{$group->id}")->assertForbidden();
-    }
-
-    public function test_a_group_is_not_visible_to_users_from_another_tenant(): void
-    {
-        $owner = User::factory()->create();
-        $group = $this->createGroup($owner, 'public');
-
-        $outsider = User::factory()->create();
-        Sanctum::actingAs($outsider);
-
-        $this->getJson("/api/v1/groups/{$group->slug}")->assertNotFound();
-        $this->postJson("/api/v1/groups/{$group->id}/join")->assertNotFound();
     }
 
     public function test_member_can_post_in_group_and_it_appears_in_group_feed_only(): void
@@ -218,7 +206,7 @@ final class GroupTest extends TestCase
         Sanctum::actingAs($owner);
         $this->postJson("/api/v1/groups/{$group->id}/posts", ['body' => 'Hello group'])->assertCreated();
 
-        $outsider = $this->sameTenantUser($owner);
+        $outsider = $this->otherUser();
         Sanctum::actingAs($outsider);
 
         $this->getJson("/api/v1/groups/{$group->id}/posts")->assertOk();
@@ -230,7 +218,7 @@ final class GroupTest extends TestCase
         $owner = User::factory()->create();
         $group = $this->createGroup($owner, 'private');
 
-        $outsider = $this->sameTenantUser($owner);
+        $outsider = $this->otherUser();
         Sanctum::actingAs($outsider);
 
         $this->getJson("/api/v1/groups/{$group->id}/posts")->assertForbidden();
@@ -247,7 +235,7 @@ final class GroupTest extends TestCase
             ->assertCreated()
             ->json('data.id');
 
-        $outsider = $this->sameTenantUser($owner);
+        $outsider = $this->otherUser();
         Sanctum::actingAs($outsider);
 
         $this->getJson("/api/v1/posts/{$postId}")->assertForbidden();
@@ -256,7 +244,7 @@ final class GroupTest extends TestCase
         $this->postJson("/api/v1/posts/{$postId}/like")->assertForbidden();
     }
 
-    public function test_any_tenant_member_can_reach_a_public_groups_post_via_the_generic_feed_endpoints(): void
+    public function test_any_registered_user_can_reach_a_public_groups_post_via_the_generic_feed_endpoints(): void
     {
         $owner = User::factory()->create();
         $group = $this->createGroup($owner, 'public');
@@ -266,13 +254,13 @@ final class GroupTest extends TestCase
             ->assertCreated()
             ->json('data.id');
 
-        $outsider = $this->sameTenantUser($owner);
+        $outsider = $this->otherUser();
         Sanctum::actingAs($outsider);
 
         $this->getJson("/api/v1/posts/{$postId}")->assertOk();
         $this->getJson("/api/v1/posts/{$postId}/comments")->assertOk();
 
-        // Viewing is open to any tenant member, but interacting still requires membership.
+        // Viewing is open to any registered user, but interacting still requires membership.
         $this->postJson("/api/v1/posts/{$postId}/comments", ['body' => 'Sneaky comment'])->assertForbidden();
         $this->postJson("/api/v1/posts/{$postId}/like")->assertForbidden();
     }
@@ -282,7 +270,7 @@ final class GroupTest extends TestCase
         $owner = User::factory()->create();
         $group = $this->createGroup($owner, 'public');
 
-        $member = $this->sameTenantUser($owner);
+        $member = $this->otherUser();
         $this->joinAsApproved($group, $member);
 
         Sanctum::actingAs($owner);
@@ -298,11 +286,11 @@ final class GroupTest extends TestCase
         $owner = User::factory()->create();
         $group = $this->createGroup($owner, 'public');
 
-        $admin = $this->sameTenantUser($owner);
+        $admin = $this->otherUser();
         $this->joinAsApproved($group, $admin);
         $this->promoteToAdmin($group, $owner, $admin);
 
-        $member = $this->sameTenantUser($owner);
+        $member = $this->otherUser();
         $this->joinAsApproved($group, $member);
 
         Sanctum::actingAs($admin);
@@ -315,7 +303,7 @@ final class GroupTest extends TestCase
         $owner = User::factory()->create();
         $group = $this->createGroup($owner, 'public');
 
-        $admin = $this->sameTenantUser($owner);
+        $admin = $this->otherUser();
         $this->joinAsApproved($group, $admin);
         $this->promoteToAdmin($group, $owner, $admin);
 
@@ -332,13 +320,13 @@ final class GroupTest extends TestCase
         $owner = User::factory()->create();
         $group = $this->createGroup($owner, 'private');
 
-        $admin = $this->sameTenantUser($owner);
+        $admin = $this->otherUser();
         $this->joinAsPending($group, $admin);
         Sanctum::actingAs($owner);
         $this->postJson("/api/v1/groups/{$group->id}/requests/{$admin->id}/approve")->assertOk();
         $this->promoteToAdmin($group, $owner, $admin);
 
-        $joiner = $this->sameTenantUser($owner);
+        $joiner = $this->otherUser();
         $this->joinAsPending($group, $joiner);
 
         Sanctum::actingAs($admin);
@@ -355,7 +343,7 @@ final class GroupTest extends TestCase
         $owner = User::factory()->create();
         $group = $this->createGroup($owner, 'public');
 
-        $admin = $this->sameTenantUser($owner);
+        $admin = $this->otherUser();
         $this->joinAsApproved($group, $admin);
         $this->promoteToAdmin($group, $owner, $admin);
 
@@ -374,11 +362,11 @@ final class GroupTest extends TestCase
         $owner = User::factory()->create();
         $group = $this->createGroup($owner, 'public');
 
-        $adminOne = $this->sameTenantUser($owner);
+        $adminOne = $this->otherUser();
         $this->joinAsApproved($group, $adminOne);
         $this->promoteToAdmin($group, $owner, $adminOne);
 
-        $adminTwo = $this->sameTenantUser($owner);
+        $adminTwo = $this->otherUser();
         $this->joinAsApproved($group, $adminTwo);
         $this->promoteToAdmin($group, $owner, $adminTwo);
 
@@ -387,15 +375,9 @@ final class GroupTest extends TestCase
         $this->deleteJson("/api/v1/groups/{$group->id}/members/{$adminTwo->id}")->assertForbidden();
     }
 
-    private function sameTenantUser(User $owner): User
+    private function otherUser(): User
     {
-        // Reuse the owner's existing role row instead of UserFactory::forTenant(),
-        // which would try to create a second 'member' role for the same tenant
-        // and collide with the (tenant_id, slug) unique constraint.
-        return User::factory()->create([
-            'tenant_id' => $owner->tenant_id,
-            'role_id' => $owner->role_id,
-        ]);
+        return User::factory()->create();
     }
 
     private function createGroup(User $owner, string $visibility): Group

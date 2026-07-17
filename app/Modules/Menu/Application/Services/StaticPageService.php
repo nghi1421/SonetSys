@@ -19,15 +19,14 @@ final class StaticPageService
     /**
      * @return Collection<int, StaticPage>
      */
-    public function listForTenant(int $tenantId): Collection
+    public function list(): Collection
     {
-        return $this->pages->listForTenant($tenantId);
+        return $this->pages->list();
     }
 
     public function create(CreateStaticPageData $data): StaticPage
     {
         return $this->pages->create([
-            'tenant_id' => $data->tenantId,
             'author_id' => $data->authorId,
             'title' => $data->title,
             'content' => $data->content,

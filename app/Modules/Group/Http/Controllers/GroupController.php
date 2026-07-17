@@ -14,7 +14,6 @@ use App\Modules\Group\Http\Requests\CreateGroupRequest;
 use App\Modules\Group\Http\Requests\UpdateGroupRequest;
 use App\Modules\Group\Http\Resources\GroupResource;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -28,7 +27,7 @@ final class GroupController extends Controller
     {
         $user = $request->user();
 
-        $groups = $this->groups->listForTenant((int) $user->tenant_id);
+        $groups = $this->groups->list();
         $this->groups->attachViewerMembership($groups, (int) $user->id);
 
         return ApiResponse::success(GroupResource::collection($groups));
@@ -45,7 +44,6 @@ final class GroupController extends Controller
     public function show(Request $request, Group $group): JsonResponse
     {
         $user = $request->user();
-        $this->ensureSameTenant($group, $user);
 
         $this->groups->attachViewerMembership($group, (int) $user->id);
 
@@ -55,7 +53,6 @@ final class GroupController extends Controller
     public function update(UpdateGroupRequest $request, Group $group): JsonResponse
     {
         $user = $request->user();
-        $this->ensureSameTenant($group, $user);
         $this->authorizeOwnerOrManager($group, $user);
 
         $group = $this->groups->update($group, $request->toDto());
@@ -66,19 +63,11 @@ final class GroupController extends Controller
     public function destroy(Request $request, Group $group): JsonResponse
     {
         $user = $request->user();
-        $this->ensureSameTenant($group, $user);
         $this->authorizeOwner($group, $user);
 
         $this->groups->delete($group);
 
         return ApiResponse::success();
-    }
-
-    private function ensureSameTenant(Group $group, User $user): void
-    {
-        if ($group->tenant_id !== $user->tenant_id) {
-            throw new ModelNotFoundException;
-        }
     }
 
     private function authorizeOwnerOrManager(Group $group, User $user): void

@@ -6,24 +6,12 @@ declare module 'vue-router' {
     requiresAuth?: boolean
     guest?: boolean
     requiresAdmin?: boolean
-    requiresSuperAdmin?: boolean
   }
 }
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    {
-      path: '/pricing',
-      name: 'pricing',
-      component: () => import('@/modules/billing/views/PricingView.vue'),
-    },
-    {
-      path: '/register-tenant',
-      name: 'register-tenant',
-      component: () => import('@/modules/billing/views/RegisterTenantView.vue'),
-      meta: { guest: true },
-    },
     {
       path: '/login',
       name: 'login',
@@ -88,24 +76,6 @@ const router = createRouter({
       name: 'admin-media-library',
       component: () => import('@/modules/storage/views/MediaLibraryView.vue'),
       meta: { requiresAuth: true, requiresAdmin: true },
-    },
-    {
-      path: '/admin/plans',
-      name: 'admin-plans',
-      component: () => import('@/modules/billing/views/AdminPlansView.vue'),
-      meta: { requiresAuth: true, requiresSuperAdmin: true },
-    },
-    {
-      path: '/admin/subscription',
-      name: 'my-license',
-      component: () => import('@/modules/billing/views/SubscriptionView.vue'),
-      meta: { requiresAuth: true, requiresAdmin: true },
-    },
-    {
-      path: '/admin/tenants',
-      name: 'admin-tenants',
-      component: () => import('@/modules/billing/views/ManageTenantsView.vue'),
-      meta: { requiresAuth: true, requiresSuperAdmin: true },
     },
   ],
 })

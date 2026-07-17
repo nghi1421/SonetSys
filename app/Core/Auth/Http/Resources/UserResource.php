@@ -13,7 +13,6 @@ final class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'tenant_id' => $this->tenant_id,
             'name' => $this->name,
             'email' => $this->email,
             'status' => $this->status->value,

@@ -60,7 +60,7 @@ async function onCopyLink(): Promise<void> {
 
     <div
       v-if="open"
-      class="absolute left-0 z-10 mt-2 w-56 rounded-hud border border-cyber-border bg-cyber-glass py-1 backdrop-blur-md"
+      class="popover-panel absolute right-0 z-10 mt-2 w-56 rounded-hud border border-cyber-border bg-cyber-glass py-1 backdrop-blur-md"
       @click.stop
     >
       <button

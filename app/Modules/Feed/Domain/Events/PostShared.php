@@ -15,6 +15,5 @@ final class PostShared
         public readonly int $sharePostId,
         public readonly int $sharedByUserId,
         public readonly int $originalAuthorId,
-        public readonly int $tenantId,
     ) {}
 }

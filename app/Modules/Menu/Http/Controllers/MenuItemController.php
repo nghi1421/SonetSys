@@ -14,9 +14,7 @@ use App\Modules\Menu\Http\Requests\ReorderMenuItemsRequest;
 use App\Modules\Menu\Http\Requests\UpdateMenuItemRequest;
 use App\Modules\Menu\Http\Resources\MenuItemResource;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 final class MenuItemController extends Controller
@@ -25,17 +23,15 @@ final class MenuItemController extends Controller
         private readonly MenuService $menu,
     ) {}
 
-    public function index(Request $request): JsonResponse
+    public function index(): JsonResponse
     {
-        $items = $this->menu->listForTenant((int) $request->user()->tenant_id);
+        $items = $this->menu->list();
 
         return ApiResponse::success(MenuItemResource::collection($items));
     }
 
-    public function show(Request $request, MenuItem $menuItem): JsonResponse
+    public function show(MenuItem $menuItem): JsonResponse
     {
-        $this->ensureSameTenant($request, $menuItem);
-
         $menuItem->loadMissing('staticPage');
 
         return ApiResponse::success(MenuItemResource::make($menuItem));
@@ -53,17 +49,15 @@ final class MenuItemController extends Controller
     public function update(UpdateMenuItemRequest $request, MenuItem $menuItem): JsonResponse
     {
         Gate::authorize(PermissionSlug::MenuManage->value);
-        $this->ensureSameTenant($request, $menuItem);
 
         $item = $this->menu->update($menuItem, $request->toDto());
 
         return ApiResponse::success(MenuItemResource::make($item->load('staticPage')));
     }
 
-    public function destroy(Request $request, MenuItem $menuItem): JsonResponse
+    public function destroy(MenuItem $menuItem): JsonResponse
     {
         Gate::authorize(PermissionSlug::MenuManage->value);
-        $this->ensureSameTenant($request, $menuItem);
 
         if ($menuItem->is_home) {
             throw new AuthorizationException('The Home menu item cannot be deleted.');
@@ -78,15 +72,8 @@ final class MenuItemController extends Controller
     {
         Gate::authorize(PermissionSlug::MenuManage->value);
 
-        $this->menu->reorder((int) $request->user()->tenant_id, $request->orderedIds());
+        $this->menu->reorder($request->orderedIds());
 
         return ApiResponse::success();
-    }
-
-    private function ensureSameTenant(Request $request, MenuItem $menuItem): void
-    {
-        if ($menuItem->tenant_id !== $request->user()->tenant_id) {
-            throw new ModelNotFoundException;
-        }
     }
 }

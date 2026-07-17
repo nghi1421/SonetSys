@@ -10,17 +10,15 @@ use App\Core\Auth\Http\Resources\UserResource;
 use App\Core\Support\ApiResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 final class UserController extends Controller
 {
-    public function index(Request $request): JsonResponse
+    public function index(): JsonResponse
     {
         Gate::authorize(PermissionSlug::UsersView->value);
 
         $users = User::query()
-            ->where('tenant_id', $request->user()->tenant_id)
             ->with('role')
             ->paginate(25);
 

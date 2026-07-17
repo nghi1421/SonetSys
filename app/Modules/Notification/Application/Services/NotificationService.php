@@ -19,7 +19,6 @@ final class NotificationService
     public function create(CreateNotificationData $data): Notification
     {
         $notification = $this->notifications->create([
-            'tenant_id' => $data->tenantId,
             'notifiable_type' => $data->notifiableType,
             'notifiable_id' => $data->notifiableId,
             'actor_id' => $data->actorId,
@@ -35,9 +34,9 @@ final class NotificationService
     /**
      * @return Collection<int, Notification>
      */
-    public function listForUser(int $tenantId, int $userId, int $limit = 20): Collection
+    public function listForUser(int $userId, int $limit = 20): Collection
     {
-        return $this->notifications->listForRecipient($tenantId, 'user', $userId, $limit);
+        return $this->notifications->listForRecipient('user', $userId, $limit);
     }
 
     public function markAsRead(Notification $notification): void
@@ -45,13 +44,13 @@ final class NotificationService
         $this->notifications->markAsRead($notification);
     }
 
-    public function markAllAsRead(int $tenantId, int $userId): void
+    public function markAllAsRead(int $userId): void
     {
-        $this->notifications->markAllAsRead($tenantId, 'user', $userId);
+        $this->notifications->markAllAsRead('user', $userId);
     }
 
-    public function unreadCount(int $tenantId, int $userId): int
+    public function unreadCount(int $userId): int
     {
-        return $this->notifications->unreadCount($tenantId, 'user', $userId);
+        return $this->notifications->unreadCount('user', $userId);
     }
 }

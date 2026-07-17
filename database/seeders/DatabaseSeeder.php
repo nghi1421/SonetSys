@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Core\Auth\Domain\Enums\RoleSlug;
+use App\Core\Auth\Domain\Models\Role;
 use App\Core\Auth\Domain\Models\User;
+use App\Modules\Menu\Application\Services\MenuService;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,10 +18,16 @@ final class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(PermissionSeeder::class);
+        $this->call(RoleSeeder::class);
 
-        User::factory()->superAdmin()->create([
-            'name' => 'Super Admin',
-            'email' => 'super-admin@sonetsys.test',
+        $adminRole = Role::query()->where('slug', RoleSlug::Admin->value)->firstOrFail();
+
+        User::factory()->create([
+            'role_id' => $adminRole->id,
+            'name' => 'Admin',
+            'email' => 'admin@sonetsys.test',
         ]);
+
+        app(MenuService::class)->seedDefaults();
     }
 }

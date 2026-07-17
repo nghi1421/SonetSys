@@ -46,8 +46,7 @@ final class CreateGroupPostRequest extends FormRequest
 
         return new CreatePostData(
             body: (string) ($this->validated('body') ?? ''),
-            visibility: PostVisibility::TenantOnly,
-            tenantId: (int) $user->tenant_id,
+            visibility: PostVisibility::Members,
             authorId: (int) $user->id,
             groupId: $group->id,
             media: $this->file('media'),

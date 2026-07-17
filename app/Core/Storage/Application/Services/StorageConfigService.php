@@ -6,49 +6,43 @@ namespace App\Core\Storage\Application\Services;
 
 use App\Core\Storage\Application\DTOs\StorageConfigData;
 use App\Core\Storage\Domain\Enums\StorageDriver;
-use App\Core\Tenancy\Application\Contracts\TenantRepositoryInterface;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Core\Storage\Domain\Models\StorageSetting;
 use Illuminate\Support\Facades\Crypt;
 
 /**
- * Reads/writes a tenant's storage_config. The S3 secret is encrypted at
- * rest and never returned to the caller in plaintext or ciphertext — only
- * a boolean flag indicating one is configured (see currentFor()).
+ * Reads/writes the site's single storage_settings row. The S3 secret is
+ * encrypted at rest and never returned to the caller in plaintext or
+ * ciphertext — only a boolean flag indicating one is configured (see
+ * current()).
  */
 final class StorageConfigService
 {
-    public function __construct(
-        private readonly TenantRepositoryInterface $tenants,
-    ) {}
-
     /**
      * @return array{driver: string, bucket: ?string, region: ?string, key: ?string, endpoint: ?string, use_path_style_endpoint: bool, has_secret: bool}
      */
-    public function currentFor(int $tenantId): array
+    public function current(): array
     {
-        $tenant = $this->tenants->findById($tenantId) ?? throw new ModelNotFoundException;
-        $config = $tenant->storage_config ?? ['driver' => StorageDriver::Local->value];
+        $setting = StorageSetting::query()->firstOrFail();
 
         return [
-            'driver' => $config['driver'] ?? StorageDriver::Local->value,
-            'bucket' => $config['bucket'] ?? null,
-            'region' => $config['region'] ?? null,
-            'key' => $config['key'] ?? null,
-            'endpoint' => $config['endpoint'] ?? null,
-            'use_path_style_endpoint' => $config['use_path_style_endpoint'] ?? false,
-            'has_secret' => isset($config['secret']),
+            'driver' => $setting->driver,
+            'bucket' => $setting->bucket,
+            'region' => $setting->region,
+            'key' => $setting->key,
+            'endpoint' => $setting->endpoint,
+            'use_path_style_endpoint' => $setting->use_path_style_endpoint,
+            'has_secret' => $setting->secret !== null,
         ];
     }
 
-    public function update(int $tenantId, StorageConfigData $data): void
+    public function update(StorageConfigData $data): void
     {
-        $tenant = $this->tenants->findById($tenantId) ?? throw new ModelNotFoundException;
-        $existing = $tenant->storage_config ?? [];
+        $setting = StorageSetting::query()->firstOrFail();
 
-        $config = ['driver' => $data->driver->value];
+        $attributes = ['driver' => $data->driver->value];
 
         if ($data->driver === StorageDriver::S3) {
-            $config += [
+            $attributes += [
                 'bucket' => $data->bucket,
                 'region' => $data->region,
                 'key' => $data->key,
@@ -59,10 +53,10 @@ final class StorageConfigService
                 // to re-enter credentials every time.
                 'secret' => $data->secret !== null
                     ? Crypt::encryptString($data->secret)
-                    : ($existing['secret'] ?? null),
+                    : $setting->secret,
             ];
         }
 
-        $this->tenants->update($tenant, ['storage_config' => $config]);
+        $setting->update($attributes);
     }
 }

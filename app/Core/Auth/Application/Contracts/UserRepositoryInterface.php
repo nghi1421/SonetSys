@@ -10,5 +10,5 @@ interface UserRepositoryInterface
 {
     public function create(array $attributes): User;
 
-    public function findByEmailForTenant(string $email, ?int $tenantId): ?User;
+    public function findByEmail(string $email): ?User;
 }

@@ -18,7 +18,6 @@ final class SendShareNotification
     public function handle(PostShared $event): void
     {
         $this->notifications->create(new CreateNotificationData(
-            tenantId: $event->tenantId,
             notifiableType: 'user',
             notifiableId: $event->originalAuthorId,
             actorId: $event->sharedByUserId,

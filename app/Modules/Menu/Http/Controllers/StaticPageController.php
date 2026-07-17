@@ -12,9 +12,7 @@ use App\Modules\Menu\Domain\Models\StaticPage;
 use App\Modules\Menu\Http\Requests\CreateStaticPageRequest;
 use App\Modules\Menu\Http\Requests\UpdateStaticPageRequest;
 use App\Modules\Menu\Http\Resources\StaticPageResource;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 final class StaticPageController extends Controller
@@ -23,11 +21,11 @@ final class StaticPageController extends Controller
         private readonly StaticPageService $pages,
     ) {}
 
-    public function index(Request $request): JsonResponse
+    public function index(): JsonResponse
     {
         Gate::authorize(PermissionSlug::MenuManage->value);
 
-        $pages = $this->pages->listForTenant((int) $request->user()->tenant_id);
+        $pages = $this->pages->list();
 
         return ApiResponse::success(StaticPageResource::collection($pages));
     }
@@ -44,27 +42,18 @@ final class StaticPageController extends Controller
     public function update(UpdateStaticPageRequest $request, StaticPage $page): JsonResponse
     {
         Gate::authorize(PermissionSlug::MenuManage->value);
-        $this->ensureSameTenant($request, $page);
 
         $page = $this->pages->update($page, $request->toDto());
 
         return ApiResponse::success(StaticPageResource::make($page));
     }
 
-    public function destroy(Request $request, StaticPage $page): JsonResponse
+    public function destroy(StaticPage $page): JsonResponse
     {
         Gate::authorize(PermissionSlug::MenuManage->value);
-        $this->ensureSameTenant($request, $page);
 
         $this->pages->delete($page);
 
         return ApiResponse::success();
-    }
-
-    private function ensureSameTenant(Request $request, StaticPage $page): void
-    {
-        if ($page->tenant_id !== $request->user()->tenant_id) {
-            throw new ModelNotFoundException;
-        }
     }
 }

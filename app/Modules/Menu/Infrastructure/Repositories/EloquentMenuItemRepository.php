@@ -21,18 +21,14 @@ final class EloquentMenuItemRepository implements MenuItemRepositoryInterface
         return MenuItem::query()->find($id);
     }
 
-    public function findBySlug(int $tenantId, string $slug): ?MenuItem
+    public function findBySlug(string $slug): ?MenuItem
     {
-        return MenuItem::query()
-            ->where('tenant_id', $tenantId)
-            ->where('slug', $slug)
-            ->first();
+        return MenuItem::query()->where('slug', $slug)->first();
     }
 
-    public function listForTenant(int $tenantId): Collection
+    public function list(): Collection
     {
         return MenuItem::query()
-            ->where('tenant_id', $tenantId)
             ->with('staticPage')
             ->orderBy('position')
             ->get();
@@ -50,17 +46,16 @@ final class EloquentMenuItemRepository implements MenuItemRepositoryInterface
         $item->delete();
     }
 
-    public function countForTenant(int $tenantId): int
+    public function count(): int
     {
-        return MenuItem::query()->where('tenant_id', $tenantId)->count();
+        return MenuItem::query()->count();
     }
 
-    public function reorder(int $tenantId, array $orderedIds): void
+    public function reorder(array $orderedIds): void
     {
-        DB::transaction(function () use ($tenantId, $orderedIds): void {
+        DB::transaction(function () use ($orderedIds): void {
             foreach ($orderedIds as $position => $id) {
                 MenuItem::query()
-                    ->where('tenant_id', $tenantId)
                     ->where('id', $id)
                     ->update(['position' => $position]);
             }

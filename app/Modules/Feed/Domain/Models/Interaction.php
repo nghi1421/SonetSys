@@ -15,7 +15,6 @@ final class Interaction extends Model
     public const UPDATED_AT = null;
 
     protected $fillable = [
-        'tenant_id',
         'user_id',
         'interactable_type',
         'interactable_id',

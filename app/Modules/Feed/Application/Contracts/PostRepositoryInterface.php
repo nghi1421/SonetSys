@@ -17,8 +17,7 @@ interface PostRepositoryInterface
     /**
      * @return Collection<int, Post>
      */
-    public function cursorPaginateForTenant(
-        ?int $tenantId,
+    public function cursorPaginate(
         int $viewerId,
         ?Carbon $afterPublishedAt,
         ?int $afterId,

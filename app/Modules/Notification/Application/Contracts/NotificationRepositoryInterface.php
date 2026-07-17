@@ -16,11 +16,11 @@ interface NotificationRepositoryInterface
     /**
      * @return Collection<int, Notification>
      */
-    public function listForRecipient(int $tenantId, string $notifiableType, int $notifiableId, int $limit): Collection;
+    public function listForRecipient(string $notifiableType, int $notifiableId, int $limit): Collection;
 
     public function markAsRead(Notification $notification): void;
 
-    public function markAllAsRead(int $tenantId, string $notifiableType, int $notifiableId): void;
+    public function markAllAsRead(string $notifiableType, int $notifiableId): void;
 
-    public function unreadCount(int $tenantId, string $notifiableType, int $notifiableId): int;
+    public function unreadCount(string $notifiableType, int $notifiableId): int;
 }

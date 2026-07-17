@@ -7,7 +7,6 @@ namespace App\Core\Auth\Domain\Models;
 use App\Core\Auth\Domain\Enums\RoleSlug;
 use App\Core\Auth\Domain\Enums\UserStatus;
 use App\Core\Auth\Domain\Notifications\ResetPasswordNotification;
-use App\Core\Tenancy\Domain\Models\Tenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -19,7 +18,6 @@ final class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
-        'tenant_id',
         'role_id',
         'name',
         'email',
@@ -41,11 +39,6 @@ final class User extends Authenticatable
             'status' => UserStatus::class,
             'last_login_at' => 'datetime',
         ];
-    }
-
-    public function tenant(): BelongsTo
-    {
-        return $this->belongsTo(Tenant::class);
     }
 
     public function role(): BelongsTo

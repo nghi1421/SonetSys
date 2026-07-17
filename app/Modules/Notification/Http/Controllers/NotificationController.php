@@ -22,10 +22,10 @@ final class NotificationController extends Controller
     public function index(Request $request): JsonResponse
     {
         $user = $request->user();
-        $items = $this->notifications->listForUser($user->tenant_id, $user->id);
+        $items = $this->notifications->listForUser($user->id);
 
         return ApiResponse::success(NotificationResource::collection($items), [
-            'unread_count' => $this->notifications->unreadCount($user->tenant_id, $user->id),
+            'unread_count' => $this->notifications->unreadCount($user->id),
         ]);
     }
 
@@ -41,7 +41,7 @@ final class NotificationController extends Controller
     public function markAllAsRead(Request $request): JsonResponse
     {
         $user = $request->user();
-        $this->notifications->markAllAsRead($user->tenant_id, $user->id);
+        $this->notifications->markAllAsRead($user->id);
 
         return ApiResponse::success();
     }
@@ -50,11 +50,7 @@ final class NotificationController extends Controller
     {
         $user = $request->user();
 
-        if (
-            $notification->tenant_id !== $user->tenant_id
-            || $notification->notifiable_type !== 'user'
-            || $notification->notifiable_id !== $user->id
-        ) {
+        if ($notification->notifiable_type !== 'user' || $notification->notifiable_id !== $user->id) {
             throw new ModelNotFoundException;
         }
     }

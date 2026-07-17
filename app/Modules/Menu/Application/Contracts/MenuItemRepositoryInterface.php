@@ -13,21 +13,21 @@ interface MenuItemRepositoryInterface
 
     public function findById(int $id): ?MenuItem;
 
-    public function findBySlug(int $tenantId, string $slug): ?MenuItem;
+    public function findBySlug(string $slug): ?MenuItem;
 
     /**
      * @return Collection<int, MenuItem>
      */
-    public function listForTenant(int $tenantId): Collection;
+    public function list(): Collection;
 
     public function update(MenuItem $item, array $attributes): MenuItem;
 
     public function delete(MenuItem $item): void;
 
-    public function countForTenant(int $tenantId): int;
+    public function count(): int;
 
     /**
      * @param  array<int, int>  $orderedIds
      */
-    public function reorder(int $tenantId, array $orderedIds): void;
+    public function reorder(array $orderedIds): void;
 }

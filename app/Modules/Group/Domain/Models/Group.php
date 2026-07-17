@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Modules\Group\Domain\Models;
 
 use App\Core\Auth\Domain\Models\User;
-use App\Core\Tenancy\Domain\Models\Tenant;
 use App\Modules\Feed\Domain\Models\Post;
 use App\Modules\Group\Domain\Enums\GroupVisibility;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,7 +18,6 @@ final class Group extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'tenant_id',
         'owner_id',
         'name',
         'slug',
@@ -34,11 +32,6 @@ final class Group extends Model
         return [
             'visibility' => GroupVisibility::class,
         ];
-    }
-
-    public function tenant(): BelongsTo
-    {
-        return $this->belongsTo(Tenant::class);
     }
 
     public function owner(): BelongsTo

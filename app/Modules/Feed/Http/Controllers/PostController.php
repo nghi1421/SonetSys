@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Modules\Feed\Http\Controllers;
 
 use App\Core\Auth\Domain\Enums\PermissionSlug;
-use App\Core\Auth\Domain\Models\User;
 use App\Core\Support\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Modules\Feed\Application\Contracts\GroupAccessCheckerInterface;
@@ -32,8 +31,7 @@ final class PostController extends Controller
         $user = $request->user();
         $limit = min((int) $request->query('limit', 20), 50);
 
-        $result = $this->posts->feedForTenant(
-            $user->tenant_id,
+        $result = $this->posts->feed(
             $user->id,
             $request->query('cursor'),
             $limit,
@@ -55,8 +53,6 @@ final class PostController extends Controller
     {
         $user = $request->user();
 
-        $this->ensureSameTenant($post, $user);
-
         if ($post->visibility === PostVisibility::Private && $post->author_id !== $user->id) {
             throw new ModelNotFoundException;
         }
@@ -74,8 +70,6 @@ final class PostController extends Controller
     {
         $user = $request->user();
 
-        $this->ensureSameTenant($post, $user);
-
         if ($post->author_id !== $user->id) {
             throw new AuthorizationException('You can only edit your own posts.');
         }
@@ -89,8 +83,6 @@ final class PostController extends Controller
     {
         $user = $request->user();
 
-        $this->ensureSameTenant($post, $user);
-
         $isAuthor = $post->author_id === $user->id;
         $canModerate = $user->hasPermission(PermissionSlug::PostsDeleteAny->value);
 
@@ -101,12 +93,5 @@ final class PostController extends Controller
         $this->posts->delete($post);
 
         return ApiResponse::success();
-    }
-
-    private function ensureSameTenant(Post $post, User $user): void
-    {
-        if ($post->tenant_id !== $user->tenant_id) {
-            throw new ModelNotFoundException;
-        }
     }
 }

@@ -26,7 +26,11 @@ function repliesFor(commentId: number): Comment[] {
 }
 
 function canDelete(comment: Comment): boolean {
-  return authStore.user?.id === comment.author.id || authStore.user?.role.slug === 'tenant-admin'
+  return (
+    authStore.user?.id === comment.author.id ||
+    authStore.user?.role.slug === 'admin' ||
+    authStore.user?.role.slug === 'moderator'
+  )
 }
 
 async function submitComment(parentId?: number): Promise<void> {

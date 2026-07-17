@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Cache;
  * Caches the expensive part of feed listing (which posts, in order) behind
  * Redis tags so a mutation can invalidate exactly the affected feed without
  * scanning keys. Per-viewer overlays (liked_by_me) are applied by the caller
- * after this returns, never cached here — see PostService::feedForTenant().
+ * after this returns, never cached here — see PostService::feed().
  *
  * Known tradeoff: remember()/forget() form a plain cache-aside pattern with
  * no lock. A request that starts a slow read right before a concurrent
@@ -25,14 +25,14 @@ final class FeedCache
     private const TTL_SECONDS = 300;
 
     /**
-     * Tenant feed excludes group posts but includes each viewer's own
+     * The site feed excludes group posts but includes each viewer's own
      * Private-visibility posts, so the key must be per-viewer to avoid
      * leaking one user's private posts into another user's cached page.
      */
-    public function rememberTenantFeed(?int $tenantId, int $viewerId, ?string $cursor, Closure $callback): mixed
+    public function rememberFeed(int $viewerId, ?string $cursor, Closure $callback): mixed
     {
-        return Cache::tags([$this->tenantTag($tenantId)])->remember(
-            $this->tenantKey($tenantId, $viewerId, $cursor),
+        return Cache::tags([$this->feedTag()])->remember(
+            $this->feedKey($viewerId, $cursor),
             self::TTL_SECONDS,
             $callback,
         );
@@ -51,9 +51,9 @@ final class FeedCache
         );
     }
 
-    public function forgetTenantFeed(?int $tenantId): void
+    public function forgetFeed(): void
     {
-        Cache::tags([$this->tenantTag($tenantId)])->flush();
+        Cache::tags([$this->feedTag()])->flush();
     }
 
     public function forgetGroupFeed(int $groupId): void
@@ -61,9 +61,9 @@ final class FeedCache
         Cache::tags([$this->groupTag($groupId)])->flush();
     }
 
-    private function tenantTag(?int $tenantId): string
+    private function feedTag(): string
     {
-        return 'feed:tenant:'.($tenantId ?? 'none');
+        return 'feed';
     }
 
     private function groupTag(int $groupId): string
@@ -71,9 +71,9 @@ final class FeedCache
         return 'feed:group:'.$groupId;
     }
 
-    private function tenantKey(?int $tenantId, int $viewerId, ?string $cursor): string
+    private function feedKey(int $viewerId, ?string $cursor): string
     {
-        return $this->tenantTag($tenantId).':viewer:'.$viewerId.':cursor:'.($cursor ?? 'root');
+        return $this->feedTag().':viewer:'.$viewerId.':cursor:'.($cursor ?? 'root');
     }
 
     private function groupKey(int $groupId, ?string $cursor): string

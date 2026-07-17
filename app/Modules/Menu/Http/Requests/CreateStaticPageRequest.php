@@ -29,7 +29,6 @@ final class CreateStaticPageRequest extends FormRequest
         return new CreateStaticPageData(
             title: (string) $this->validated('title'),
             content: (string) $this->validated('content'),
-            tenantId: (int) $user->tenant_id,
             authorId: (int) $user->id,
         );
     }

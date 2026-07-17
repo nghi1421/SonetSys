@@ -33,7 +33,6 @@ final class CreateCommentRequest extends FormRequest
             body: (string) $this->validated('body'),
             postId: $post->id,
             parentId: $this->input('parent_id') !== null ? (int) $this->input('parent_id') : null,
-            tenantId: (int) $user->tenant_id,
             authorId: (int) $user->id,
         );
     }

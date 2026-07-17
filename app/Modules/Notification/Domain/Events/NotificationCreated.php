@@ -28,7 +28,7 @@ final class NotificationCreated implements ShouldBroadcastNow
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel("tenant.{$this->notification->tenant_id}.user.{$this->notification->notifiable_id}"),
+            new PrivateChannel("user.{$this->notification->notifiable_id}"),
         ];
     }
 
