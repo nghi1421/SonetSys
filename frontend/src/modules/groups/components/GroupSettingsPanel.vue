@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import AppAlert from '@/shared/components/ui/AppAlert.vue'
 import AppButton from '@/shared/components/ui/AppButton.vue'
 import AppInput from '@/shared/components/ui/AppInput.vue'
@@ -12,6 +13,7 @@ const props = defineProps<{ group: Group; isOwner: boolean }>()
 
 const router = useRouter()
 const groupStore = useGroupStore()
+const { t } = useI18n()
 
 const name = ref(props.group.name)
 const description = ref(props.group.description ?? '')
@@ -34,7 +36,7 @@ async function onSave(): Promise<void> {
       visibility: visibility.value,
     })
   } catch {
-    error.value = 'Could not save changes. Please try again.'
+    error.value = t('groups.groupSettings.saveError')
   } finally {
     saving.value = false
   }
@@ -47,7 +49,7 @@ async function onConfirmDelete(): Promise<void> {
     await groupStore.deleteGroup(props.group.id)
     router.push({ name: 'groups-list' })
   } catch {
-    error.value = 'Could not delete this group. Please try again.'
+    error.value = t('groups.groupSettings.deleteError')
     deleting.value = false
   }
 }
@@ -58,13 +60,13 @@ async function onConfirmDelete(): Promise<void> {
     <AppAlert v-if="error">{{ error }}</AppAlert>
 
     <form class="space-y-4 rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md" @submit.prevent="onSave">
-      <h2 class="text-xs font-bold uppercase tracking-widest text-cyber-neon-cyan">Group Settings</h2>
+      <h2 class="text-xs font-bold uppercase tracking-widest text-cyber-neon-cyan">{{ t('groups.groupSettings.title') }}</h2>
 
-      <AppInput v-model="name" label="Name" />
+      <AppInput v-model="name" :label="t('groups.groupSettings.nameLabel')" />
 
       <div class="space-y-1.5">
         <label class="block text-[9px] font-mono uppercase tracking-widest text-cyber-neon-cyan">
-          Description
+          {{ t('groups.groupSettings.descriptionLabel') }}
         </label>
         <textarea
           v-model="description"
@@ -75,7 +77,7 @@ async function onConfirmDelete(): Promise<void> {
 
       <div class="space-y-1.5">
         <label class="block text-[9px] font-mono uppercase tracking-widest text-cyber-neon-cyan">
-          Visibility
+          {{ t('groups.groupSettings.visibilityLabel') }}
         </label>
         <div class="grid grid-cols-2 gap-2">
           <button
@@ -88,7 +90,7 @@ async function onConfirmDelete(): Promise<void> {
             "
             @click="visibility = 'public'"
           >
-            Public
+            {{ t('groups.visibility.public') }}
           </button>
           <button
             type="button"
@@ -100,18 +102,18 @@ async function onConfirmDelete(): Promise<void> {
             "
             @click="visibility = 'private'"
           >
-            Private
+            {{ t('groups.visibility.private') }}
           </button>
         </div>
       </div>
 
-      <AppButton type="submit" label="Save Changes" :loading="saving" :disabled="!name.trim()" />
+      <AppButton type="submit" :label="t('groups.groupSettings.saveButton')" :loading="saving" :disabled="!name.trim()" />
     </form>
 
     <section v-if="isOwner" class="rounded-hud border border-cyber-neon-pink/30 bg-cyber-neon-pink/5 p-5 backdrop-blur-md">
-      <h2 class="text-xs font-bold uppercase tracking-widest text-cyber-neon-pink">Danger Zone</h2>
+      <h2 class="text-xs font-bold uppercase tracking-widest text-cyber-neon-pink">{{ t('groups.groupSettings.dangerZoneTitle') }}</h2>
       <p class="mt-2 font-mono text-xs text-cyber-muted">
-        Deleting a group removes it and its posts for every member. This can't be undone.
+        {{ t('groups.groupSettings.dangerZoneDescription') }}
       </p>
       <button
         type="button"
@@ -119,15 +121,15 @@ async function onConfirmDelete(): Promise<void> {
         :disabled="deleting"
         @click="confirmingDelete = true"
       >
-        Delete Group
+        {{ t('groups.groupSettings.deleteButton') }}
       </button>
     </section>
 
     <ConfirmDialog
       v-if="isOwner"
       :open="confirmingDelete"
-      title="Delete this group?"
-      message="This permanently deletes the group and its posts for every member."
+      :title="t('groups.groupSettings.confirmDeleteTitle')"
+      :message="t('groups.groupSettings.confirmDeleteMessage')"
       @confirm="onConfirmDelete"
       @cancel="confirmingDelete = false"
     />

@@ -1,0 +1,56 @@
+{
+  "feedView": {
+    "emptyTitle": "No posts yet",
+    "emptyDescription": "Be the first to share something with your community.",
+    "loadMore": "Load more"
+  },
+  "postDetail": {
+    "unavailable": "This post is unavailable — it may have been deleted, or you don't have permission to view it."
+  },
+  "postCard": {
+    "actionsLabel": "Post actions",
+    "confirmDeleteTitle": "Delete post?",
+    "confirmDeleteMessage": "This can't be undone."
+  },
+  "postComposer": {
+    "placeholder": "Share something with your community…",
+    "photoPreviewAlt": "Selected photo preview",
+    "removeMedia": "Remove media",
+    "removeSticker": "Remove sticker",
+    "addPhoto": "Add photo",
+    "addVideo": "Add video",
+    "addSticker": "Add sticker",
+    "submit": "Post",
+    "publishError": "Could not publish your post. Please try again."
+  },
+  "commentThread": {
+    "reply": "Reply",
+    "deleteComment": "Delete comment",
+    "deleteReply": "Delete reply",
+    "replyPlaceholder": "Write a reply…",
+    "commentPlaceholder": "Write a comment…",
+    "submitReply": "Reply",
+    "submitComment": "Comment",
+    "confirmDeleteTitle": "Delete comment?",
+    "confirmDeleteMessage": "This can't be undone."
+  },
+  "shareMenu": {
+    "shareToProfile": "Share to Profile",
+    "shareToSocial": "Share to Social Media",
+    "copyLink": "Copy link",
+    "copied": "Link copied!",
+    "copyError": "Could not copy"
+  },
+  "repostDialog": {
+    "title": "Share to your profile",
+    "placeholder": "Say something about this (optional)…",
+    "submit": "Share",
+    "error": "Could not share this post. Please try again."
+  },
+  "socialShareDialog": {
+    "title": "Share to social media"
+  },
+  "postMedia": {
+    "attachmentAlt": "Post attachment"
+  }
+}

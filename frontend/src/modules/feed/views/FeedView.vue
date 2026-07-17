@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Inbox } from '@lucide/vue'
 import AppShell from '@/shared/components/layout/AppShell.vue'
 import AppButton from '@/shared/components/ui/AppButton.vue'
@@ -8,6 +9,7 @@ import PostComposer from '../components/PostComposer.vue'
 import { useFeedStore } from '../store/feedStore'
 
 const feedStore = useFeedStore()
+const { t } = useI18n()
 
 onMounted(() => {
   feedStore.fetchFeed()
@@ -33,9 +35,9 @@ onMounted(() => {
 
       <div v-else-if="feedStore.posts.length === 0" class="flex flex-col items-center py-16 text-center">
         <Inbox class="h-8 w-8 text-cyber-muted" />
-        <p class="mt-4 text-xs font-bold text-cyber-text">No posts yet</p>
+        <p class="mt-4 text-xs font-bold text-cyber-text">{{ t('feed.feedView.emptyTitle') }}</p>
         <p class="mt-1 font-mono text-xs text-cyber-muted">
-          Be the first to share something with your community.
+          {{ t('feed.feedView.emptyDescription') }}
         </p>
       </div>
 
@@ -44,7 +46,7 @@ onMounted(() => {
 
         <div v-if="feedStore.nextCursor" class="flex justify-center pt-2">
           <AppButton
-            label="Load more"
+            :label="t('feed.feedView.loadMore')"
             variant="secondary"
             :loading="feedStore.loadingMore"
             @click="feedStore.fetchMore"

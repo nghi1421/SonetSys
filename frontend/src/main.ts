@@ -5,11 +5,13 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './app/router'
+import { i18n } from './i18n'
 import { useAuthStore } from './modules/auth/store/authStore'
 
 const app = createApp(App)
 
 app.use(createPinia())
+app.use(i18n)
 
 async function bootstrap(): Promise<void> {
   const authStore = useAuthStore()

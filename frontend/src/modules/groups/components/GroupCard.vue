@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { Globe, Lock, Users } from '@lucide/vue'
 import AppButton from '@/shared/components/ui/AppButton.vue'
 import type { Group } from '../types'
@@ -8,13 +9,14 @@ import type { Group } from '../types'
 const props = defineProps<{ group: Group; joining: boolean }>()
 
 const emit = defineEmits<{ join: [] }>()
+const { t } = useI18n()
 
 const membershipLabel = computed(() => {
   const membership = props.group.viewer_membership
   if (!membership) return null
-  if (membership.role === 'owner') return 'Owner'
-  if (membership.role === 'admin') return 'Admin'
-  return membership.status === 'pending' ? 'Requested' : 'Member'
+  if (membership.role === 'owner') return t('groups.roles.owner')
+  if (membership.role === 'admin') return t('groups.roles.admin')
+  return membership.status === 'pending' ? t('groups.roles.requested') : t('groups.roles.member')
 })
 
 const membershipDotClass = computed(() => {
@@ -43,7 +45,7 @@ const membershipDotClass = computed(() => {
       >
         <Globe v-if="group.visibility === 'public'" class="h-2.5 w-2.5" />
         <Lock v-else class="h-2.5 w-2.5" />
-        {{ group.visibility }}
+        {{ t(`groups.visibility.${group.visibility}`) }}
       </span>
     </div>
 
@@ -67,7 +69,7 @@ const membershipDotClass = computed(() => {
 
       <AppButton
         v-else
-        label="Join"
+        :label="t('groups.groupCard.join')"
         variant="secondary"
         :loading="joining"
         @click.prevent="emit('join')"

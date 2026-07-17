@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { getStoredLocale } from './localeStorage'
 import { clearStoredToken, getStoredToken } from './tokenStorage'
 
 export const http = axios.create({
@@ -12,6 +13,11 @@ http.interceptors.request.use((config) => {
   const token = getStoredToken()
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
+  }
+
+  const locale = getStoredLocale()
+  if (locale) {
+    config.headers['X-Locale'] = locale
   }
 
   return config

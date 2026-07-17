@@ -1,20 +1,22 @@
 <script setup lang="ts">
-import { watch } from 'vue'
+import { computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { Cloud, FileText, Image, LayoutDashboard, Users } from '@lucide/vue'
 
 const props = defineProps<{ open: boolean }>()
 const emit = defineEmits<{ close: [] }>()
 
 const route = useRoute()
+const { t } = useI18n()
 
-const navItems = [
-  { to: { name: 'admin-dashboard' }, label: 'Dashboard', icon: LayoutDashboard },
-  { to: { name: 'admin-menu' }, label: 'Menu & Pages', icon: FileText },
-  { to: { name: 'admin-storage-settings' }, label: 'Storage', icon: Cloud },
-  { to: { name: 'admin-media-library' }, label: 'Media Library', icon: Image },
-  { to: { name: 'admin-users' }, label: 'Users', icon: Users },
-]
+const navItems = computed(() => [
+  { to: { name: 'admin-dashboard' }, label: t('common.nav.dashboard'), icon: LayoutDashboard },
+  { to: { name: 'admin-menu' }, label: t('common.nav.menuPages'), icon: FileText },
+  { to: { name: 'admin-storage-settings' }, label: t('common.nav.storage'), icon: Cloud },
+  { to: { name: 'admin-media-library' }, label: t('common.nav.mediaLibrary'), icon: Image },
+  { to: { name: 'admin-users' }, label: t('common.nav.users'), icon: Users },
+])
 
 watch(
   () => route.fullPath,

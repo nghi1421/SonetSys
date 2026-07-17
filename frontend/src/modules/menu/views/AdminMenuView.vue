@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { ArrowDown, ArrowUp, FileText, Pencil, Trash2 } from '@lucide/vue'
 import { useMenuStore } from '../store/menuStore'
 import { useStaticPageStore } from '../store/staticPageStore'
@@ -7,6 +8,7 @@ import type { MenuItem, StaticPage } from '../types'
 
 const menuStore = useMenuStore()
 const staticPageStore = useStaticPageStore()
+const { t } = useI18n()
 
 const actionError = ref<string | null>(null)
 
@@ -38,7 +40,7 @@ async function withErrorHandling(action: () => Promise<void>): Promise<void> {
   try {
     await action()
   } catch {
-    actionError.value = 'Something went wrong. Please try again.'
+    actionError.value = t('admin.menu.genericError')
   }
 }
 
@@ -135,8 +137,8 @@ async function onDeletePage(page: StaticPage): Promise<void> {
 <template>
   <div class="mx-auto max-w-4xl space-y-6">
     <div>
-      <h1 class="text-lg font-bold text-slate-900">Menu & Pages</h1>
-      <p class="mt-1 text-sm text-slate-500">Manage the site navigation and its static content.</p>
+      <h1 class="text-lg font-bold text-slate-900">{{ t('admin.menu.title') }}</h1>
+      <p class="mt-1 text-sm text-slate-500">{{ t('admin.menu.subtitle') }}</p>
     </div>
 
     <p
@@ -149,7 +151,7 @@ async function onDeletePage(page: StaticPage): Promise<void> {
     <!-- Menu items -->
     <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
       <h2 class="border-b border-slate-200 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-500">
-        Menu Items
+        {{ t('admin.menu.items.title') }}
       </h2>
 
       <div v-if="menuStore.loading" class="space-y-2 p-4">
@@ -160,9 +162,9 @@ async function onDeletePage(page: StaticPage): Promise<void> {
         <table class="w-full text-left text-sm">
           <thead class="bg-slate-50 text-[11px] uppercase tracking-widest text-slate-500">
             <tr>
-              <th class="px-4 py-2 font-medium">Label</th>
-              <th class="px-4 py-2 font-medium">Slug / Page</th>
-              <th class="px-4 py-2 font-medium">Actions</th>
+              <th class="px-4 py-2 font-medium">{{ t('admin.menu.items.labelHeader') }}</th>
+              <th class="px-4 py-2 font-medium">{{ t('admin.menu.items.slugPageHeader') }}</th>
+              <th class="px-4 py-2 font-medium">{{ t('admin.menu.items.actionsHeader') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100">
@@ -179,7 +181,7 @@ async function onDeletePage(page: StaticPage): Promise<void> {
                     v-model="editItemPageId"
                     class="block w-full rounded-lg border border-slate-200 px-3 py-2 text-xs text-slate-900 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-600/30"
                   >
-                    <option value="">— No page attached —</option>
+                    <option value="">{{ t('admin.menu.items.noPageAttached') }}</option>
                     <option v-for="page in staticPageStore.pages" :key="page.id" :value="String(page.id)">
                       {{ page.title }}
                     </option>
@@ -191,14 +193,14 @@ async function onDeletePage(page: StaticPage): Promise<void> {
                       class="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white transition-colors duration-200 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
                       @click="onSaveItem(item)"
                     >
-                      Save
+                      {{ t('common.save') }}
                     </button>
                     <button
                       type="button"
                       class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 hover:border-slate-300"
                       @click="cancelEditItem"
                     >
-                      Cancel
+                      {{ t('common.cancel') }}
                     </button>
                   </div>
                 </div>
@@ -207,7 +209,7 @@ async function onDeletePage(page: StaticPage): Promise<void> {
                   <div class="min-w-0">
                     <p class="truncate text-sm font-medium text-slate-900">{{ item.label }}</p>
                     <p class="mt-0.5 text-[11px] uppercase tracking-widest text-slate-400">
-                      /{{ item.slug }} · {{ item.static_page ? item.static_page.title : 'no page attached' }}
+                      /{{ item.slug }} · {{ item.static_page ? item.static_page.title : t('admin.menu.items.noPageAttachedShort') }}
                     </p>
                   </div>
 
@@ -216,7 +218,7 @@ async function onDeletePage(page: StaticPage): Promise<void> {
                       type="button"
                       :disabled="index === 0"
                       class="rounded-lg border border-slate-200 p-1.5 text-slate-500 transition-colors duration-200 hover:border-slate-300 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-40"
-                      title="Move up"
+                      :title="t('admin.menu.items.moveUp')"
                       @click="moveItem(index, -1)"
                     >
                       <ArrowUp class="h-3.5 w-3.5" />
@@ -225,7 +227,7 @@ async function onDeletePage(page: StaticPage): Promise<void> {
                       type="button"
                       :disabled="index === menuStore.items.length - 1"
                       class="rounded-lg border border-slate-200 p-1.5 text-slate-500 transition-colors duration-200 hover:border-slate-300 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-40"
-                      title="Move down"
+                      :title="t('admin.menu.items.moveDown')"
                       @click="moveItem(index, 1)"
                     >
                       <ArrowDown class="h-3.5 w-3.5" />
@@ -233,7 +235,7 @@ async function onDeletePage(page: StaticPage): Promise<void> {
                     <button
                       type="button"
                       class="rounded-lg border border-slate-200 p-1.5 text-slate-500 transition-colors duration-200 hover:border-blue-300 hover:text-blue-600"
-                      title="Edit"
+                      :title="t('common.edit')"
                       @click="startEditItem(item)"
                     >
                       <Pencil class="h-3.5 w-3.5" />
@@ -242,7 +244,7 @@ async function onDeletePage(page: StaticPage): Promise<void> {
                       v-if="!item.is_home"
                       type="button"
                       class="rounded-lg border border-slate-200 p-1.5 text-slate-500 transition-colors duration-200 hover:border-rose-300 hover:text-rose-600"
-                      title="Delete"
+                      :title="t('common.delete')"
                       @click="onDeleteItem(item)"
                     >
                       <Trash2 class="h-3.5 w-3.5" />
@@ -260,14 +262,14 @@ async function onDeletePage(page: StaticPage): Promise<void> {
           v-model="newItemLabel"
           type="text"
           maxlength="64"
-          placeholder="New menu item label…"
+          :placeholder="t('admin.menu.items.labelPlaceholder')"
           class="block w-full rounded-lg border border-slate-200 px-3 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-600/30"
         />
         <select
           v-model="newItemPageId"
           class="block w-full rounded-lg border border-slate-200 px-3 py-2 text-xs text-slate-900 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-600/30"
         >
-          <option value="">— No page attached —</option>
+          <option value="">{{ t('admin.menu.items.noPageAttached') }}</option>
           <option v-for="page in staticPageStore.pages" :key="page.id" :value="String(page.id)">
             {{ page.title }}
           </option>
@@ -278,7 +280,7 @@ async function onDeletePage(page: StaticPage): Promise<void> {
           class="rounded-lg bg-blue-600 px-4 py-1.5 text-xs font-medium text-white transition-colors duration-200 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
           @click="onCreateItem"
         >
-          Add Menu Item
+          {{ t('admin.menu.items.addButton') }}
         </button>
       </div>
     </section>
@@ -286,7 +288,7 @@ async function onDeletePage(page: StaticPage): Promise<void> {
     <!-- Static pages -->
     <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
       <h2 class="border-b border-slate-200 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-500">
-        Static Pages
+        {{ t('admin.menu.pages.title') }}
       </h2>
 
       <div v-if="staticPageStore.loading" class="space-y-2 p-4">
@@ -295,16 +297,16 @@ async function onDeletePage(page: StaticPage): Promise<void> {
 
       <div v-else-if="staticPageStore.pages.length === 0" class="flex flex-col items-center py-10 text-center">
         <FileText class="h-6 w-6 text-slate-300" />
-        <p class="mt-2 text-xs text-slate-400">No static pages yet. Create one below.</p>
+        <p class="mt-2 text-xs text-slate-400">{{ t('admin.menu.pages.emptyDescription') }}</p>
       </div>
 
       <div v-else class="overflow-x-auto">
         <table class="w-full text-left text-sm">
           <thead class="bg-slate-50 text-[11px] uppercase tracking-widest text-slate-500">
             <tr>
-              <th class="px-4 py-2 font-medium">Title</th>
-              <th class="px-4 py-2 font-medium">Content</th>
-              <th class="px-4 py-2 font-medium">Actions</th>
+              <th class="px-4 py-2 font-medium">{{ t('admin.menu.pages.titleHeader') }}</th>
+              <th class="px-4 py-2 font-medium">{{ t('admin.menu.pages.contentHeader') }}</th>
+              <th class="px-4 py-2 font-medium">{{ t('admin.menu.pages.actionsHeader') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100">
@@ -329,14 +331,14 @@ async function onDeletePage(page: StaticPage): Promise<void> {
                       class="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white transition-colors duration-200 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
                       @click="onSavePage(page)"
                     >
-                      Save
+                      {{ t('common.save') }}
                     </button>
                     <button
                       type="button"
                       class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 hover:border-slate-300"
                       @click="cancelEditPage"
                     >
-                      Cancel
+                      {{ t('common.cancel') }}
                     </button>
                   </div>
                 </div>
@@ -351,7 +353,7 @@ async function onDeletePage(page: StaticPage): Promise<void> {
                     <button
                       type="button"
                       class="rounded-lg border border-slate-200 p-1.5 text-slate-500 transition-colors duration-200 hover:border-blue-300 hover:text-blue-600"
-                      title="Edit"
+                      :title="t('common.edit')"
                       @click="startEditPage(page)"
                     >
                       <Pencil class="h-3.5 w-3.5" />
@@ -359,7 +361,7 @@ async function onDeletePage(page: StaticPage): Promise<void> {
                     <button
                       type="button"
                       class="rounded-lg border border-slate-200 p-1.5 text-slate-500 transition-colors duration-200 hover:border-rose-300 hover:text-rose-600"
-                      title="Delete"
+                      :title="t('common.delete')"
                       @click="onDeletePage(page)"
                     >
                       <Trash2 class="h-3.5 w-3.5" />
@@ -377,13 +379,13 @@ async function onDeletePage(page: StaticPage): Promise<void> {
           v-model="newPageTitle"
           type="text"
           maxlength="255"
-          placeholder="New page title…"
+          :placeholder="t('admin.menu.pages.titlePlaceholder')"
           class="block w-full rounded-lg border border-slate-200 px-3 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-600/30"
         />
         <textarea
           v-model="newPageContent"
           rows="4"
-          placeholder="Page content…"
+          :placeholder="t('admin.menu.pages.contentPlaceholder')"
           class="block w-full resize-none rounded-lg border border-slate-200 px-3 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-600/30"
         />
         <button
@@ -392,7 +394,7 @@ async function onDeletePage(page: StaticPage): Promise<void> {
           class="rounded-lg bg-blue-600 px-4 py-1.5 text-xs font-medium text-white transition-colors duration-200 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
           @click="onCreatePage"
         >
-          Add Static Page
+          {{ t('admin.menu.pages.addButton') }}
         </button>
       </div>
     </section>

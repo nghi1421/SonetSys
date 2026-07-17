@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Image, Smile, Video, X } from '@lucide/vue'
 import AppButton from '@/shared/components/ui/AppButton.vue'
 import { useStickerStore } from '../store/stickerStore'
@@ -8,6 +9,7 @@ import type { CreatePostPayload } from '../types'
 const props = defineProps<{ onSubmit: (payload: CreatePostPayload) => Promise<void> }>()
 
 const stickerStore = useStickerStore()
+const { t } = useI18n()
 
 const body = ref('')
 const loading = ref(false)
@@ -99,7 +101,7 @@ async function handleSubmit(): Promise<void> {
     body.value = ''
     clearMedia()
   } catch {
-    error.value = 'Could not publish your post. Please try again.'
+    error.value = t('feed.postComposer.publishError')
   } finally {
     loading.value = false
   }
@@ -114,7 +116,7 @@ async function handleSubmit(): Promise<void> {
     <textarea
       v-model="body"
       rows="3"
-      placeholder="Share something with your community…"
+      :placeholder="t('feed.postComposer.placeholder')"
       class="block w-full resize-none rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-2 font-mono text-xs text-cyber-text backdrop-blur-md transition-all duration-300 placeholder:text-cyber-muted focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
     />
 
@@ -122,7 +124,7 @@ async function handleSubmit(): Promise<void> {
       <img
         v-if="mediaType === 'image'"
         :src="mediaPreviewUrl"
-        alt="Selected photo preview"
+        :alt="t('feed.postComposer.photoPreviewAlt')"
         class="max-h-64 rounded-hud border border-cyber-border"
       />
       <video
@@ -134,7 +136,7 @@ async function handleSubmit(): Promise<void> {
       <button
         type="button"
         class="absolute -right-2 -top-2 rounded-full border border-cyber-border bg-cyber-glass p-1 text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-pink/50 hover:text-cyber-neon-pink hover:shadow-pink-glow"
-        aria-label="Remove media"
+        :aria-label="t('feed.postComposer.removeMedia')"
         @click="clearMedia"
       >
         <X class="h-3.5 w-3.5" />
@@ -150,7 +152,7 @@ async function handleSubmit(): Promise<void> {
       <button
         type="button"
         class="absolute -right-2 -top-2 rounded-full border border-cyber-border bg-cyber-glass p-1 text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-pink/50 hover:text-cyber-neon-pink hover:shadow-pink-glow"
-        aria-label="Remove sticker"
+        :aria-label="t('feed.postComposer.removeSticker')"
         @click="clearMedia"
       >
         <X class="h-3.5 w-3.5" />
@@ -167,7 +169,7 @@ async function handleSubmit(): Promise<void> {
         <button
           type="button"
           class="rounded-full p-2 text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
-          aria-label="Add photo"
+          :aria-label="t('feed.postComposer.addPhoto')"
           @click="pickPhoto"
         >
           <Image class="h-5 w-5" />
@@ -175,7 +177,7 @@ async function handleSubmit(): Promise<void> {
         <button
           type="button"
           class="rounded-full p-2 text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
-          aria-label="Add video"
+          :aria-label="t('feed.postComposer.addVideo')"
           @click="pickVideo"
         >
           <Video class="h-5 w-5" />
@@ -185,7 +187,7 @@ async function handleSubmit(): Promise<void> {
           <button
             type="button"
             class="rounded-full p-2 text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
-            aria-label="Add sticker"
+            :aria-label="t('feed.postComposer.addSticker')"
             @click="toggleStickerPicker"
           >
             <Smile class="h-5 w-5" />
@@ -211,7 +213,7 @@ async function handleSubmit(): Promise<void> {
         </div>
       </div>
 
-      <AppButton type="submit" label="Post" :loading="loading" :disabled="!canSubmit" />
+      <AppButton type="submit" :label="t('feed.postComposer.submit')" :loading="loading" :disabled="!canSubmit" />
     </div>
   </form>
 </template>

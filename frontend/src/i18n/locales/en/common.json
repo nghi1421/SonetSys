@@ -1,0 +1,35 @@
+{
+  "save": "Save",
+  "saving": "Saving…",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "edit": "Edit",
+  "close": "Close",
+  "confirm": "Confirm",
+  "loading": "Loading…",
+  "previous": "Previous",
+  "next": "Next",
+  "logOut": "Log out",
+  "backToApp": "Back to app",
+  "never": "Never",
+  "somethingWentWrong": "Something went wrong. Please try again.",
+  "toggleMenu": "Toggle menu",
+  "siteName": "Sonetsys",
+  "adminSiteName": "Sonetsys Admin",
+  "controlPanel": "Control Panel",
+  "adminPanel": "Admin Panel",
+  "nav": {
+    "dashboard": "Dashboard",
+    "menuPages": "Menu & Pages",
+    "storage": "Storage",
+    "mediaLibrary": "Media Library",
+    "users": "Users"
+  },
+  "mediaPreview": {
+    "closePreview": "Close preview",
+    "notAvailable": "Preview not available for this file type.",
+    "uploadedBy": "{size} · uploaded by {name}",
+    "unknown": "Unknown",
+    "viewPost": "View post"
+  }
+}

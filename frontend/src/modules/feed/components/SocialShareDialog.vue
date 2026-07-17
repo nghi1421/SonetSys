@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import { ExternalLink } from '@lucide/vue'
 import {
   facebookShareUrl,
@@ -23,6 +24,7 @@ const PLATFORMS: SocialPlatform[] = [
 
 const props = defineProps<{ open: boolean; post: Post }>()
 const emit = defineEmits<{ 'update:open': [boolean] }>()
+const { t } = useI18n()
 
 function close(): void {
   emit('update:open', false)
@@ -42,7 +44,7 @@ function share(platform: SocialPlatform): void {
       @click="close"
     >
       <div class="w-full max-w-sm rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md" @click.stop>
-        <h2 class="font-mono text-xs font-bold uppercase tracking-widest text-cyber-text">Share to social media</h2>
+        <h2 class="font-mono text-xs font-bold uppercase tracking-widest text-cyber-text">{{ t('feed.socialShareDialog.title') }}</h2>
 
         <div class="mt-4 flex items-center justify-center gap-6">
           <button
@@ -68,7 +70,7 @@ function share(platform: SocialPlatform): void {
             class="rounded-full border border-cyber-border bg-cyber-glass px-4 py-1.5 font-mono text-xs uppercase tracking-wider text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
             @click="close"
           >
-            Cancel
+            {{ t('common.cancel') }}
           </button>
         </div>
       </div>

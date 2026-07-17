@@ -1,0 +1,62 @@
+{
+  "menu": {
+    "title": "Menu & Pages",
+    "subtitle": "Manage the site navigation and its static content.",
+    "genericError": "Something went wrong. Please try again.",
+    "items": {
+      "title": "Menu Items",
+      "labelHeader": "Label",
+      "slugPageHeader": "Slug / Page",
+      "actionsHeader": "Actions",
+      "noPageAttached": "— No page attached —",
+      "noPageAttachedShort": "no page attached",
+      "labelPlaceholder": "New menu item label…",
+      "addButton": "Add Menu Item",
+      "moveUp": "Move up",
+      "moveDown": "Move down"
+    },
+    "pages": {
+      "title": "Static Pages",
+      "emptyDescription": "No static pages yet. Create one below.",
+      "titleHeader": "Title",
+      "contentHeader": "Content",
+      "actionsHeader": "Actions",
+      "titlePlaceholder": "New page title…",
+      "contentPlaceholder": "Page content…",
+      "addButton": "Add Static Page"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "An overview of your community.",
+    "manageTitle": "Manage",
+    "stats": {
+      "users": "Users",
+      "posts": "Posts",
+      "groups": "Groups",
+      "media": "Media Files",
+      "storage": "Storage Used"
+    },
+    "links": {
+      "menu": { "label": "Menu & Pages", "description": "Edit navigation and static pages" },
+      "storage": { "label": "Storage", "description": "Configure the upload driver" },
+      "media": { "label": "Media Library", "description": "Browse and remove uploaded files" },
+      "users": { "label": "Users", "description": "Browse registered accounts" }
+    }
+  },
+  "users": {
+    "title": "Users",
+    "subtitle": "Everyone registered on Sonetsys.",
+    "you": "(you)",
+    "nameHeader": "Name",
+    "emailHeader": "Email",
+    "roleHeader": "Role",
+    "statusHeader": "Status",
+    "lastLoginHeader": "Last login",
+    "joinedHeader": "Joined",
+    "emptyState": "No users yet.",
+    "updateError": "Could not update {name}. Please try again.",
+    "roles": { "admin": "Admin", "moderator": "Moderator", "user": "User" },
+    "statuses": { "active": "Active", "suspended": "Suspended", "banned": "Banned" }
+  }
+}

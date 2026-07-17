@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import AppShell from '@/shared/components/layout/AppShell.vue'
 import AppAlert from '@/shared/components/ui/AppAlert.vue'
 import PostCard from '../components/PostCard.vue'
@@ -8,6 +9,7 @@ import { useFeedStore } from '../store/feedStore'
 
 const route = useRoute()
 const feedStore = useFeedStore()
+const { t } = useI18n()
 
 const post = computed(() => feedStore.posts[0] ?? null)
 
@@ -28,7 +30,7 @@ function load(): void {
       />
 
       <AppAlert v-else-if="feedStore.notFound || !post">
-        This post is unavailable — it may have been deleted, or you don't have permission to view it.
+        {{ t('feed.postDetail.unavailable') }}
       </AppAlert>
 
       <PostCard v-else :post="post" />
