@@ -32,6 +32,16 @@ services:
         value: database
       - key: FILESYSTEM_DISK
         value: public
+      - key: BROADCAST_CONNECTION
+        value: pusher
+      - key: PUSHER_APP_ID
+        sync: false
+      - key: PUSHER_APP_KEY
+        sync: false
+      - key: PUSHER_APP_SECRET
+        sync: false
+      - key: PUSHER_APP_CLUSTER
+        sync: false
 
   - type: web
     name: frontend
@@ -42,4 +52,8 @@ services:
     autoDeploy: false
     envVars:
       - key: VITE_API_BASE_URL
+        sync: false
+      - key: VITE_PUSHER_KEY
+        sync: false
+      - key: VITE_PUSHER_CLUSTER
         sync: false

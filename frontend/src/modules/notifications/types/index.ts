@@ -1,4 +1,9 @@
-export type NotificationType = 'post.liked' | 'comment.liked' | 'comment.posted' | 'post.shared'
+export type NotificationType =
+  | 'post.liked'
+  | 'comment.liked'
+  | 'comment.posted'
+  | 'post.shared'
+  | 'user.followed'
 
 export interface NotificationActor {
   id: number | null
