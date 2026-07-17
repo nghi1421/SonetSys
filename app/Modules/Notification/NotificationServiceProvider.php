@@ -7,8 +7,10 @@ namespace App\Modules\Notification;
 use App\Modules\Feed\Domain\Events\CommentPosted;
 use App\Modules\Feed\Domain\Events\ContentLiked;
 use App\Modules\Feed\Domain\Events\PostShared;
+use App\Modules\Follow\Domain\Events\UserFollowed;
 use App\Modules\Notification\Application\Contracts\NotificationRepositoryInterface;
 use App\Modules\Notification\Application\Listeners\SendCommentNotification;
+use App\Modules\Notification\Application\Listeners\SendFollowNotification;
 use App\Modules\Notification\Application\Listeners\SendLikeNotification;
 use App\Modules\Notification\Application\Listeners\SendShareNotification;
 use App\Modules\Notification\Infrastructure\Repositories\EloquentNotificationRepository;
@@ -29,5 +31,6 @@ final class NotificationServiceProvider extends ServiceProvider
         Event::listen(ContentLiked::class, SendLikeNotification::class);
         Event::listen(CommentPosted::class, SendCommentNotification::class);
         Event::listen(PostShared::class, SendShareNotification::class);
+        Event::listen(UserFollowed::class, SendFollowNotification::class);
     }
 }
