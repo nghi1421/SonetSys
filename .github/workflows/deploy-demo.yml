@@ -54,27 +54,16 @@ jobs:
         run: npm run lint
 
   deploy:
-    name: Deploy to Railway
+    name: Deploy to Render
     needs: [test-backend, test-frontend]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Railway CLI
-        run: npm install -g @railway/cli
-
-      - name: Deploy backend service
-        run: railway up --service backend --detach
+      - name: Trigger backend deploy
+        run: curl -fsS -X POST "$DEPLOY_HOOK_URL"
         env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_BACKEND }}
 
-      - name: Run database migrations
-        run: railway run --service backend php artisan migrate --force
+      - name: Trigger frontend deploy
+        run: curl -fsS -X POST "$DEPLOY_HOOK_URL"
         env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-
-      - name: Deploy frontend service
-        working-directory: frontend
-        run: railway up --service frontend --detach
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_FRONTEND }}
