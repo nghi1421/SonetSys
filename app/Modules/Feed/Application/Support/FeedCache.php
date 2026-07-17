@@ -51,6 +51,20 @@ final class FeedCache
         );
     }
 
+    /**
+     * Which authors are "followed" is itself per-viewer, so this shares the
+     * same tag/invalidation as rememberFeed() — no separate forget method
+     * needed, forgetFeed() already flushes both on any post mutation.
+     */
+    public function rememberFollowingFeed(int $viewerId, ?string $cursor, Closure $callback): mixed
+    {
+        return Cache::tags([$this->feedTag()])->remember(
+            $this->followingKey($viewerId, $cursor),
+            self::TTL_SECONDS,
+            $callback,
+        );
+    }
+
     public function forgetFeed(): void
     {
         Cache::tags([$this->feedTag()])->flush();
@@ -74,6 +88,11 @@ final class FeedCache
     private function feedKey(int $viewerId, ?string $cursor): string
     {
         return $this->feedTag().':viewer:'.$viewerId.':cursor:'.($cursor ?? 'root');
+    }
+
+    private function followingKey(int $viewerId, ?string $cursor): string
+    {
+        return $this->feedTag().':following:viewer:'.$viewerId.':cursor:'.($cursor ?? 'root');
     }
 
     private function groupKey(int $groupId, ?string $cursor): string

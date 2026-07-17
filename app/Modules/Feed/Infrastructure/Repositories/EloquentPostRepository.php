@@ -107,6 +107,37 @@ final class EloquentPostRepository implements PostRepositoryInterface
             ->get();
     }
 
+    public function cursorPaginateForFollowing(
+        int $viewerId,
+        ?Carbon $afterPublishedAt,
+        ?int $afterId,
+        int $limit,
+    ): Collection {
+        return Post::query()
+            ->whereNull('group_id')
+            ->whereIn('author_id', function ($query) use ($viewerId): void {
+                $query->select('followed_id')->from('follows')->where('follower_id', $viewerId);
+            })
+            ->where(function ($query) use ($viewerId): void {
+                $query->where('visibility', '!=', PostVisibility::Private->value)
+                    ->orWhere('author_id', $viewerId);
+            })
+            ->when(
+                $afterPublishedAt !== null && $afterId !== null,
+                fn ($query) => $query->where(function ($inner) use ($afterPublishedAt, $afterId): void {
+                    $inner->where('published_at', '<', $afterPublishedAt)
+                        ->orWhere(function ($tie) use ($afterPublishedAt, $afterId): void {
+                            $tie->where('published_at', $afterPublishedAt)->where('id', '<', $afterId);
+                        });
+                }),
+            )
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
+            ->limit($limit)
+            ->with(['author', 'sharedPost.author'])
+            ->get();
+    }
+
     public function update(Post $post, array $attributes): Post
     {
         $post->fill($attributes)->save();

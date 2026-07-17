@@ -234,6 +234,29 @@ final class PostService
     }
 
     /**
+     * @return array{items: Collection<int, Post>, next_cursor: ?string}
+     */
+    public function feedForFollowing(int $viewerId, ?string $cursor, int $limit = 20): array
+    {
+        [$afterPublishedAt, $afterId] = $this->decodeCursor($cursor);
+
+        $posts = $this->cache->rememberFollowingFeed(
+            $viewerId,
+            $cursor,
+            fn () => $this->posts->cursorPaginateForFollowing($viewerId, $afterPublishedAt, $afterId, $limit),
+        );
+        $this->markLikedByViewer($posts, $viewerId);
+
+        $nextCursor = null;
+        if ($posts->count() === $limit) {
+            $last = $posts->last();
+            $nextCursor = $this->encodeCursor($last->published_at, $last->id);
+        }
+
+        return ['items' => $posts, 'next_cursor' => $nextCursor];
+    }
+
+    /**
      * @param  Post|Collection<int, Post>  $posts
      */
     public function markLikedByViewer(Post|Collection $posts, int $viewerId): void
