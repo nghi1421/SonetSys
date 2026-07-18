@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Camera, Inbox, X } from '@lucide/vue'
+import { Ban, Camera, EllipsisVertical, Inbox, X } from '@lucide/vue'
 import AppShell from '@/shared/components/layout/AppShell.vue'
 import AppAlert from '@/shared/components/ui/AppAlert.vue'
 import AppButton from '@/shared/components/ui/AppButton.vue'
@@ -30,6 +30,11 @@ const startingConversation = ref(false)
 const modalPost = ref<Post | null>(null)
 
 const isOwnProfile = computed(() => authStore.user?.id === followStore.profile?.id)
+const showActionsMenu = ref(false)
+const blockActionLoading = ref(false)
+const canShowFollowActions = computed(
+  () => !followStore.profile?.is_blocked && !followStore.profile?.is_blocked_by,
+)
 
 const avatarInput = ref<HTMLInputElement | null>(null)
 const coverInput = ref<HTMLInputElement | null>(null)
@@ -140,6 +145,21 @@ async function removeCover(): Promise<void> {
     coverError.value = t('follow.profile.coverUploadError')
   } finally {
     coverUploading.value = false
+  }
+}
+
+async function toggleBlock(): Promise<void> {
+  if (!followStore.profile) return
+  showActionsMenu.value = false
+  blockActionLoading.value = true
+  try {
+    if (followStore.profile.is_blocked) {
+      await followStore.unblock(followStore.profile.id)
+    } else {
+      await followStore.block(followStore.profile.id)
+    }
+  } finally {
+    blockActionLoading.value = false
   }
 }
 
@@ -262,14 +282,45 @@ watch(userId, load)
               </div>
             </div>
             <div class="flex items-center gap-2">
-              <AppButton
-                v-if="followStore.profile.is_following && followStore.profile.is_followed_by"
-                :label="t('follow.message')"
-                variant="secondary"
-                :loading="startingConversation"
-                @click="startConversation"
-              />
-              <FollowButton :user-id="followStore.profile.id" :is-following="followStore.profile.is_following" />
+              <template v-if="canShowFollowActions">
+                <AppButton
+                  v-if="followStore.profile.is_following && followStore.profile.is_followed_by"
+                  :label="t('follow.message')"
+                  variant="secondary"
+                  :loading="startingConversation"
+                  @click="startConversation"
+                />
+                <FollowButton :user-id="followStore.profile.id" :is-following="followStore.profile.is_following" />
+              </template>
+
+              <div v-if="!isOwnProfile" class="relative">
+                <button
+                  type="button"
+                  class="rounded-full border border-cyber-border bg-cyber-glass p-2 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/60 focus:ring-offset-2 focus:ring-offset-cyber-bg"
+                  :aria-label="t('follow.actionsLabel')"
+                  @click="showActionsMenu = !showActionsMenu"
+                >
+                  <EllipsisVertical class="h-4 w-4" />
+                </button>
+
+                <div v-if="showActionsMenu" class="fixed inset-0 z-0" @click="showActionsMenu = false" />
+
+                <div
+                  v-if="showActionsMenu"
+                  class="popover-panel absolute right-0 z-10 mt-1 w-40 rounded-hud border border-cyber-border bg-cyber-glass py-1 backdrop-blur-md"
+                  @click.stop
+                >
+                  <button
+                    type="button"
+                    class="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-xs text-cyber-neon-pink transition-colors duration-300 hover:shadow-pink-glow disabled:cursor-not-allowed disabled:opacity-40"
+                    :disabled="blockActionLoading"
+                    @click="toggleBlock"
+                  >
+                    <Ban class="h-3.5 w-3.5" />
+                    {{ followStore.profile.is_blocked ? t('follow.unblock') : t('follow.block') }}
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 

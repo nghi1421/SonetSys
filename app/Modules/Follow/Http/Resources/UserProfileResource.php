@@ -21,6 +21,8 @@ final class UserProfileResource extends JsonResource
             'following_count' => $this->following_count,
             'is_following' => (bool) ($this->is_following ?? false),
             'is_followed_by' => (bool) ($this->is_followed_by ?? false),
+            'is_blocked' => (bool) ($this->is_blocked ?? false),
+            'is_blocked_by' => (bool) ($this->is_blocked_by ?? false),
         ];
     }
 }

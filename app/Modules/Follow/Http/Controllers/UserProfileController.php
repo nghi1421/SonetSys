@@ -7,6 +7,7 @@ namespace App\Modules\Follow\Http\Controllers;
 use App\Core\Auth\Domain\Models\User;
 use App\Core\Support\ApiResponse;
 use App\Http\Controllers\Controller;
+use App\Modules\Block\Application\Services\BlockService;
 use App\Modules\Follow\Application\Services\FollowService;
 use App\Modules\Follow\Http\Resources\UserProfileResource;
 use Illuminate\Http\JsonResponse;
@@ -16,6 +17,7 @@ final class UserProfileController extends Controller
 {
     public function __construct(
         private readonly FollowService $follows,
+        private readonly BlockService $blocks,
     ) {}
 
     public function show(Request $request, User $user): JsonResponse
@@ -26,6 +28,8 @@ final class UserProfileController extends Controller
         $user->following_count = $this->follows->followingCount($user->id);
         $user->is_following = $viewerId !== $user->id && $this->follows->isFollowing($viewerId, $user->id);
         $user->is_followed_by = $viewerId !== $user->id && $this->follows->isFollowing($user->id, $viewerId);
+        $user->is_blocked = $viewerId !== $user->id && $this->blocks->isBlocked($viewerId, $user->id);
+        $user->is_blocked_by = $viewerId !== $user->id && $this->blocks->isBlocked($user->id, $viewerId);
 
         return ApiResponse::success(UserProfileResource::make($user));
     }

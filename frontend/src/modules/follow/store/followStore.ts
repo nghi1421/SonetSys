@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { blockApi } from '../api/blockApi'
 import { followApi } from '../api/followApi'
-import type { FollowUser, UserProfile } from '../types'
+import type { BlockedUser, FollowUser, UserProfile } from '../types'
 import type { Post } from '@/modules/feed/types'
 
 export const useFollowStore = defineStore('follow', () => {
@@ -16,6 +17,9 @@ export const useFollowStore = defineStore('follow', () => {
 
   const followers = ref<FollowUser[]>([])
   const following = ref<FollowUser[]>([])
+
+  const blockedUsers = ref<BlockedUser[]>([])
+  const blockedUsersLoading = ref(false)
 
   async function fetchProfile(userId: number): Promise<void> {
     profileLoading.value = true
@@ -86,6 +90,33 @@ export const useFollowStore = defineStore('follow', () => {
     applyFollowState(userId, false)
   }
 
+  async function fetchBlockedUsers(): Promise<void> {
+    blockedUsersLoading.value = true
+    try {
+      const response = await blockApi.fetchBlockedUsers()
+      blockedUsers.value = response.data ?? []
+    } finally {
+      blockedUsersLoading.value = false
+    }
+  }
+
+  async function block(userId: number): Promise<void> {
+    await blockApi.block(userId)
+    if (profile.value?.id === userId) {
+      profile.value.is_blocked = true
+      profile.value.is_following = false
+      profile.value.is_followed_by = false
+    }
+  }
+
+  async function unblock(userId: number): Promise<void> {
+    await blockApi.unblock(userId)
+    if (profile.value?.id === userId) {
+      profile.value.is_blocked = false
+    }
+    blockedUsers.value = blockedUsers.value.filter((user) => user.id !== userId)
+  }
+
   return {
     profile,
     profileLoading,
@@ -96,6 +127,8 @@ export const useFollowStore = defineStore('follow', () => {
     postsLoadingMore,
     followers,
     following,
+    blockedUsers,
+    blockedUsersLoading,
     fetchProfile,
     fetchProfilePosts,
     fetchMoreProfilePosts,
@@ -103,5 +136,8 @@ export const useFollowStore = defineStore('follow', () => {
     fetchFollowing,
     follow,
     unfollow,
+    fetchBlockedUsers,
+    block,
+    unblock,
   }
 })

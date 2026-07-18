@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Chat\Application\Services;
 
+use App\Modules\Block\Application\Services\BlockService;
 use App\Modules\Chat\Application\Contracts\ConversationRepositoryInterface;
 use App\Modules\Chat\Application\Contracts\MessageRepositoryInterface;
 use App\Modules\Chat\Domain\Events\MessageSent;
@@ -24,6 +25,7 @@ final class ChatService
         private readonly ConversationRepositoryInterface $conversations,
         private readonly MessageRepositoryInterface $messages,
         private readonly FollowService $follows,
+        private readonly BlockService $blocks,
     ) {}
 
     public function startOrGetConversation(int $viewerId, int $otherUserId): Conversation
@@ -31,6 +33,12 @@ final class ChatService
         if ($viewerId === $otherUserId) {
             throw ValidationException::withMessages([
                 'user' => 'You cannot message yourself.',
+            ]);
+        }
+
+        if ($this->blocks->isBlockedEitherWay($viewerId, $otherUserId)) {
+            throw ValidationException::withMessages([
+                'user' => 'You cannot message this user.',
             ]);
         }
 
@@ -48,6 +56,16 @@ final class ChatService
     {
         $conversation = $this->findConversationOrFail($conversationId);
         $this->assertParticipant($conversation, $senderId);
+
+        // startOrGetConversation() only checks block state at conversation
+        // creation — a block could happen afterward, so it's re-checked here
+        // on every send as its own hard-stop guard.
+        $otherUserId = $conversation->otherParticipantId($senderId);
+        if ($this->blocks->isBlockedEitherWay($senderId, $otherUserId)) {
+            throw ValidationException::withMessages([
+                'user' => 'You cannot message this user.',
+            ]);
+        }
 
         $message = $this->messages->create($conversationId, $senderId, $body);
 
