@@ -7,6 +7,7 @@ namespace App\Core\Auth\Infrastructure\Repositories;
 use App\Core\Auth\Application\Contracts\UserRepositoryInterface;
 use App\Core\Auth\Domain\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 final class EloquentUserRepository implements UserRepositoryInterface
 {
@@ -35,5 +36,17 @@ final class EloquentUserRepository implements UserRepositoryInterface
         $user->fill($attributes)->save();
 
         return $user;
+    }
+
+    public function search(string $query, int $limit): Collection
+    {
+        // LOWER()+LIKE (not ILIKE) so this runs unchanged on both the
+        // production Postgres connection and the sqlite connection the
+        // test suite uses — ILIKE has no sqlite equivalent.
+        return User::query()
+            ->whereRaw('LOWER(name) LIKE ?', ['%'.mb_strtolower($query).'%'])
+            ->orderBy('name')
+            ->limit($limit)
+            ->get(['id', 'name', 'avatar_url']);
     }
 }

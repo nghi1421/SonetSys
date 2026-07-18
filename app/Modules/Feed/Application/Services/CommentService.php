@@ -10,6 +10,7 @@ use App\Modules\Feed\Application\Contracts\PostRepositoryInterface;
 use App\Modules\Feed\Application\DTOs\CreateCommentData;
 use App\Modules\Feed\Application\DTOs\UpdateCommentData;
 use App\Modules\Feed\Domain\Events\CommentPosted;
+use App\Modules\Feed\Domain\Events\UserMentioned;
 use App\Modules\Feed\Domain\Models\Comment;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -20,11 +21,15 @@ final class CommentService
         private readonly CommentRepositoryInterface $comments,
         private readonly PostRepositoryInterface $posts,
         private readonly InteractionRepositoryInterface $interactions,
+        private readonly HashtagService $hashtags,
+        private readonly MentionService $mentions,
     ) {}
 
     public function create(CreateCommentData $data): Comment
     {
-        return DB::transaction(function () use ($data): Comment {
+        $mentionedUserIds = $this->mentions->filterRecipients($data->mentionedUserIds, $data->authorId);
+
+        return DB::transaction(function () use ($data, $mentionedUserIds): Comment {
             $parentId = $data->parentId;
             $directParentAuthorId = null;
 
@@ -51,6 +56,12 @@ final class CommentService
 
             $post = $this->posts->findById($data->postId);
 
+            $this->hashtags->extractAndAttach($data->body, $comment);
+
+            if ($mentionedUserIds !== []) {
+                $comment->mentions()->sync($mentionedUserIds);
+            }
+
             CommentPosted::dispatch(
                 $comment->id,
                 $data->postId,
@@ -58,6 +69,10 @@ final class CommentService
                 $directParentAuthorId,
                 (int) $post->author_id,
             );
+
+            if ($mentionedUserIds !== []) {
+                UserMentioned::dispatch('comment', $comment->id, $data->authorId, $mentionedUserIds);
+            }
 
             return $comment;
         });

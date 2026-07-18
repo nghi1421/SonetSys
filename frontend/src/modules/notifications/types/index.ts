@@ -4,6 +4,7 @@ export type NotificationType =
   | 'comment.posted'
   | 'post.shared'
   | 'user.followed'
+  | 'user.mentioned'
 
 export interface NotificationActor {
   id: number | null

@@ -22,6 +22,11 @@ final class CommentResource extends JsonResource
                 'id' => $this->whenLoaded('author', fn () => $this->author->id),
                 'name' => $this->whenLoaded('author', fn () => $this->author->name),
             ],
+            'hashtags' => $this->relationLoaded('hashtags') ? $this->hashtags->pluck('tag')->values() : [],
+            'mentions' => $this->relationLoaded('mentions') ? $this->mentions->map(fn ($user) => [
+                'id' => $user->id,
+                'name' => $user->name,
+            ])->values() : [],
             'created_at' => $this->created_at->toIso8601String(),
         ];
     }

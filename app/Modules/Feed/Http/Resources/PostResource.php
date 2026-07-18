@@ -28,6 +28,14 @@ final class PostResource extends JsonResource
                 'id' => $this->whenLoaded('author', fn () => $this->author->id),
                 'name' => $this->whenLoaded('author', fn () => $this->author->name),
             ],
+            // Always an array (never omitted) — the nested shared_post below
+            // doesn't get these relations eager-loaded, and the frontend
+            // contract expects hashtags/mentions to always be present.
+            'hashtags' => $this->relationLoaded('hashtags') ? $this->hashtags->pluck('tag')->values() : [],
+            'mentions' => $this->relationLoaded('mentions') ? $this->mentions->map(fn ($user) => [
+                'id' => $user->id,
+                'name' => $user->name,
+            ])->values() : [],
             'shared_post' => $this->shared_post_id !== null ? self::make($this->sharedPost) : null,
             'media_type' => $this->media_type?->value,
             'media_url' => in_array($this->media_type, [MediaType::Image, MediaType::Video], true) && $this->media_path !== null

@@ -54,6 +54,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/hashtag/:tag',
+      name: 'hashtag',
+      component: () => import('@/modules/feed/views/HashtagView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/m/:slug',
       name: 'menu-page',
       component: () => import('@/modules/menu/views/MenuPageView.vue'),

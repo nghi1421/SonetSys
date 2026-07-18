@@ -48,7 +48,7 @@ final class CommentController extends Controller
 
         $comment = $this->comments->create($request->toDto());
 
-        return ApiResponse::success(CommentResource::make($comment->load('author')), status: 201);
+        return ApiResponse::success(CommentResource::make($comment->load(['author', 'hashtags', 'mentions'])), status: 201);
     }
 
     public function update(UpdateCommentRequest $request, Comment $comment): JsonResponse
@@ -61,7 +61,7 @@ final class CommentController extends Controller
 
         $comment = $this->comments->update($comment, $request->toDto());
 
-        return ApiResponse::success(CommentResource::make($comment->load('author')));
+        return ApiResponse::success(CommentResource::make($comment->load(['author', 'hashtags', 'mentions'])));
     }
 
     public function destroy(Request $request, Comment $comment): JsonResponse

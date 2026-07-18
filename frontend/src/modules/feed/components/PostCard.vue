@@ -7,6 +7,7 @@ import AppButton from '@/shared/components/ui/AppButton.vue'
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog.vue'
 import { useRelativeTime } from '@/shared/composables/useRelativeTime'
 import CommentThread from './CommentThread.vue'
+import LinkifiedText from './LinkifiedText.vue'
 import LocationMapPreview from './LocationMapPreview.vue'
 import PostMedia from './PostMedia.vue'
 import ReactionButton from './ReactionButton.vue'
@@ -185,7 +186,7 @@ async function saveEdit(): Promise<void> {
         :class="clickable && 'cursor-pointer'"
         @click="onOpenDetail"
       >
-        {{ post.body }}
+        <LinkifiedText :text="post.body" :hashtags="post.hashtags" :mentions="post.mentions" />
       </p>
       <PostMedia
         v-if="post.media_type"

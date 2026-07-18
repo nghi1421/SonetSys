@@ -40,6 +40,8 @@ final class CreatePostRequest extends FormRequest
             'location_name' => ['sometimes', 'nullable', 'string', 'max:255'],
             'location_lat' => ['sometimes', 'nullable', 'numeric', 'between:-90,90'],
             'location_lng' => ['sometimes', 'nullable', 'numeric', 'between:-180,180'],
+            'mentioned_user_ids' => ['sometimes', 'array'],
+            'mentioned_user_ids.*' => ['integer', Rule::exists('users', 'id')],
         ];
     }
 
@@ -108,6 +110,7 @@ final class CreatePostRequest extends FormRequest
             locationName: $this->filled('location_name') ? (string) $this->validated('location_name') : null,
             locationLat: $this->filled('location_lat') ? (float) $this->validated('location_lat') : null,
             locationLng: $this->filled('location_lng') ? (float) $this->validated('location_lng') : null,
+            mentionedUserIds: array_map('intval', (array) ($this->validated('mentioned_user_ids') ?? [])),
         );
     }
 }

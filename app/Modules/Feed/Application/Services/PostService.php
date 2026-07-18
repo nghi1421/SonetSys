@@ -14,6 +14,7 @@ use App\Modules\Feed\Application\DTOs\UpdatePostData;
 use App\Modules\Feed\Application\Support\FeedCache;
 use App\Modules\Feed\Domain\Enums\MediaType;
 use App\Modules\Feed\Domain\Events\PostShared;
+use App\Modules\Feed\Domain\Events\UserMentioned;
 use App\Modules\Feed\Domain\Models\Post;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -27,6 +28,8 @@ final class PostService
         private readonly FeedCache $cache,
         private readonly StorageService $storage,
         private readonly MediaService $media,
+        private readonly HashtagService $hashtags,
+        private readonly MentionService $mentions,
     ) {}
 
     public function create(CreatePostData $data): Post
@@ -34,6 +37,7 @@ final class PostService
         $sharedPostId = null;
         $originalAuthorId = null;
         $original = null;
+        $mentionedUserIds = $this->mentions->filterRecipients($data->mentionedUserIds, $data->authorId);
 
         if ($data->sharedPostId !== null) {
             $referenced = $this->posts->findById($data->sharedPostId);
@@ -68,7 +72,7 @@ final class PostService
             $mediaPath = $data->stickerKey;
         }
 
-        $post = DB::transaction(function () use ($data, $sharedPostId, $mediaType, $mediaPath, $mediaDisk, $stored): Post {
+        $post = DB::transaction(function () use ($data, $sharedPostId, $mediaType, $mediaPath, $mediaDisk, $stored, $mentionedUserIds): Post {
             if ($sharedPostId !== null) {
                 $this->posts->incrementSharesCount($sharedPostId);
             }
@@ -99,11 +103,21 @@ final class PostService
                 );
             }
 
+            $this->hashtags->extractAndAttach($data->body, $post);
+
+            if ($mentionedUserIds !== []) {
+                $post->mentions()->sync($mentionedUserIds);
+            }
+
             return $post;
         });
 
         if ($sharedPostId !== null && $originalAuthorId !== null && $originalAuthorId !== $data->authorId) {
             PostShared::dispatch($sharedPostId, $post->id, $data->authorId, $originalAuthorId);
+        }
+
+        if ($mentionedUserIds !== []) {
+            UserMentioned::dispatch('post', $post->id, $data->authorId, $mentionedUserIds);
         }
 
         $this->forgetFeedCache($post);
@@ -125,10 +139,19 @@ final class PostService
 
     public function update(Post $post, UpdatePostData $data): Post
     {
-        $post = $this->posts->update($post, [
-            'body' => $data->body,
-            'visibility' => $data->visibility,
-        ]);
+        $post = DB::transaction(function () use ($post, $data): Post {
+            $post = $this->posts->update($post, [
+                'body' => $data->body,
+                'visibility' => $data->visibility,
+            ]);
+
+            // Replace-all sync — a hashtag no longer present in the edited
+            // body gets detached, not just left stale. Mentions are
+            // deliberately untouched here: they notify once, at creation only.
+            $this->hashtags->extractAndAttach($data->body, $post);
+
+            return $post;
+        });
 
         $this->forgetFeedCache($post);
 
@@ -225,6 +248,25 @@ final class PostService
         [$afterPublishedAt, $afterId] = $this->decodeCursor($cursor);
 
         $posts = $this->posts->cursorPaginateForAuthor($authorId, $viewerId, $afterPublishedAt, $afterId, $limit);
+        $this->markReactionByViewer($posts, $viewerId);
+
+        $nextCursor = null;
+        if ($posts->count() === $limit) {
+            $last = $posts->last();
+            $nextCursor = $this->encodeCursor($last->published_at, $last->id);
+        }
+
+        return ['items' => $posts, 'next_cursor' => $nextCursor];
+    }
+
+    /**
+     * @return array{items: Collection<int, Post>, next_cursor: ?string}
+     */
+    public function feedForHashtag(string $tag, int $viewerId, ?string $cursor, int $limit = 20): array
+    {
+        [$afterPublishedAt, $afterId] = $this->decodeCursor($cursor);
+
+        $posts = $this->posts->cursorPaginateForHashtag($tag, $viewerId, $afterPublishedAt, $afterId, $limit);
         $this->markReactionByViewer($posts, $viewerId);
 
         $nextCursor = null;

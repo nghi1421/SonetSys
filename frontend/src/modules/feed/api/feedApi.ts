@@ -23,6 +23,7 @@ function toRequestBody(payload: CreatePostPayload): FormData | CreatePostPayload
   if (payload.location_name) form.append('location_name', payload.location_name)
   if (payload.location_lat !== undefined) form.append('location_lat', String(payload.location_lat))
   if (payload.location_lng !== undefined) form.append('location_lng', String(payload.location_lng))
+  payload.mentioned_user_ids?.forEach((id) => form.append('mentioned_user_ids[]', String(id)))
   return form
 }
 
@@ -88,6 +89,13 @@ export const feedApi = {
 
   async fetchGroupFeed(groupId: number, cursor: string | null) {
     const { data } = await http.get<ApiResponse<Post[]>>(`/groups/${groupId}/posts`, {
+      params: cursor ? { cursor } : {},
+    })
+    return data
+  },
+
+  async fetchHashtagFeed(tag: string, cursor: string | null) {
+    const { data } = await http.get<ApiResponse<Post[]>>(`/hashtags/${tag}/posts`, {
       params: cursor ? { cursor } : {},
     })
     return data

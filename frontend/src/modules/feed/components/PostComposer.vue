@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Image, MapPin, Smile, Video, X } from '@lucide/vue'
+import { Image, MapPin, Smile, UserPlus, Video, X } from '@lucide/vue'
 import AppButton from '@/shared/components/ui/AppButton.vue'
 import { locationApi } from '../api/locationApi'
+import { useMentionPicker } from '../composables/useMentionPicker'
 import { useStickerStore } from '../store/stickerStore'
-import type { CreatePostPayload, PostLocation } from '../types'
+import type { CreatePostPayload, MentionCandidate, PostLocation } from '../types'
 
 const CHECK_IN_SEARCH_DEBOUNCE_MS = 400
 const CHECK_IN_MIN_QUERY_LENGTH = 2
@@ -32,6 +33,9 @@ const checkInSearching = ref(false)
 const selectedLocation = ref<PostLocation | null>(null)
 let checkInDebounceTimer: ReturnType<typeof setTimeout> | undefined
 
+const mention = useMentionPicker()
+const mentionedUserIds = ref<number[]>([])
+
 const photoInput = ref<HTMLInputElement | null>(null)
 const videoInput = ref<HTMLInputElement | null>(null)
 
@@ -54,12 +58,14 @@ function clearMedia(): void {
 function pickPhoto(): void {
   showStickerPicker.value = false
   showCheckInPicker.value = false
+  mention.close()
   photoInput.value?.click()
 }
 
 function pickVideo(): void {
   showStickerPicker.value = false
   showCheckInPicker.value = false
+  mention.close()
   videoInput.value?.click()
 }
 
@@ -85,6 +91,7 @@ function onVideoChange(event: Event): void {
 
 async function toggleStickerPicker(): Promise<void> {
   showCheckInPicker.value = false
+  mention.close()
   showStickerPicker.value = !showStickerPicker.value
   if (showStickerPicker.value) {
     await stickerStore.fetchStickers()
@@ -99,11 +106,25 @@ function selectSticker(key: string): void {
 
 function toggleCheckInPicker(): void {
   showStickerPicker.value = false
+  mention.close()
   showCheckInPicker.value = !showCheckInPicker.value
 }
 
 function closeCheckInPicker(): void {
   showCheckInPicker.value = false
+}
+
+function toggleMentionPicker(): void {
+  showStickerPicker.value = false
+  showCheckInPicker.value = false
+  mention.toggle()
+}
+
+function selectMention(candidate: MentionCandidate): void {
+  const trimmedBody = body.value.trimEnd()
+  body.value = trimmedBody.length ? `${trimmedBody} @${candidate.name} ` : `@${candidate.name} `
+  mentionedUserIds.value.push(candidate.id)
+  mention.reset()
 }
 
 function onCheckInSearchInput(): void {
@@ -143,6 +164,7 @@ function clearLocation(): void {
 onBeforeUnmount(() => {
   if (mediaPreviewUrl.value) URL.revokeObjectURL(mediaPreviewUrl.value)
   if (checkInDebounceTimer) clearTimeout(checkInDebounceTimer)
+  mention.dispose()
 })
 
 async function handleSubmit(): Promise<void> {
@@ -160,10 +182,12 @@ async function handleSubmit(): Promise<void> {
       location_name: selectedLocation.value?.name,
       location_lat: selectedLocation.value?.lat,
       location_lng: selectedLocation.value?.lng,
+      mentioned_user_ids: mentionedUserIds.value.length ? [...mentionedUserIds.value] : undefined,
     })
     body.value = ''
     clearMedia()
     clearLocation()
+    mentionedUserIds.value = []
   } catch {
     error.value = t('feed.postComposer.publishError')
   } finally {
@@ -333,6 +357,54 @@ async function handleSubmit(): Promise<void> {
               class="mt-2 font-mono text-[10px] text-cyber-muted"
             >
               {{ t('feed.postComposer.checkInNoResults') }}
+            </p>
+          </div>
+        </div>
+
+        <div class="relative">
+          <button
+            type="button"
+            class="rounded-full p-2 text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
+            :aria-label="t('feed.postComposer.mention')"
+            @click="toggleMentionPicker"
+          >
+            <UserPlus class="h-5 w-5" />
+          </button>
+
+          <div v-if="mention.showPicker.value" class="fixed inset-0 z-0" @click="mention.close()" />
+
+          <div
+            v-if="mention.showPicker.value"
+            class="popover-panel absolute left-0 z-10 mt-2 w-64 rounded-hud border border-cyber-border bg-cyber-glass p-3 backdrop-blur-md"
+            @click.stop
+          >
+            <input
+              v-model="mention.query.value"
+              type="text"
+              :placeholder="t('feed.postComposer.mentionSearchPlaceholder')"
+              class="block w-full rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-1.5 font-mono text-xs text-cyber-text backdrop-blur-md transition-all duration-300 placeholder:text-cyber-muted focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
+              @input="mention.onSearchInput()"
+            />
+
+            <ul v-if="mention.results.value.length" class="mt-2 max-h-48 space-y-1 overflow-y-auto">
+              <li v-for="candidate in mention.results.value" :key="candidate.id">
+                <button
+                  type="button"
+                  class="block w-full rounded-hud px-2 py-1.5 text-left font-mono text-xs text-cyber-text transition-all duration-300 hover:bg-cyber-surface/60 hover:text-cyber-neon-cyan"
+                  @click="selectMention(candidate)"
+                >
+                  {{ candidate.name }}
+                </button>
+              </li>
+            </ul>
+            <p v-else-if="mention.searching.value" class="mt-2 font-mono text-[10px] text-cyber-muted">
+              {{ t('common.loading') }}
+            </p>
+            <p
+              v-else-if="mention.query.value.trim().length >= 2"
+              class="mt-2 font-mono text-[10px] text-cyber-muted"
+            >
+              {{ t('feed.postComposer.mentionNoResults') }}
             </p>
           </div>
         </div>

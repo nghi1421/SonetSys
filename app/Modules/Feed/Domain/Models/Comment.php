@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 final class Comment extends Model
@@ -46,5 +47,15 @@ final class Comment extends Model
     public function interactions(): MorphMany
     {
         return $this->morphMany(Interaction::class, 'interactable');
+    }
+
+    public function hashtags(): MorphToMany
+    {
+        return $this->morphToMany(Hashtag::class, 'hashtaggable');
+    }
+
+    public function mentions(): MorphToMany
+    {
+        return $this->morphToMany(User::class, 'mentionable', 'mentions', 'mentionable_id', 'user_id');
     }
 }
