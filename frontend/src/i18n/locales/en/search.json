@@ -1,0 +1,19 @@
+{
+  "headerIcon": {
+    "ariaLabel": "Search"
+  },
+  "searchView": {
+    "placeholder": "Search posts, people, groups, and hashtags…",
+    "promptTitle": "Search Sonetsys",
+    "promptDescription": "Type at least 2 characters to search posts, people, groups, and hashtags.",
+    "emptyTitle": "No results",
+    "emptyDescription": "Nothing matched your search. Try a different term.",
+    "error": "Could not run this search. Please try again.",
+    "sections": {
+      "posts": "Posts",
+      "people": "People",
+      "groups": "Groups",
+      "hashtags": "Hashtags"
+    }
+  }
+}

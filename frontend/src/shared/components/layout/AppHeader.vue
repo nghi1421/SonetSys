@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Menu } from '@lucide/vue'
+import { Menu, Search } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import MessageBell from '@/modules/chat/components/MessageBell.vue'
 import NotificationBell from '@/modules/notifications/components/NotificationBell.vue'
@@ -46,6 +46,13 @@ async function onLogout(): Promise<void> {
       </div>
       <div class="flex items-center gap-3">
         <AppLocaleSwitcher variant="dark" />
+        <router-link
+          :to="{ name: 'search' }"
+          class="rounded-full border border-cyber-border bg-cyber-glass p-2 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/60 focus:ring-offset-2 focus:ring-offset-cyber-bg"
+          :aria-label="t('search.headerIcon.ariaLabel')"
+        >
+          <Search class="h-4 w-4" />
+        </router-link>
         <WalletBalancePill />
         <MessageBell />
         <NotificationBell />

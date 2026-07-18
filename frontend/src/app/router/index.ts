@@ -60,6 +60,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/search',
+      name: 'search',
+      component: () => import('@/modules/search/views/SearchView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/m/:slug',
       name: 'menu-page',
       component: () => import('@/modules/menu/views/MenuPageView.vue'),
