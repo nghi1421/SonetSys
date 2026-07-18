@@ -12,6 +12,12 @@ export interface Sticker {
   emoji: string
 }
 
+export interface PostLocation {
+  name: string
+  lat: number
+  lng: number
+}
+
 export interface Post {
   id: number
   body: string
@@ -27,6 +33,7 @@ export interface Post {
   media_type: MediaType | null
   media_url: string | null
   sticker_key: string | null
+  location: PostLocation | null
   published_at: string | null
   created_at: string
 }
@@ -54,6 +61,9 @@ export interface CreatePostPayload {
   media?: File
   media_type?: 'image' | 'video'
   sticker_key?: string
+  location_name?: string
+  location_lat?: number
+  location_lng?: number
 }
 
 export interface UpdatePostPayload {

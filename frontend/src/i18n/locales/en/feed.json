@@ -17,7 +17,8 @@
     "actionsLabel": "Post actions",
     "confirmDeleteTitle": "Delete post?",
     "confirmDeleteMessage": "This can't be undone.",
-    "sponsored": "Sponsored"
+    "sponsored": "Sponsored",
+    "location": "Checked in"
   },
   "postComposer": {
     "placeholder": "Share something with your community…",
@@ -28,7 +29,11 @@
     "addVideo": "Add video",
     "addSticker": "Add sticker",
     "submit": "Post",
-    "publishError": "Could not publish your post. Please try again."
+    "publishError": "Could not publish your post. Please try again.",
+    "checkIn": "Check in",
+    "checkInSearchPlaceholder": "Search for a place…",
+    "checkInNoResults": "No places found",
+    "checkInClear": "Remove location"
   },
   "commentThread": {
     "reply": "Reply",

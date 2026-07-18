@@ -19,6 +19,9 @@ function toRequestBody(payload: CreatePostPayload): FormData | CreatePostPayload
   if (payload.media) form.append('media', payload.media)
   if (payload.media_type) form.append('media_type', payload.media_type)
   if (payload.sticker_key) form.append('sticker_key', payload.sticker_key)
+  if (payload.location_name) form.append('location_name', payload.location_name)
+  if (payload.location_lat !== undefined) form.append('location_lat', String(payload.location_lat))
+  if (payload.location_lng !== undefined) form.append('location_lng', String(payload.location_lng))
   return form
 }
 
