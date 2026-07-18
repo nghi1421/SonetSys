@@ -39,6 +39,11 @@ enum PermissionSlug: string
     // kept here anyway for a single source of truth alongside the others.
     case StorageManage = 'storage.manage';
 
+    // Wallet is a feature module; kept here for the same Core -> Module
+    // dependency reason as the cases above, so RoleSeeder stays
+    // module-agnostic.
+    case WalletManage = 'wallet.manage';
+
     public function group(): string
     {
         return match ($this) {
@@ -49,6 +54,7 @@ enum PermissionSlug: string
             self::MenuManage => 'menu',
             self::GroupsManageAny => 'groups',
             self::StorageManage => 'storage',
+            self::WalletManage => 'wallet',
         };
     }
 
@@ -69,6 +75,7 @@ enum PermissionSlug: string
             self::MenuManage,
             self::GroupsManageAny,
             self::StorageManage,
+            self::WalletManage,
         ];
     }
 
