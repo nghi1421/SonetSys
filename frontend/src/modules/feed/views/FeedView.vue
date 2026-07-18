@@ -7,11 +7,14 @@ import AppButton from '@/shared/components/ui/AppButton.vue'
 import StoriesReel from '@/modules/stories/components/StoriesReel.vue'
 import PostCard from '../components/PostCard.vue'
 import PostComposer from '../components/PostComposer.vue'
+import PostDetailModal from '../components/PostDetailModal.vue'
 import { useFeedStore } from '../store/feedStore'
+import type { Post } from '../types'
 
 type Tab = 'forYou' | 'following'
 const tabs: Tab[] = ['forYou', 'following']
 const activeTab = ref<Tab>('forYou')
+const modalPost = ref<Post | null>(null)
 
 const feedStore = useFeedStore()
 const { t } = useI18n()
@@ -74,7 +77,13 @@ onMounted(() => {
         </div>
 
         <template v-else>
-          <PostCard v-for="post in feedStore.posts" :key="post.id" :post="post" />
+          <PostCard
+            v-for="post in feedStore.posts"
+            :key="post.id"
+            :post="post"
+            clickable
+            @open="modalPost = post"
+          />
 
           <div v-if="feedStore.nextCursor" class="flex justify-center pt-2">
             <AppButton
@@ -109,7 +118,13 @@ onMounted(() => {
         </div>
 
         <template v-else>
-          <PostCard v-for="post in feedStore.followingPosts" :key="post.id" :post="post" />
+          <PostCard
+            v-for="post in feedStore.followingPosts"
+            :key="post.id"
+            :post="post"
+            clickable
+            @open="modalPost = post"
+          />
 
           <div v-if="feedStore.followingNextCursor" class="flex justify-center pt-2">
             <AppButton
@@ -122,5 +137,7 @@ onMounted(() => {
         </template>
       </template>
     </div>
+
+    <PostDetailModal v-if="modalPost" :post="modalPost" @close="modalPost = null" />
   </AppShell>
 </template>

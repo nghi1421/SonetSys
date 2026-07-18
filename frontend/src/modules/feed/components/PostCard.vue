@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { EllipsisVertical, Heart, Megaphone, MessageCircle, Pencil, Trash2 } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
@@ -13,17 +13,32 @@ import SharedPostPreview from './SharedPostPreview.vue'
 import { useFeedStore } from '../store/feedStore'
 import type { Post } from '../types'
 
-const props = defineProps<{ post: Post }>()
+const props = withDefaults(
+  defineProps<{ post: Post; clickable?: boolean; startWithCommentsOpen?: boolean }>(),
+  { clickable: false, startWithCommentsOpen: false },
+)
+
+const emit = defineEmits<{ open: [] }>()
 
 const feedStore = useFeedStore()
 const authStore = useAuthStore()
 const { t } = useI18n()
 
-const showComments = ref(false)
+const showComments = ref(props.startWithCommentsOpen)
 const showActionsMenu = ref(false)
 const editing = ref(false)
 const editBody = ref(props.post.body)
 const confirmingDelete = ref(false)
+
+onMounted(async () => {
+  if (showComments.value && !feedStore.commentsByPost[props.post.id]) {
+    await feedStore.fetchComments(props.post.id)
+  }
+})
+
+function onOpenDetail(): void {
+  if (props.clickable) emit('open')
+}
 
 const isOwner = computed(() => authStore.user?.id === props.post.author.id)
 const canModerate = computed(
@@ -153,10 +168,18 @@ async function saveEdit(): Promise<void> {
       <p
         v-if="post.body"
         class="mt-3 whitespace-pre-wrap border-l border-cyber-neon-indigo pl-2 font-mono text-xs leading-relaxed text-cyber-text/90"
+        :class="clickable && 'cursor-pointer'"
+        @click="onOpenDetail"
       >
         {{ post.body }}
       </p>
-      <PostMedia v-if="post.media_type" :post="post" class="mt-3" />
+      <PostMedia
+        v-if="post.media_type"
+        :post="post"
+        class="mt-3"
+        :class="clickable && 'cursor-pointer'"
+        @click="onOpenDetail"
+      />
       <SharedPostPreview v-if="post.shared_post" :post="post.shared_post" class="mt-3" />
     </template>
 
