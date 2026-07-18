@@ -17,7 +17,7 @@ final class CommentResource extends JsonResource
             'parent_id' => $this->parent_id,
             'body' => $this->body,
             'likes_count' => $this->likes_count,
-            'liked_by_me' => (bool) ($this->liked_by_me ?? false),
+            'my_reaction' => $this->my_reaction ?? null,
             'author' => [
                 'id' => $this->whenLoaded('author', fn () => $this->author->id),
                 'name' => $this->whenLoaded('author', fn () => $this->author->name),

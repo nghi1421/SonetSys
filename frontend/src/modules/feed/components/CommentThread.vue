@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Heart, Trash2 } from '@lucide/vue'
+import { Trash2 } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import AppButton from '@/shared/components/ui/AppButton.vue'
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog.vue'
 import { useRelativeTime } from '@/shared/composables/useRelativeTime'
+import ReactionButton from './ReactionButton.vue'
 import { useFeedStore } from '../store/feedStore'
-import type { Comment } from '../types'
+import type { Comment, ReactionType } from '../types'
 
 const props = defineProps<{ postId: number }>()
 
@@ -48,8 +49,12 @@ async function submitComment(parentId?: number): Promise<void> {
   }
 }
 
-async function onToggleLike(commentId: number): Promise<void> {
-  await feedStore.toggleCommentLike(props.postId, commentId)
+async function onReact(commentId: number, type: ReactionType): Promise<void> {
+  await feedStore.reactToComment(props.postId, commentId, type)
+}
+
+async function onUnreact(commentId: number): Promise<void> {
+  await feedStore.unreactToComment(props.postId, commentId)
 }
 
 async function onConfirmDelete(): Promise<void> {
@@ -62,7 +67,7 @@ async function onConfirmDelete(): Promise<void> {
 <template>
   <div class="mt-4 space-y-3 border-t border-cyber-border pt-3">
     <div v-for="comment in topLevel" :key="comment.id" class="space-y-2">
-      <div class="flex items-start justify-between gap-2 rounded-hud border border-cyber-border bg-cyber-surface/40 p-3 backdrop-blur-md">
+      <div class="relative flex items-start justify-between gap-2 rounded-hud border border-cyber-border bg-cyber-surface/40 p-3 backdrop-blur-md has-[.popover-panel]:z-20">
         <div class="flex-1">
           <p class="text-xs font-bold tracking-wider text-cyber-text">// {{ comment.author.name }}</p>
           <p class="mt-1 border-l border-cyber-neon-indigo pl-2 font-mono text-xs leading-relaxed text-cyber-text/90">
@@ -70,15 +75,13 @@ async function onConfirmDelete(): Promise<void> {
           </p>
           <div class="mt-2 flex items-center gap-3 font-mono text-[9px] uppercase tracking-widest text-cyber-muted">
             <span>{{ useRelativeTime(comment.created_at) }}</span>
-            <button
-              type="button"
-              class="flex items-center gap-1 normal-case tracking-normal transition-colors duration-300"
-              :class="comment.liked_by_me ? 'text-cyber-neon-pink' : 'hover:text-cyber-neon-pink'"
-              @click="onToggleLike(comment.id)"
-            >
-              <Heart class="h-3 w-3" :fill="comment.liked_by_me ? 'currentColor' : 'none'" />
-              {{ comment.likes_count }}
-            </button>
+            <ReactionButton
+              :count="comment.likes_count"
+              :my-reaction="comment.my_reaction"
+              variant="inline"
+              @react="(type) => onReact(comment.id, type)"
+              @unreact="onUnreact(comment.id)"
+            />
             <button type="button" class="hover:text-cyber-neon-cyan" @click="replyingTo = comment.id">{{ t('feed.commentThread.reply') }}</button>
           </div>
         </div>
@@ -96,7 +99,7 @@ async function onConfirmDelete(): Promise<void> {
       <div
         v-for="reply in repliesFor(comment.id)"
         :key="reply.id"
-        class="ml-6 flex items-start justify-between gap-2 rounded-hud border border-cyber-border bg-cyber-surface/40 p-3 backdrop-blur-md"
+        class="relative ml-6 flex items-start justify-between gap-2 rounded-hud border border-cyber-border bg-cyber-surface/40 p-3 backdrop-blur-md has-[.popover-panel]:z-20"
       >
         <div class="flex-1">
           <p class="text-xs font-bold tracking-wider text-cyber-text">// {{ reply.author.name }}</p>
@@ -105,15 +108,13 @@ async function onConfirmDelete(): Promise<void> {
           </p>
           <div class="mt-2 flex items-center gap-3 font-mono text-[9px] uppercase tracking-widest text-cyber-muted">
             <span>{{ useRelativeTime(reply.created_at) }}</span>
-            <button
-              type="button"
-              class="flex items-center gap-1 normal-case tracking-normal transition-colors duration-300"
-              :class="reply.liked_by_me ? 'text-cyber-neon-pink' : 'hover:text-cyber-neon-pink'"
-              @click="onToggleLike(reply.id)"
-            >
-              <Heart class="h-3 w-3" :fill="reply.liked_by_me ? 'currentColor' : 'none'" />
-              {{ reply.likes_count }}
-            </button>
+            <ReactionButton
+              :count="reply.likes_count"
+              :my-reaction="reply.my_reaction"
+              variant="inline"
+              @react="(type) => onReact(reply.id, type)"
+              @unreact="onUnreact(reply.id)"
+            />
           </div>
         </div>
         <button

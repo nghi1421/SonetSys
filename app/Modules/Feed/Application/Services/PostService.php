@@ -183,7 +183,7 @@ final class PostService
             $cursor,
             fn () => $this->posts->cursorPaginate($viewerId, $afterPublishedAt, $afterId, $limit),
         );
-        $this->markLikedByViewer($posts, $viewerId);
+        $this->markReactionByViewer($posts, $viewerId);
 
         $nextCursor = null;
         if ($posts->count() === $limit) {
@@ -206,7 +206,7 @@ final class PostService
             $cursor,
             fn () => $this->posts->cursorPaginateForGroup($groupId, $afterPublishedAt, $afterId, $limit),
         );
-        $this->markLikedByViewer($posts, $viewerId);
+        $this->markReactionByViewer($posts, $viewerId);
 
         $nextCursor = null;
         if ($posts->count() === $limit) {
@@ -225,7 +225,7 @@ final class PostService
         [$afterPublishedAt, $afterId] = $this->decodeCursor($cursor);
 
         $posts = $this->posts->cursorPaginateForAuthor($authorId, $viewerId, $afterPublishedAt, $afterId, $limit);
-        $this->markLikedByViewer($posts, $viewerId);
+        $this->markReactionByViewer($posts, $viewerId);
 
         $nextCursor = null;
         if ($posts->count() === $limit) {
@@ -248,7 +248,7 @@ final class PostService
             $cursor,
             fn () => $this->posts->cursorPaginateForFollowing($viewerId, $afterPublishedAt, $afterId, $limit),
         );
-        $this->markLikedByViewer($posts, $viewerId);
+        $this->markReactionByViewer($posts, $viewerId);
 
         $nextCursor = null;
         if ($posts->count() === $limit) {
@@ -262,14 +262,14 @@ final class PostService
     /**
      * @param  Post|Collection<int, Post>  $posts
      */
-    public function markLikedByViewer(Post|Collection $posts, int $viewerId): void
+    public function markReactionByViewer(Post|Collection $posts, int $viewerId): void
     {
         $collection = $posts instanceof Post ? collect([$posts]) : $posts;
 
-        $likedIds = $this->interactions->likedInteractableIds($viewerId, 'post', $collection->pluck('id')->all());
+        $myReactions = $this->interactions->myReactionsAmong($viewerId, 'post', $collection->pluck('id')->all());
 
-        $collection->each(function (Post $post) use ($likedIds): void {
-            $post->liked_by_me = in_array($post->id, $likedIds, true);
+        $collection->each(function (Post $post) use ($myReactions): void {
+            $post->my_reaction = $myReactions[$post->id] ?? null;
         });
     }
 

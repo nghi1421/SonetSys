@@ -10,13 +10,12 @@ use App\Modules\Feed\Domain\Models\Interaction;
 
 final class EloquentInteractionRepository implements InteractionRepositoryInterface
 {
-    public function findExisting(int $userId, string $interactableType, int $interactableId, string $type): ?Interaction
+    public function findExisting(int $userId, string $interactableType, int $interactableId): ?Interaction
     {
         return Interaction::query()
             ->where('user_id', $userId)
             ->where('interactable_type', $interactableType)
             ->where('interactable_id', $interactableId)
-            ->where('type', $type)
             ->first();
     }
 
@@ -25,12 +24,17 @@ final class EloquentInteractionRepository implements InteractionRepositoryInterf
         return Interaction::query()->create($attributes);
     }
 
+    public function update(Interaction $interaction, InteractionType $type): void
+    {
+        $interaction->update(['type' => $type->value]);
+    }
+
     public function delete(Interaction $interaction): void
     {
         $interaction->delete();
     }
 
-    public function likedInteractableIds(int $userId, string $interactableType, array $interactableIds): array
+    public function myReactionsAmong(int $userId, string $interactableType, array $interactableIds): array
     {
         if ($interactableIds === []) {
             return [];
@@ -39,9 +43,9 @@ final class EloquentInteractionRepository implements InteractionRepositoryInterf
         return Interaction::query()
             ->where('user_id', $userId)
             ->where('interactable_type', $interactableType)
-            ->where('type', InteractionType::Like->value)
             ->whereIn('interactable_id', $interactableIds)
-            ->pluck('interactable_id')
+            ->pluck('type', 'interactable_id')
+            ->map(fn (InteractionType $type) => $type->value)
             ->all();
     }
 }

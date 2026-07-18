@@ -22,7 +22,7 @@ final class PostResource extends JsonResource
             'likes_count' => $this->likes_count,
             'comments_count' => $this->comments_count,
             'shares_count' => $this->shares_count,
-            'liked_by_me' => (bool) ($this->liked_by_me ?? false),
+            'my_reaction' => $this->my_reaction ?? null,
             'is_sponsored' => (bool) ($this->is_sponsored ?? false),
             'author' => [
                 'id' => $this->whenLoaded('author', fn () => $this->author->id),

@@ -69,7 +69,7 @@ final class CommentService
     public function listForPost(int $postId, int $viewerId): Collection
     {
         $comments = $this->comments->listForPost($postId);
-        $this->markLikedByViewer($comments, $viewerId);
+        $this->markReactionByViewer($comments, $viewerId);
 
         return $comments;
     }
@@ -77,12 +77,12 @@ final class CommentService
     /**
      * @param  Collection<int, Comment>  $comments
      */
-    private function markLikedByViewer(Collection $comments, int $viewerId): void
+    private function markReactionByViewer(Collection $comments, int $viewerId): void
     {
-        $likedIds = $this->interactions->likedInteractableIds($viewerId, 'comment', $comments->pluck('id')->all());
+        $myReactions = $this->interactions->myReactionsAmong($viewerId, 'comment', $comments->pluck('id')->all());
 
-        $comments->each(function (Comment $comment) use ($likedIds): void {
-            $comment->liked_by_me = in_array($comment->id, $likedIds, true);
+        $comments->each(function (Comment $comment) use ($myReactions): void {
+            $comment->my_reaction = $myReactions[$comment->id] ?? null;
         });
     }
 

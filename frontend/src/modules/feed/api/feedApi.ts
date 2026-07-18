@@ -5,7 +5,8 @@ import type {
   CreateCommentPayload,
   CreatePostPayload,
   Post,
-  ToggleLikeResult,
+  ReactionResult,
+  ReactionType,
   UpdatePostPayload,
 } from '../types'
 
@@ -53,8 +54,8 @@ export const feedApi = {
     return data
   },
 
-  async togglePostLike(postId: number) {
-    const { data } = await http.post<ApiResponse<ToggleLikeResult>>(`/posts/${postId}/like`)
+  async togglePostLike(postId: number, type?: ReactionType) {
+    const { data } = await http.post<ApiResponse<ReactionResult>>(`/posts/${postId}/like`, type ? { type } : undefined)
     return data
   },
 
@@ -73,8 +74,8 @@ export const feedApi = {
     return data
   },
 
-  async toggleCommentLike(commentId: number) {
-    const { data } = await http.post<ApiResponse<ToggleLikeResult>>(`/comments/${commentId}/like`)
+  async toggleCommentLike(commentId: number, type?: ReactionType) {
+    const { data } = await http.post<ApiResponse<ReactionResult>>(`/comments/${commentId}/like`, type ? { type } : undefined)
     return data
   },
 

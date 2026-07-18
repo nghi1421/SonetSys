@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { EllipsisVertical, Heart, MapPin, Megaphone, MessageCircle, Pencil, Trash2 } from '@lucide/vue'
+import { EllipsisVertical, MapPin, Megaphone, MessageCircle, Pencil, Trash2 } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import AppButton from '@/shared/components/ui/AppButton.vue'
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog.vue'
@@ -9,10 +9,11 @@ import { useRelativeTime } from '@/shared/composables/useRelativeTime'
 import CommentThread from './CommentThread.vue'
 import LocationMapPreview from './LocationMapPreview.vue'
 import PostMedia from './PostMedia.vue'
+import ReactionButton from './ReactionButton.vue'
 import ShareMenu from './ShareMenu.vue'
 import SharedPostPreview from './SharedPostPreview.vue'
 import { useFeedStore } from '../store/feedStore'
-import type { Post } from '../types'
+import type { Post, ReactionType } from '../types'
 
 const props = withDefaults(
   defineProps<{ post: Post; clickable?: boolean; startWithCommentsOpen?: boolean }>(),
@@ -47,8 +48,12 @@ const canModerate = computed(
 )
 const canDelete = computed(() => isOwner.value || canModerate.value)
 
-async function onToggleLike(): Promise<void> {
-  await feedStore.toggleLike(props.post.id)
+async function onReact(type: ReactionType): Promise<void> {
+  await feedStore.reactToPost(props.post.id, type)
+}
+
+async function onUnreact(): Promise<void> {
+  await feedStore.unreactToPost(props.post.id)
 }
 
 async function onToggleComments(): Promise<void> {
@@ -200,19 +205,13 @@ async function saveEdit(): Promise<void> {
     </template>
 
     <footer class="mt-4 flex items-center gap-2 border-t border-cyber-border pt-3">
-      <button
-        type="button"
-        class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[10px] transition-all duration-300"
-        :class="
-          post.liked_by_me
-            ? 'border-cyber-neon-pink/40 bg-cyber-neon-pink/10 text-cyber-neon-pink shadow-pink-glow'
-            : 'border-cyber-border bg-cyber-glass text-cyber-muted hover:border-cyber-neon-pink/40 hover:text-cyber-neon-pink'
-        "
-        @click="onToggleLike"
-      >
-        <Heart class="h-3 w-3" :fill="post.liked_by_me ? 'currentColor' : 'none'" />
-        {{ post.likes_count }}
-      </button>
+      <ReactionButton
+        :count="post.likes_count"
+        :my-reaction="post.my_reaction"
+        variant="pill"
+        @react="onReact"
+        @unreact="onUnreact"
+      />
 
       <button
         type="button"

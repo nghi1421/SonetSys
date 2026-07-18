@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
 import { feedApi } from '../api/feedApi'
-import type { CreatePostPayload, Post, UpdatePostPayload } from '../types'
+import type { CreatePostPayload, Post, ReactionType, UpdatePostPayload } from '../types'
 
 export const useFeedStore = defineStore('feed', () => {
   const posts = ref<Post[]>([])
@@ -128,12 +128,22 @@ export const useFeedStore = defineStore('feed', () => {
     posts.value = posts.value.filter((p) => p.id !== postId)
   }
 
-  async function toggleLike(postId: number): Promise<void> {
+  async function reactToPost(postId: number, type: ReactionType): Promise<void> {
     const post = posts.value.find((p) => p.id === postId)
     if (!post) return
-    const response = await feedApi.togglePostLike(postId)
+    const response = await feedApi.togglePostLike(postId, type)
     if (response.data) {
-      post.liked_by_me = response.data.liked
+      post.my_reaction = response.data.my_reaction
+      post.likes_count = response.data.likes_count
+    }
+  }
+
+  async function unreactToPost(postId: number): Promise<void> {
+    const post = posts.value.find((p) => p.id === postId)
+    if (!post || !post.my_reaction) return
+    const response = await feedApi.togglePostLike(postId, post.my_reaction)
+    if (response.data) {
+      post.my_reaction = response.data.my_reaction
       post.likes_count = response.data.likes_count
     }
   }
@@ -159,12 +169,22 @@ export const useFeedStore = defineStore('feed', () => {
     if (post) post.comments_count = Math.max(0, post.comments_count - 1)
   }
 
-  async function toggleCommentLike(postId: number, commentId: number): Promise<void> {
+  async function reactToComment(postId: number, commentId: number, type: ReactionType): Promise<void> {
     const comment = (commentsByPost[postId] ?? []).find((c) => c.id === commentId)
     if (!comment) return
-    const response = await feedApi.toggleCommentLike(commentId)
+    const response = await feedApi.toggleCommentLike(commentId, type)
     if (response.data) {
-      comment.liked_by_me = response.data.liked
+      comment.my_reaction = response.data.my_reaction
+      comment.likes_count = response.data.likes_count
+    }
+  }
+
+  async function unreactToComment(postId: number, commentId: number): Promise<void> {
+    const comment = (commentsByPost[postId] ?? []).find((c) => c.id === commentId)
+    if (!comment || !comment.my_reaction) return
+    const response = await feedApi.toggleCommentLike(commentId, comment.my_reaction)
+    if (response.data) {
+      comment.my_reaction = response.data.my_reaction
       comment.likes_count = response.data.likes_count
     }
   }
@@ -191,10 +211,12 @@ export const useFeedStore = defineStore('feed', () => {
     createGroupPost,
     updatePost,
     deletePost,
-    toggleLike,
+    reactToPost,
+    unreactToPost,
     fetchComments,
     createComment,
     deleteComment,
-    toggleCommentLike,
+    reactToComment,
+    unreactToComment,
   }
 })

@@ -18,6 +18,17 @@ export interface PostLocation {
   lng: number
 }
 
+export type ReactionType = 'like' | 'love' | 'haha' | 'wow' | 'sad' | 'angry'
+
+export const REACTION_EMOJI: Record<ReactionType, string> = {
+  like: '👍',
+  love: '❤️',
+  haha: '😆',
+  wow: '😮',
+  sad: '😢',
+  angry: '😠',
+}
+
 export interface Post {
   id: number
   body: string
@@ -26,7 +37,7 @@ export interface Post {
   likes_count: number
   comments_count: number
   shares_count: number
-  liked_by_me: boolean
+  my_reaction: ReactionType | null
   is_sponsored: boolean
   author: PostAuthor
   shared_post: Post | null
@@ -44,13 +55,13 @@ export interface Comment {
   parent_id: number | null
   body: string
   likes_count: number
-  liked_by_me: boolean
+  my_reaction: ReactionType | null
   author: PostAuthor
   created_at: string
 }
 
-export interface ToggleLikeResult {
-  liked: boolean
+export interface ReactionResult {
+  my_reaction: ReactionType | null
   likes_count: number
 }
 
