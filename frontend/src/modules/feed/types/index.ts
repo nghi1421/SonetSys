@@ -21,6 +21,7 @@ export interface Post {
   comments_count: number
   shares_count: number
   liked_by_me: boolean
+  is_sponsored: boolean
   author: PostAuthor
   shared_post: Post | null
   media_type: MediaType | null

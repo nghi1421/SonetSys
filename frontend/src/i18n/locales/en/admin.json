@@ -76,5 +76,24 @@
     "submit": "Confirm top-up",
     "topUpError": "Could not top up this wallet. Please try again.",
     "loadError": "Could not load wallets. Please try again."
+  },
+  "ads": {
+    "title": "Ad Review",
+    "subtitle": "Approve or reject pending boost campaigns.",
+    "advertiserHeader": "Advertiser",
+    "postHeader": "Post",
+    "budgetHeader": "Budget",
+    "requestedHeader": "Requested",
+    "actionsHeader": "Actions",
+    "emptyState": "No pending campaigns.",
+    "approveButton": "Approve",
+    "rejectButton": "Reject",
+    "rejectTitle": "Reject {name}'s campaign",
+    "reasonLabel": "Reason",
+    "reasonPlaceholder": "Explain why this campaign is being rejected…",
+    "rejectSubmit": "Confirm rejection",
+    "approveError": "Could not approve this campaign. Please try again.",
+    "rejectError": "Could not reject this campaign. Please try again.",
+    "loadError": "Could not load the ad review queue. Please try again."
   }
 }

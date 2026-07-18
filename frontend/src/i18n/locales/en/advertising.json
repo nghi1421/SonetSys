@@ -1,0 +1,34 @@
+{
+  "advertiseView": {
+    "title": "Advertise",
+    "subtitle": "Spend wallet credits to boost your own posts in the main feed.",
+    "walletHint": "Available balance",
+    "form": {
+      "title": "Boost a post",
+      "postLabel": "Post",
+      "postPlaceholder": "Choose an eligible post…",
+      "budgetLabel": "Budget (credits)",
+      "daysLabel": "Duration (days)",
+      "submit": "Boost post",
+      "submitError": "Could not submit this campaign. Please try again.",
+      "noEligiblePosts": "You have no eligible public posts to boost yet. Public, non-group posts can be boosted."
+    },
+    "myCampaigns": {
+      "title": "My Campaigns",
+      "emptyTitle": "No campaigns yet",
+      "emptyDescription": "Campaigns you submit will appear here.",
+      "budget": "Budget",
+      "period": "Period",
+      "cancel": "Cancel",
+      "cancelError": "Could not cancel this campaign. Please try again."
+    },
+    "statuses": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "loadError": "Could not load your advertising data. Please try again."
+  }
+}

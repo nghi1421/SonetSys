@@ -2,6 +2,7 @@
 
 use App\Core\Auth\CoreAuthServiceProvider;
 use App\Core\Storage\CoreStorageServiceProvider;
+use App\Modules\Advertising\AdvertisingServiceProvider;
 use App\Modules\Feed\FeedServiceProvider;
 use App\Modules\Follow\FollowServiceProvider;
 use App\Modules\Group\GroupServiceProvider;
@@ -15,6 +16,7 @@ return [
     AppServiceProvider::class,
     CoreAuthServiceProvider::class,
     CoreStorageServiceProvider::class,
+    AdvertisingServiceProvider::class,
     FeedServiceProvider::class,
     FollowServiceProvider::class,
     GroupServiceProvider::class,

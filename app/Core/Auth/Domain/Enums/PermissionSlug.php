@@ -44,6 +44,11 @@ enum PermissionSlug: string
     // module-agnostic.
     case WalletManage = 'wallet.manage';
 
+    // Advertising is a feature module; kept here for the same Core -> Module
+    // dependency reason as the cases above, so RoleSeeder stays
+    // module-agnostic.
+    case AdsReview = 'ads.review';
+
     public function group(): string
     {
         return match ($this) {
@@ -55,6 +60,7 @@ enum PermissionSlug: string
             self::GroupsManageAny => 'groups',
             self::StorageManage => 'storage',
             self::WalletManage => 'wallet',
+            self::AdsReview => 'ads',
         };
     }
 
@@ -76,6 +82,7 @@ enum PermissionSlug: string
             self::GroupsManageAny,
             self::StorageManage,
             self::WalletManage,
+            self::AdsReview,
         ];
     }
 
