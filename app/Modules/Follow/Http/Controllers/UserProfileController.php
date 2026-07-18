@@ -25,6 +25,7 @@ final class UserProfileController extends Controller
         $user->followers_count = $this->follows->followersCount($user->id);
         $user->following_count = $this->follows->followingCount($user->id);
         $user->is_following = $viewerId !== $user->id && $this->follows->isFollowing($viewerId, $user->id);
+        $user->is_followed_by = $viewerId !== $user->id && $this->follows->isFollowing($user->id, $viewerId);
 
         return ApiResponse::success(UserProfileResource::make($user));
     }

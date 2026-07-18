@@ -13,4 +13,5 @@ export interface UserProfile {
   followers_count: number
   following_count: number
   is_following: boolean
+  is_followed_by: boolean
 }

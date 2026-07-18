@@ -19,6 +19,7 @@ final class UserProfileResource extends JsonResource
             'followers_count' => $this->followers_count,
             'following_count' => $this->following_count,
             'is_following' => (bool) ($this->is_following ?? false),
+            'is_followed_by' => (bool) ($this->is_followed_by ?? false),
         ];
     }
 }

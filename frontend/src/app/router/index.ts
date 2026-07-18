@@ -72,6 +72,18 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/messages',
+      name: 'messages',
+      component: () => import('@/modules/chat/views/MessagesListView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/messages/:conversationId',
+      name: 'conversation',
+      component: () => import('@/modules/chat/views/ConversationView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/advertise',
       name: 'advertise',
       component: () => import('@/modules/advertising/views/AdvertiseView.vue'),

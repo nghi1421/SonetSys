@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Inbox } from '@lucide/vue'
 import AppShell from '@/shared/components/layout/AppShell.vue'
@@ -8,16 +8,30 @@ import AppAlert from '@/shared/components/ui/AppAlert.vue'
 import AppButton from '@/shared/components/ui/AppButton.vue'
 import { useRelativeTime } from '@/shared/composables/useRelativeTime'
 import PostCard from '@/modules/feed/components/PostCard.vue'
+import { useChatStore } from '@/modules/chat/store/chatStore'
 import FollowButton from '../components/FollowButton.vue'
 import FollowListModal from '../components/FollowListModal.vue'
 import { useFollowStore } from '../store/followStore'
 
 const route = useRoute()
+const router = useRouter()
 const followStore = useFollowStore()
+const chatStore = useChatStore()
 const { t } = useI18n()
 
 const userId = computed(() => Number(route.params.id))
 const showFollowersModal = ref(false)
+const startingConversation = ref(false)
+
+async function startConversation(): Promise<void> {
+  startingConversation.value = true
+  try {
+    const conversation = await chatStore.startConversation(userId.value)
+    router.push({ name: 'conversation', params: { conversationId: conversation.id } })
+  } finally {
+    startingConversation.value = false
+  }
+}
 const showFollowingModal = ref(false)
 
 function initialOf(name: string): string {
@@ -77,7 +91,16 @@ watch(userId, load)
               </p>
             </div>
           </div>
-          <FollowButton :user-id="followStore.profile.id" :is-following="followStore.profile.is_following" />
+          <div class="flex items-center gap-2">
+            <AppButton
+              v-if="followStore.profile.is_following && followStore.profile.is_followed_by"
+              :label="t('follow.message')"
+              variant="secondary"
+              :loading="startingConversation"
+              @click="startConversation"
+            />
+            <FollowButton :user-id="followStore.profile.id" :is-following="followStore.profile.is_following" />
+          </div>
         </div>
 
         <div class="mt-4 flex gap-6">

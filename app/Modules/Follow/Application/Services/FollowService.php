@@ -51,6 +51,11 @@ final class FollowService
         return $this->follows->isFollowing($followerId, $followedId);
     }
 
+    public function isMutual(int $a, int $b): bool
+    {
+        return $this->isFollowing($a, $b) && $this->isFollowing($b, $a);
+    }
+
     public function followersCount(int $userId): int
     {
         return $this->follows->followersCount($userId);
