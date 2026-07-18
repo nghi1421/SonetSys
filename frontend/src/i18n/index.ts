@@ -9,6 +9,7 @@ import follow from './locales/en/follow.json'
 import groups from './locales/en/groups.json'
 import menu from './locales/en/menu.json'
 import notifications from './locales/en/notifications.json'
+import search from './locales/en/search.json'
 import stories from './locales/en/stories.json'
 import storage from './locales/en/storage.json'
 import wallet from './locales/en/wallet.json'
@@ -32,6 +33,7 @@ const en = {
   follow,
   wallet,
   advertising,
+  search,
 }
 
 export const i18n = createI18n({
