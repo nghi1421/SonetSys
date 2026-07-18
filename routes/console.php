@@ -1,5 +1,6 @@
 <?php
 
+use App\Console\Commands\AdCampaignExpire;
 use App\Console\Commands\ExpireStories;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -10,3 +11,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command(ExpireStories::class)->hourly();
+Schedule::command(AdCampaignExpire::class)->hourly();
