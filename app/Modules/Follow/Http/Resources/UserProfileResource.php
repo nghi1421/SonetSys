@@ -15,6 +15,7 @@ final class UserProfileResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'avatar_url' => $this->avatar_url,
+            'cover_url' => $this->cover_url,
             'created_at' => $this->created_at->toIso8601String(),
             'followers_count' => $this->followers_count,
             'following_count' => $this->following_count,
