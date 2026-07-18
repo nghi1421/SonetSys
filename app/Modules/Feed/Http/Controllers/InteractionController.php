@@ -8,11 +8,13 @@ use App\Core\Support\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Modules\Feed\Application\Contracts\GroupAccessCheckerInterface;
 use App\Modules\Feed\Application\Services\InteractionService;
+use App\Modules\Feed\Domain\Enums\InteractionType;
 use App\Modules\Feed\Domain\Models\Comment;
 use App\Modules\Feed\Domain\Models\Post;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 final class InteractionController extends Controller
 {
@@ -29,8 +31,10 @@ final class InteractionController extends Controller
             throw new AuthorizationException('You must be a member of this group.');
         }
 
+        $type = $this->resolveReactionType($request);
+
         return ApiResponse::success(
-            $this->interactions->toggleLike('post', $post->id, $user->id),
+            $this->interactions->react('post', $post->id, $user->id, $type),
         );
     }
 
@@ -44,8 +48,21 @@ final class InteractionController extends Controller
             throw new AuthorizationException('You must be a member of this group.');
         }
 
+        $type = $this->resolveReactionType($request);
+
         return ApiResponse::success(
-            $this->interactions->toggleLike('comment', $comment->id, $user->id),
+            $this->interactions->react('comment', $comment->id, $user->id, $type),
         );
+    }
+
+    private function resolveReactionType(Request $request): InteractionType
+    {
+        $request->validate([
+            'type' => ['nullable', 'string', Rule::enum(InteractionType::class)],
+        ]);
+
+        $type = $request->input('type');
+
+        return $type !== null ? InteractionType::from($type) : InteractionType::Like;
     }
 }

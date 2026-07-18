@@ -92,7 +92,7 @@ final class PostController extends Controller
             throw new AuthorizationException('You must be a member of this group.');
         }
 
-        $this->posts->markLikedByViewer($post, $user->id);
+        $this->posts->markReactionByViewer($post, $user->id);
 
         return ApiResponse::success(PostResource::make($post->load(['author', 'sharedPost.author'])));
     }
