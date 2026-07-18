@@ -37,6 +37,12 @@ final class EloquentPostRepository implements PostRepositoryInterface
                 $query->where('visibility', '!=', PostVisibility::Private->value)
                     ->orWhere('author_id', $viewerId);
             })
+            ->whereNotIn('author_id', function ($query) use ($viewerId): void {
+                $query->select('blocked_id')->from('blocks')->where('blocker_id', $viewerId);
+            })
+            ->whereNotIn('author_id', function ($query) use ($viewerId): void {
+                $query->select('blocker_id')->from('blocks')->where('blocked_id', $viewerId);
+            })
             ->when(
                 $afterPublishedAt !== null && $afterId !== null,
                 fn ($query) => $query->where(function ($inner) use ($afterPublishedAt, $afterId): void {
@@ -91,6 +97,12 @@ final class EloquentPostRepository implements PostRepositoryInterface
                 $query->where('visibility', '!=', PostVisibility::Private->value)
                     ->orWhere('author_id', $viewerId);
             })
+            ->whereNotIn('author_id', function ($query) use ($viewerId): void {
+                $query->select('blocked_id')->from('blocks')->where('blocker_id', $viewerId);
+            })
+            ->whereNotIn('author_id', function ($query) use ($viewerId): void {
+                $query->select('blocker_id')->from('blocks')->where('blocked_id', $viewerId);
+            })
             ->when(
                 $afterPublishedAt !== null && $afterId !== null,
                 fn ($query) => $query->where(function ($inner) use ($afterPublishedAt, $afterId): void {
@@ -122,6 +134,12 @@ final class EloquentPostRepository implements PostRepositoryInterface
                 $query->where('visibility', '!=', PostVisibility::Private->value)
                     ->orWhere('author_id', $viewerId);
             })
+            ->whereNotIn('author_id', function ($query) use ($viewerId): void {
+                $query->select('blocked_id')->from('blocks')->where('blocker_id', $viewerId);
+            })
+            ->whereNotIn('author_id', function ($query) use ($viewerId): void {
+                $query->select('blocker_id')->from('blocks')->where('blocked_id', $viewerId);
+            })
             ->when(
                 $afterPublishedAt !== null && $afterId !== null,
                 fn ($query) => $query->where(function ($inner) use ($afterPublishedAt, $afterId): void {
@@ -151,6 +169,12 @@ final class EloquentPostRepository implements PostRepositoryInterface
             ->where(function ($query) use ($viewerId): void {
                 $query->where('visibility', '!=', PostVisibility::Private->value)
                     ->orWhere('author_id', $viewerId);
+            })
+            ->whereNotIn('author_id', function ($query) use ($viewerId): void {
+                $query->select('blocked_id')->from('blocks')->where('blocker_id', $viewerId);
+            })
+            ->whereNotIn('author_id', function ($query) use ($viewerId): void {
+                $query->select('blocker_id')->from('blocks')->where('blocked_id', $viewerId);
             })
             ->when(
                 $afterPublishedAt !== null && $afterId !== null,
