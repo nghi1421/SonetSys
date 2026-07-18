@@ -9,6 +9,7 @@ import menu from './locales/en/menu.json'
 import notifications from './locales/en/notifications.json'
 import stories from './locales/en/stories.json'
 import storage from './locales/en/storage.json'
+import wallet from './locales/en/wallet.json'
 
 export const SUPPORTED_LOCALES = ['en'] as const
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number]
@@ -26,6 +27,7 @@ const en = {
   notifications,
   stories,
   follow,
+  wallet,
 }
 
 export const i18n = createI18n({

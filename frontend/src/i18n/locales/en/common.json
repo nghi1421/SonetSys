@@ -23,7 +23,8 @@
     "menuPages": "Menu & Pages",
     "storage": "Storage",
     "mediaLibrary": "Media Library",
-    "users": "Users"
+    "users": "Users",
+    "wallets": "Wallets"
   },
   "mediaPreview": {
     "closePreview": "Close preview",

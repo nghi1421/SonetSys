@@ -58,5 +58,23 @@
     "updateError": "Could not update {name}. Please try again.",
     "roles": { "admin": "Admin", "moderator": "Moderator", "user": "User" },
     "statuses": { "active": "Active", "suspended": "Suspended", "banned": "Banned" }
+  },
+  "wallets": {
+    "title": "Wallets",
+    "subtitle": "Manage user credit balances.",
+    "userHeader": "User",
+    "emailHeader": "Email",
+    "balanceHeader": "Balance",
+    "actionsHeader": "Actions",
+    "emptyState": "No wallets yet.",
+    "topUpButton": "Top up",
+    "topUpTitle": "Top up {name}'s wallet",
+    "amountLabel": "Amount",
+    "amountPlaceholder": "e.g. 500",
+    "noteLabel": "Note (optional)",
+    "notePlaceholder": "Reason for this top-up…",
+    "submit": "Confirm top-up",
+    "topUpError": "Could not top up this wallet. Please try again.",
+    "loadError": "Could not load wallets. Please try again."
   }
 }
