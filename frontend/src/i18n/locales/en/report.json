@@ -1,0 +1,18 @@
+{
+  "action": "Report",
+  "reasons": {
+    "spam": "Spam",
+    "harassment": "Harassment",
+    "inappropriate": "Inappropriate content",
+    "other": "Other"
+  },
+  "dialog": {
+    "title": "Report this content",
+    "reasonLabel": "Reason",
+    "detailsLabel": "Additional details (optional)",
+    "detailsPlaceholder": "Add any context that might help a moderator…",
+    "submit": "Submit report",
+    "success": "Thanks — this has been reported to our moderators.",
+    "genericError": "Could not submit this report. Please try again."
+  }
+}

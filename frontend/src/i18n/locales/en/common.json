@@ -26,7 +26,8 @@
     "mediaLibrary": "Media Library",
     "users": "Users",
     "wallets": "Wallets",
-    "ads": "Ad Review"
+    "ads": "Ad Review",
+    "reports": "Reports"
   },
   "mediaPreview": {
     "closePreview": "Close preview",

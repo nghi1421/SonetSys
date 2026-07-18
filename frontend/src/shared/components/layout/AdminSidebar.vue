@@ -2,23 +2,35 @@
 import { computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Cloud, FileText, Image, LayoutDashboard, Megaphone, Users, Wallet } from '@lucide/vue'
+import { Cloud, FileText, Flag, Image, LayoutDashboard, Megaphone, Users, Wallet } from '@lucide/vue'
+import { useAuthStore } from '@/modules/auth/store/authStore'
 
 const props = defineProps<{ open: boolean }>()
 const emit = defineEmits<{ close: [] }>()
 
 const route = useRoute()
+const authStore = useAuthStore()
 const { t } = useI18n()
 
-const navItems = computed(() => [
-  { to: { name: 'admin-dashboard' }, label: t('common.nav.dashboard'), icon: LayoutDashboard },
-  { to: { name: 'admin-menu' }, label: t('common.nav.menuPages'), icon: FileText },
-  { to: { name: 'admin-storage-settings' }, label: t('common.nav.storage'), icon: Cloud },
-  { to: { name: 'admin-media-library' }, label: t('common.nav.mediaLibrary'), icon: Image },
-  { to: { name: 'admin-users' }, label: t('common.nav.users'), icon: Users },
-  { to: { name: 'admin-wallets' }, label: t('common.nav.wallets'), icon: Wallet },
-  { to: { name: 'admin-ads' }, label: t('common.nav.ads'), icon: Megaphone },
-])
+// Moderators can only reach the Reports page (see requiresStaff in the
+// router) — the rest of the /admin panel stays Admin-only, so the sidebar
+// only lists what a Moderator can actually open.
+const isModerator = computed(() => authStore.user?.role.slug === 'moderator')
+
+const navItems = computed(() => {
+  const items = [
+    { to: { name: 'admin-dashboard' }, label: t('common.nav.dashboard'), icon: LayoutDashboard, adminOnly: true },
+    { to: { name: 'admin-menu' }, label: t('common.nav.menuPages'), icon: FileText, adminOnly: true },
+    { to: { name: 'admin-storage-settings' }, label: t('common.nav.storage'), icon: Cloud, adminOnly: true },
+    { to: { name: 'admin-media-library' }, label: t('common.nav.mediaLibrary'), icon: Image, adminOnly: true },
+    { to: { name: 'admin-users' }, label: t('common.nav.users'), icon: Users, adminOnly: true },
+    { to: { name: 'admin-wallets' }, label: t('common.nav.wallets'), icon: Wallet, adminOnly: true },
+    { to: { name: 'admin-ads' }, label: t('common.nav.ads'), icon: Megaphone, adminOnly: true },
+    { to: { name: 'admin-reports' }, label: t('common.nav.reports'), icon: Flag, adminOnly: false },
+  ]
+
+  return isModerator.value ? items.filter((item) => !item.adminOnly) : items
+})
 
 watch(
   () => route.fullPath,

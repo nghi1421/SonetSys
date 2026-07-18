@@ -5,6 +5,7 @@ import { Trash2, UserPlus } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import AppButton from '@/shared/components/ui/AppButton.vue'
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog.vue'
+import ReportDialog from '@/shared/components/ui/ReportDialog.vue'
 import { useRelativeTime } from '@/shared/composables/useRelativeTime'
 import { useMentionPicker } from '../composables/useMentionPicker'
 import LinkifiedText from './LinkifiedText.vue'
@@ -22,6 +23,7 @@ const newComment = ref('')
 const replyingTo = ref<number | null>(null)
 const submitting = ref(false)
 const pendingDeleteId = ref<number | null>(null)
+const reportTargetId = ref<number | null>(null)
 
 const mention = useMentionPicker()
 const mentionedUserIds = ref<number[]>([])
@@ -54,6 +56,14 @@ function canDelete(comment: Comment): boolean {
     authStore.user?.role.slug === 'admin' ||
     authStore.user?.role.slug === 'moderator'
   )
+}
+
+function isOwnComment(comment: Comment): boolean {
+  return authStore.user?.id === comment.author.id
+}
+
+function onReportClick(comment: Comment): void {
+  reportTargetId.value = comment.id
 }
 
 async function submitComment(parentId?: number): Promise<void> {
@@ -109,6 +119,14 @@ async function onConfirmDelete(): Promise<void> {
               @unreact="onUnreact(comment.id)"
             />
             <button type="button" class="hover:text-cyber-neon-cyan" @click="replyingTo = comment.id">{{ t('feed.commentThread.reply') }}</button>
+            <button
+              v-if="!isOwnComment(comment)"
+              type="button"
+              class="hover:text-cyber-neon-pink"
+              @click="onReportClick(comment)"
+            >
+              {{ t('report.action') }}
+            </button>
           </div>
         </div>
         <button
@@ -141,6 +159,14 @@ async function onConfirmDelete(): Promise<void> {
               @react="(type) => onReact(reply.id, type)"
               @unreact="onUnreact(reply.id)"
             />
+            <button
+              v-if="!isOwnComment(reply)"
+              type="button"
+              class="hover:text-cyber-neon-pink"
+              @click="onReportClick(reply)"
+            >
+              {{ t('report.action') }}
+            </button>
           </div>
         </div>
         <button
@@ -290,6 +316,13 @@ async function onConfirmDelete(): Promise<void> {
       :message="t('feed.commentThread.confirmDeleteMessage')"
       @confirm="onConfirmDelete"
       @cancel="pendingDeleteId = null"
+    />
+
+    <ReportDialog
+      :open="reportTargetId !== null"
+      type="comment"
+      :id="reportTargetId ?? 0"
+      @update:open="reportTargetId = null"
     />
   </div>
 </template>
