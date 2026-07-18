@@ -29,6 +29,12 @@ export const REACTION_EMOJI: Record<ReactionType, string> = {
   angry: '😠',
 }
 
+export interface MentionCandidate {
+  id: number
+  name: string
+  avatar_url: string | null
+}
+
 export interface Post {
   id: number
   body: string
@@ -40,6 +46,8 @@ export interface Post {
   my_reaction: ReactionType | null
   is_sponsored: boolean
   author: PostAuthor
+  hashtags: string[]
+  mentions: PostAuthor[]
   shared_post: Post | null
   media_type: MediaType | null
   media_url: string | null
@@ -57,6 +65,8 @@ export interface Comment {
   likes_count: number
   my_reaction: ReactionType | null
   author: PostAuthor
+  hashtags: string[]
+  mentions: PostAuthor[]
   created_at: string
 }
 
@@ -75,6 +85,7 @@ export interface CreatePostPayload {
   location_name?: string
   location_lat?: number
   location_lng?: number
+  mentioned_user_ids?: number[]
 }
 
 export interface UpdatePostPayload {
@@ -85,4 +96,5 @@ export interface UpdatePostPayload {
 export interface CreateCommentPayload {
   body: string
   parent_id?: number
+  mentioned_user_ids?: number[]
 }

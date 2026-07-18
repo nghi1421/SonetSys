@@ -16,6 +16,11 @@ export const useFeedStore = defineStore('feed', () => {
   const followingLoading = ref(false)
   const followingLoadingMore = ref(false)
 
+  const hashtagPosts = ref<Post[]>([])
+  const hashtagNextCursor = ref<string | null>(null)
+  const hashtagLoading = ref(false)
+  const hashtagLoadingMore = ref(false)
+
   async function fetchFeed(): Promise<void> {
     loading.value = true
     try {
@@ -107,6 +112,29 @@ export const useFeedStore = defineStore('feed', () => {
     }
   }
 
+  async function fetchHashtagFeed(tag: string): Promise<void> {
+    hashtagLoading.value = true
+    try {
+      const response = await feedApi.fetchHashtagFeed(tag, null)
+      hashtagPosts.value = response.data ?? []
+      hashtagNextCursor.value = (response.meta?.next_cursor as string | null) ?? null
+    } finally {
+      hashtagLoading.value = false
+    }
+  }
+
+  async function fetchMoreHashtagFeed(tag: string): Promise<void> {
+    if (!hashtagNextCursor.value || hashtagLoadingMore.value) return
+    hashtagLoadingMore.value = true
+    try {
+      const response = await feedApi.fetchHashtagFeed(tag, hashtagNextCursor.value)
+      hashtagPosts.value = [...hashtagPosts.value, ...(response.data ?? [])]
+      hashtagNextCursor.value = (response.meta?.next_cursor as string | null) ?? null
+    } finally {
+      hashtagLoadingMore.value = false
+    }
+  }
+
   async function createGroupPost(groupId: number, payload: CreatePostPayload): Promise<void> {
     const response = await feedApi.createGroupPost(groupId, payload)
     if (response.data) {
@@ -153,8 +181,17 @@ export const useFeedStore = defineStore('feed', () => {
     commentsByPost[postId] = response.data ?? []
   }
 
-  async function createComment(postId: number, body: string, parentId?: number): Promise<void> {
-    const response = await feedApi.createComment(postId, { body, parent_id: parentId })
+  async function createComment(
+    postId: number,
+    body: string,
+    parentId?: number,
+    mentionedUserIds?: number[],
+  ): Promise<void> {
+    const response = await feedApi.createComment(postId, {
+      body,
+      parent_id: parentId,
+      mentioned_user_ids: mentionedUserIds,
+    })
     if (response.data) {
       commentsByPost[postId] = [...(commentsByPost[postId] ?? []), response.data]
       const post = posts.value.find((p) => p.id === postId)
@@ -200,12 +237,18 @@ export const useFeedStore = defineStore('feed', () => {
     followingNextCursor,
     followingLoading,
     followingLoadingMore,
+    hashtagPosts,
+    hashtagNextCursor,
+    hashtagLoading,
+    hashtagLoadingMore,
     fetchFeed,
     fetchMore,
     fetchPost,
     createPost,
     fetchFollowingFeed,
     fetchMoreFollowingFeed,
+    fetchHashtagFeed,
+    fetchMoreHashtagFeed,
     fetchGroupFeed,
     fetchMoreGroupFeed,
     createGroupPost,
