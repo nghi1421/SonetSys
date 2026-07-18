@@ -36,6 +36,7 @@ function iconFor(item: MenuItem) {
 function targetFor(item: MenuItem) {
   if (item.is_home) return { name: 'dashboard' }
   if (item.slug === 'group') return { name: 'groups-list' }
+  if (item.slug === 'advertise') return { name: 'advertise' }
   return { name: 'menu-page', params: { slug: item.slug } }
 }
 </script>

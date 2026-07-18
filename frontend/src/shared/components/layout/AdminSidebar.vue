@@ -2,7 +2,7 @@
 import { computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Cloud, FileText, Image, LayoutDashboard, Users, Wallet } from '@lucide/vue'
+import { Cloud, FileText, Image, LayoutDashboard, Megaphone, Users, Wallet } from '@lucide/vue'
 
 const props = defineProps<{ open: boolean }>()
 const emit = defineEmits<{ close: [] }>()
@@ -17,6 +17,7 @@ const navItems = computed(() => [
   { to: { name: 'admin-media-library' }, label: t('common.nav.mediaLibrary'), icon: Image },
   { to: { name: 'admin-users' }, label: t('common.nav.users'), icon: Users },
   { to: { name: 'admin-wallets' }, label: t('common.nav.wallets'), icon: Wallet },
+  { to: { name: 'admin-ads' }, label: t('common.nav.ads'), icon: Megaphone },
 ])
 
 watch(

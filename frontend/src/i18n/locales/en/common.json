@@ -24,7 +24,8 @@
     "storage": "Storage",
     "mediaLibrary": "Media Library",
     "users": "Users",
-    "wallets": "Wallets"
+    "wallets": "Wallets",
+    "ads": "Ad Review"
   },
   "mediaPreview": {
     "closePreview": "Close preview",

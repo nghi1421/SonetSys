@@ -72,6 +72,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/advertise',
+      name: 'advertise',
+      component: () => import('@/modules/advertising/views/AdvertiseView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/groups/:slug',
       name: 'group-detail',
       component: () => import('@/modules/groups/views/GroupDetailView.vue'),
@@ -111,6 +117,11 @@ const router = createRouter({
           path: 'wallets',
           name: 'admin-wallets',
           component: () => import('@/modules/wallet/views/AdminWalletsView.vue'),
+        },
+        {
+          path: 'ads',
+          name: 'admin-ads',
+          component: () => import('@/modules/advertising/views/AdminAdReviewView.vue'),
         },
       ],
     },

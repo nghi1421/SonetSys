@@ -16,7 +16,8 @@
   "postCard": {
     "actionsLabel": "Post actions",
     "confirmDeleteTitle": "Delete post?",
-    "confirmDeleteMessage": "This can't be undone."
+    "confirmDeleteMessage": "This can't be undone.",
+    "sponsored": "Sponsored"
   },
   "postComposer": {
     "placeholder": "Share something with your community…",

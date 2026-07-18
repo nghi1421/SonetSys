@@ -1,5 +1,6 @@
 import { createI18n } from 'vue-i18n'
 import admin from './locales/en/admin.json'
+import advertising from './locales/en/advertising.json'
 import auth from './locales/en/auth.json'
 import common from './locales/en/common.json'
 import feed from './locales/en/feed.json'
@@ -28,6 +29,7 @@ const en = {
   stories,
   follow,
   wallet,
+  advertising,
 }
 
 export const i18n = createI18n({

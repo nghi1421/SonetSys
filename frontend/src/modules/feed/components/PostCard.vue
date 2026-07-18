@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { EllipsisVertical, Heart, MessageCircle, Pencil, Trash2 } from '@lucide/vue'
+import { EllipsisVertical, Heart, Megaphone, MessageCircle, Pencil, Trash2 } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import AppButton from '@/shared/components/ui/AppButton.vue'
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog.vue'
@@ -85,6 +85,13 @@ async function saveEdit(): Promise<void> {
         <div class="mt-1 flex items-center gap-2">
           <span class="font-mono text-[9px] uppercase tracking-widest text-cyber-muted">
             {{ useRelativeTime(post.created_at) }}
+          </span>
+          <span
+            v-if="post.is_sponsored"
+            class="inline-flex items-center gap-1 rounded-full border border-cyber-neon-indigo/30 bg-cyber-neon-indigo/10 px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest text-cyber-neon-indigo"
+          >
+            <Megaphone class="h-2.5 w-2.5" />
+            {{ t('feed.postCard.sponsored') }}
           </span>
         </div>
       </div>
