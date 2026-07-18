@@ -15,4 +15,12 @@ export interface UserProfile {
   following_count: number
   is_following: boolean
   is_followed_by: boolean
+  is_blocked: boolean
+  is_blocked_by: boolean
+}
+
+export interface BlockedUser {
+  id: number
+  name: string
+  avatar_url: string | null
 }

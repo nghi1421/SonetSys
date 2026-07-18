@@ -54,6 +54,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/blocked-users',
+      name: 'blocked-users',
+      component: () => import('@/modules/follow/views/BlockedUsersView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/hashtag/:tag',
       name: 'hashtag',
       component: () => import('@/modules/feed/views/HashtagView.vue'),

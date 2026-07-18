@@ -18,6 +18,7 @@
   "adminSiteName": "Sonetsys Admin",
   "controlPanel": "Control Panel",
   "adminPanel": "Admin Panel",
+  "blockedUsers": "Blocked Users",
   "nav": {
     "dashboard": "Dashboard",
     "menuPages": "Menu & Pages",
