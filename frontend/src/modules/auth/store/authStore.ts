@@ -4,7 +4,7 @@ import { registerUnauthorizedHandler } from '@/shared/api/http'
 import { clearStoredToken, getStoredToken, setStoredToken } from '@/shared/api/tokenStorage'
 import { connectEcho, disconnectEcho } from '@/shared/echo'
 import { authApi } from '../api/authApi'
-import type { LoginPayload, RegisterPayload, User } from '../types'
+import type { LoginPayload, RegisterPayload, UpdateProfilePayload, User } from '../types'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
@@ -66,6 +66,20 @@ export const useAuthStore = defineStore('auth', () => {
     return authApi.resetPassword(payload)
   }
 
+  async function updateProfile(payload: UpdateProfilePayload) {
+    const form = new FormData()
+    if (payload.avatar) form.append('avatar', payload.avatar)
+    if (payload.cover) form.append('cover', payload.cover)
+    if (payload.removeAvatar) form.append('remove_avatar', '1')
+    if (payload.removeCover) form.append('remove_cover', '1')
+
+    const response = await authApi.updateProfile(form)
+    if (response.data) {
+      user.value = response.data
+    }
+    return response
+  }
+
   registerUnauthorizedHandler(clearSession)
 
   return {
@@ -78,6 +92,7 @@ export const useAuthStore = defineStore('auth', () => {
     fetchCurrentUser,
     forgotPassword,
     resetPassword,
+    updateProfile,
     setSession,
     clearSession,
   }

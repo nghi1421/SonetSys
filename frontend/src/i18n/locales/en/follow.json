@@ -10,5 +10,14 @@
   "noFollowing": "Not following anyone yet",
   "joined": "Joined",
   "noPosts": "No posts yet",
-  "profileUnavailable": "This profile is unavailable — it may not exist, or you don't have permission to view it."
+  "profileUnavailable": "This profile is unavailable — it may not exist, or you don't have permission to view it.",
+  "profile": {
+    "coverAlt": "Cover photo",
+    "changeAvatar": "Change avatar",
+    "changeCover": "Change cover",
+    "removeAvatar": "Remove avatar",
+    "removeCover": "Remove cover",
+    "avatarUploadError": "Could not update your avatar. Please try again.",
+    "coverUploadError": "Could not update your cover photo. Please try again."
+  }
 }

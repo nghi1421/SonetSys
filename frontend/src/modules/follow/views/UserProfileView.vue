@@ -2,12 +2,15 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Inbox } from '@lucide/vue'
+import { Camera, Inbox, X } from '@lucide/vue'
 import AppShell from '@/shared/components/layout/AppShell.vue'
 import AppAlert from '@/shared/components/ui/AppAlert.vue'
 import AppButton from '@/shared/components/ui/AppButton.vue'
 import { useRelativeTime } from '@/shared/composables/useRelativeTime'
 import PostCard from '@/modules/feed/components/PostCard.vue'
+import PostDetailModal from '@/modules/feed/components/PostDetailModal.vue'
+import type { Post } from '@/modules/feed/types'
+import { useAuthStore } from '@/modules/auth/store/authStore'
 import { useChatStore } from '@/modules/chat/store/chatStore'
 import FollowButton from '../components/FollowButton.vue'
 import FollowListModal from '../components/FollowListModal.vue'
@@ -17,11 +20,23 @@ const route = useRoute()
 const router = useRouter()
 const followStore = useFollowStore()
 const chatStore = useChatStore()
+const authStore = useAuthStore()
 const { t } = useI18n()
 
 const userId = computed(() => Number(route.params.id))
 const showFollowersModal = ref(false)
+const showFollowingModal = ref(false)
 const startingConversation = ref(false)
+const modalPost = ref<Post | null>(null)
+
+const isOwnProfile = computed(() => authStore.user?.id === followStore.profile?.id)
+
+const avatarInput = ref<HTMLInputElement | null>(null)
+const coverInput = ref<HTMLInputElement | null>(null)
+const avatarUploading = ref(false)
+const coverUploading = ref(false)
+const avatarError = ref<string | null>(null)
+const coverError = ref<string | null>(null)
 
 async function startConversation(): Promise<void> {
   startingConversation.value = true
@@ -32,7 +47,6 @@ async function startConversation(): Promise<void> {
     startingConversation.value = false
   }
 }
-const showFollowingModal = ref(false)
 
 function initialOf(name: string): string {
   return name.trim().charAt(0).toUpperCase()
@@ -53,6 +67,82 @@ async function openFollowing(): Promise<void> {
   showFollowingModal.value = true
 }
 
+function syncProfileFromAuthUser(): void {
+  if (!followStore.profile || !authStore.user) return
+  followStore.profile.avatar_url = authStore.user.avatar_url
+  followStore.profile.cover_url = authStore.user.cover_url
+}
+
+function pickAvatar(): void {
+  avatarInput.value?.click()
+}
+
+function pickCover(): void {
+  coverInput.value?.click()
+}
+
+async function handleAvatarChange(event: Event): Promise<void> {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+
+  avatarError.value = null
+  avatarUploading.value = true
+  try {
+    await authStore.updateProfile({ avatar: file })
+    syncProfileFromAuthUser()
+  } catch {
+    avatarError.value = t('follow.profile.avatarUploadError')
+  } finally {
+    avatarUploading.value = false
+    input.value = ''
+  }
+}
+
+async function handleCoverChange(event: Event): Promise<void> {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+
+  coverError.value = null
+  coverUploading.value = true
+  try {
+    await authStore.updateProfile({ cover: file })
+    syncProfileFromAuthUser()
+  } catch {
+    coverError.value = t('follow.profile.coverUploadError')
+  } finally {
+    coverUploading.value = false
+    input.value = ''
+  }
+}
+
+async function removeAvatar(): Promise<void> {
+  avatarError.value = null
+  avatarUploading.value = true
+  try {
+    await authStore.updateProfile({ removeAvatar: true })
+    syncProfileFromAuthUser()
+  } catch {
+    avatarError.value = t('follow.profile.avatarUploadError')
+  } finally {
+    avatarUploading.value = false
+  }
+}
+
+async function removeCover(): Promise<void> {
+  coverError.value = null
+  coverUploading.value = true
+  try {
+    await authStore.updateProfile({ removeCover: true })
+    syncProfileFromAuthUser()
+  } catch {
+    coverError.value = t('follow.profile.coverUploadError')
+  } finally {
+    coverUploading.value = false
+  }
+}
+
 onMounted(load)
 watch(userId, load)
 </script>
@@ -69,57 +159,141 @@ watch(userId, load)
         {{ t('follow.profileUnavailable') }}
       </AppAlert>
 
-      <div v-else class="rounded-hud border border-cyber-border bg-cyber-glass p-6 backdrop-blur-md">
-        <div class="flex items-start justify-between gap-4">
-          <div class="flex items-center gap-4">
-            <img
-              v-if="followStore.profile.avatar_url"
-              :src="followStore.profile.avatar_url"
-              :alt="followStore.profile.name"
-              class="h-16 w-16 rounded-full object-cover"
-            />
+      <div v-else class="overflow-hidden rounded-hud border border-cyber-border bg-cyber-glass backdrop-blur-md">
+        <div class="relative h-40 w-full sm:h-56">
+          <img
+            v-if="followStore.profile.cover_url"
+            :src="followStore.profile.cover_url"
+            :alt="t('follow.profile.coverAlt')"
+            class="h-full w-full object-cover"
+          />
+          <div
+            v-else
+            class="h-full w-full bg-gradient-to-r from-cyber-neon-cyan via-cyber-neon-indigo to-cyber-neon-pink"
+          />
+
+          <div
+            v-if="coverUploading"
+            class="absolute inset-0 flex items-center justify-center bg-cyber-bg/60 backdrop-blur-sm"
+          >
             <span
-              v-else
-              class="flex h-16 w-16 items-center justify-center rounded-full border border-cyber-border bg-cyber-surface font-mono text-2xl font-bold text-cyber-text"
-            >
-              {{ initialOf(followStore.profile.name) }}
-            </span>
-            <div>
-              <h1 class="text-sm font-bold tracking-wider text-cyber-text">// {{ followStore.profile.name }}</h1>
-              <p class="mt-1 font-mono text-[10px] uppercase tracking-widest text-cyber-muted">
-                {{ t('follow.joined') }} {{ useRelativeTime(followStore.profile.created_at) }}
-              </p>
-            </div>
-          </div>
-          <div class="flex items-center gap-2">
-            <AppButton
-              v-if="followStore.profile.is_following && followStore.profile.is_followed_by"
-              :label="t('follow.message')"
-              variant="secondary"
-              :loading="startingConversation"
-              @click="startConversation"
+              class="h-6 w-6 animate-spin rounded-full border-2 border-cyber-neon-cyan border-t-transparent"
             />
-            <FollowButton :user-id="followStore.profile.id" :is-following="followStore.profile.is_following" />
           </div>
+
+          <template v-if="isOwnProfile">
+            <input ref="coverInput" type="file" accept="image/*" class="hidden" @change="handleCoverChange" />
+            <button
+              type="button"
+              class="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-cyber-glass px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/60 focus:ring-offset-2 focus:ring-offset-cyber-bg disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
+              :disabled="coverUploading"
+              @click="pickCover"
+            >
+              <Camera class="h-3 w-3" />
+              {{ t('follow.profile.changeCover') }}
+            </button>
+            <button
+              v-if="followStore.profile.cover_url"
+              type="button"
+              class="absolute right-3 top-11 rounded-full border border-cyber-border bg-cyber-glass p-1.5 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-pink/50 hover:text-cyber-neon-pink hover:shadow-pink-glow focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/60 focus:ring-offset-2 focus:ring-offset-cyber-bg disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
+              :disabled="coverUploading"
+              :aria-label="t('follow.profile.removeCover')"
+              @click="removeCover"
+            >
+              <X class="h-3 w-3" />
+            </button>
+          </template>
         </div>
 
-        <div class="mt-4 flex gap-6">
-          <button
-            type="button"
-            class="font-mono text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-cyan"
-            @click="openFollowers"
-          >
-            <span class="font-bold tabular-nums">{{ followStore.profile.followers_count }}</span>
-            {{ t('follow.followers') }}
-          </button>
-          <button
-            type="button"
-            class="font-mono text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-cyan"
-            @click="openFollowing"
-          >
-            <span class="font-bold tabular-nums">{{ followStore.profile.following_count }}</span>
-            {{ t('follow.following') }}
-          </button>
+        <div class="p-6">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex items-center gap-4">
+              <div class="relative -mt-14 shrink-0">
+                <img
+                  v-if="followStore.profile.avatar_url"
+                  :src="followStore.profile.avatar_url"
+                  :alt="followStore.profile.name"
+                  class="h-20 w-20 rounded-full border-4 border-cyber-bg object-cover shadow-cyan-glow"
+                />
+                <span
+                  v-else
+                  class="flex h-20 w-20 items-center justify-center rounded-full border-4 border-cyber-bg bg-cyber-surface font-mono text-2xl font-bold text-cyber-text shadow-cyan-glow"
+                >
+                  {{ initialOf(followStore.profile.name) }}
+                </span>
+
+                <div
+                  v-if="avatarUploading"
+                  class="absolute inset-0 flex items-center justify-center rounded-full bg-cyber-bg/60 backdrop-blur-sm"
+                >
+                  <span
+                    class="h-5 w-5 animate-spin rounded-full border-2 border-cyber-neon-cyan border-t-transparent"
+                  />
+                </div>
+
+                <template v-if="isOwnProfile">
+                  <input ref="avatarInput" type="file" accept="image/*" class="hidden" @change="handleAvatarChange" />
+                  <button
+                    type="button"
+                    class="absolute bottom-0 right-0 rounded-full border border-cyber-border bg-cyber-glass p-1.5 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/60 focus:ring-offset-2 focus:ring-offset-cyber-bg disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
+                    :disabled="avatarUploading"
+                    :aria-label="t('follow.profile.changeAvatar')"
+                    @click="pickAvatar"
+                  >
+                    <Camera class="h-3 w-3" />
+                  </button>
+                  <button
+                    v-if="followStore.profile.avatar_url"
+                    type="button"
+                    class="absolute -top-1 -right-1 rounded-full border border-cyber-border bg-cyber-glass p-1 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-pink/50 hover:text-cyber-neon-pink hover:shadow-pink-glow focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/60 focus:ring-offset-2 focus:ring-offset-cyber-bg disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
+                    :disabled="avatarUploading"
+                    :aria-label="t('follow.profile.removeAvatar')"
+                    @click="removeAvatar"
+                  >
+                    <X class="h-2.5 w-2.5" />
+                  </button>
+                </template>
+              </div>
+              <div>
+                <h1 class="text-sm font-bold tracking-wider text-cyber-text">// {{ followStore.profile.name }}</h1>
+                <p class="mt-1 font-mono text-[10px] uppercase tracking-widest text-cyber-muted">
+                  {{ t('follow.joined') }} {{ useRelativeTime(followStore.profile.created_at) }}
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <AppButton
+                v-if="followStore.profile.is_following && followStore.profile.is_followed_by"
+                :label="t('follow.message')"
+                variant="secondary"
+                :loading="startingConversation"
+                @click="startConversation"
+              />
+              <FollowButton :user-id="followStore.profile.id" :is-following="followStore.profile.is_following" />
+            </div>
+          </div>
+
+          <p v-if="avatarError" class="mt-3 font-mono text-xs text-cyber-neon-pink">{{ avatarError }}</p>
+          <p v-if="coverError" class="mt-3 font-mono text-xs text-cyber-neon-pink">{{ coverError }}</p>
+
+          <div class="mt-4 flex gap-6">
+            <button
+              type="button"
+              class="font-mono text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-cyan"
+              @click="openFollowers"
+            >
+              <span class="font-bold tabular-nums">{{ followStore.profile.followers_count }}</span>
+              {{ t('follow.followers') }}
+            </button>
+            <button
+              type="button"
+              class="font-mono text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-cyan"
+              @click="openFollowing"
+            >
+              <span class="font-bold tabular-nums">{{ followStore.profile.following_count }}</span>
+              {{ t('follow.following') }}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -140,7 +314,13 @@ watch(userId, load)
       </div>
 
       <template v-else>
-        <PostCard v-for="post in followStore.posts" :key="post.id" :post="post" />
+        <PostCard
+          v-for="post in followStore.posts"
+          :key="post.id"
+          :post="post"
+          clickable
+          @open="modalPost = post"
+        />
 
         <div v-if="followStore.nextCursor" class="flex justify-center pt-2">
           <AppButton
@@ -164,6 +344,8 @@ watch(userId, load)
         :users="followStore.following"
         @close="showFollowingModal = false"
       />
+
+      <PostDetailModal v-if="modalPost" :post="modalPost" @close="modalPost = null" />
     </div>
   </AppShell>
 </template>
