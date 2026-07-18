@@ -83,6 +83,9 @@ final class PostService
                 'media_type' => $mediaType,
                 'media_path' => $mediaPath,
                 'media_disk' => $mediaDisk,
+                'location_name' => $data->locationName,
+                'location_lat' => $data->locationLat,
+                'location_lng' => $data->locationLng,
                 'published_at' => now(),
             ]);
 

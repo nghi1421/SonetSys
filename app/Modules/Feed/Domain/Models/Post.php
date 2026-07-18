@@ -28,6 +28,9 @@ final class Post extends Model
         'media_type',
         'media_path',
         'media_disk',
+        'location_name',
+        'location_lat',
+        'location_lng',
         'published_at',
     ];
 
@@ -37,6 +40,8 @@ final class Post extends Model
             'visibility' => PostVisibility::class,
             'metadata' => 'array',
             'media_type' => MediaType::class,
+            'location_lat' => 'float',
+            'location_lng' => 'float',
             'published_at' => 'datetime',
         ];
     }

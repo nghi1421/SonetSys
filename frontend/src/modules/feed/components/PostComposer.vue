@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Image, Smile, Video, X } from '@lucide/vue'
+import { Image, MapPin, Smile, Video, X } from '@lucide/vue'
 import AppButton from '@/shared/components/ui/AppButton.vue'
+import { locationApi } from '../api/locationApi'
 import { useStickerStore } from '../store/stickerStore'
-import type { CreatePostPayload } from '../types'
+import type { CreatePostPayload, PostLocation } from '../types'
+
+const CHECK_IN_SEARCH_DEBOUNCE_MS = 400
+const CHECK_IN_MIN_QUERY_LENGTH = 2
 
 const props = defineProps<{ onSubmit: (payload: CreatePostPayload) => Promise<void> }>()
 
@@ -21,6 +25,13 @@ const mediaPreviewUrl = ref<string | null>(null)
 const selectedStickerKey = ref<string | null>(null)
 const showStickerPicker = ref(false)
 
+const showCheckInPicker = ref(false)
+const checkInQuery = ref('')
+const checkInResults = ref<PostLocation[]>([])
+const checkInSearching = ref(false)
+const selectedLocation = ref<PostLocation | null>(null)
+let checkInDebounceTimer: ReturnType<typeof setTimeout> | undefined
+
 const photoInput = ref<HTMLInputElement | null>(null)
 const videoInput = ref<HTMLInputElement | null>(null)
 
@@ -28,7 +39,9 @@ const selectedStickerEmoji = computed(
   () => stickerStore.stickers.find((sticker) => sticker.key === selectedStickerKey.value)?.emoji ?? null,
 )
 
-const canSubmit = computed(() => Boolean(body.value.trim() || mediaFile.value || selectedStickerKey.value))
+const canSubmit = computed(() =>
+  Boolean(body.value.trim() || mediaFile.value || selectedStickerKey.value || selectedLocation.value),
+)
 
 function clearMedia(): void {
   if (mediaPreviewUrl.value) URL.revokeObjectURL(mediaPreviewUrl.value)
@@ -40,11 +53,13 @@ function clearMedia(): void {
 
 function pickPhoto(): void {
   showStickerPicker.value = false
+  showCheckInPicker.value = false
   photoInput.value?.click()
 }
 
 function pickVideo(): void {
   showStickerPicker.value = false
+  showCheckInPicker.value = false
   videoInput.value?.click()
 }
 
@@ -69,6 +84,7 @@ function onVideoChange(event: Event): void {
 }
 
 async function toggleStickerPicker(): Promise<void> {
+  showCheckInPicker.value = false
   showStickerPicker.value = !showStickerPicker.value
   if (showStickerPicker.value) {
     await stickerStore.fetchStickers()
@@ -81,8 +97,52 @@ function selectSticker(key: string): void {
   showStickerPicker.value = false
 }
 
+function toggleCheckInPicker(): void {
+  showStickerPicker.value = false
+  showCheckInPicker.value = !showCheckInPicker.value
+}
+
+function closeCheckInPicker(): void {
+  showCheckInPicker.value = false
+}
+
+function onCheckInSearchInput(): void {
+  if (checkInDebounceTimer) clearTimeout(checkInDebounceTimer)
+
+  const query = checkInQuery.value.trim()
+  if (query.length < CHECK_IN_MIN_QUERY_LENGTH) {
+    checkInResults.value = []
+    checkInSearching.value = false
+    return
+  }
+
+  checkInDebounceTimer = setTimeout(async () => {
+    checkInSearching.value = true
+    try {
+      const response = await locationApi.search(query)
+      checkInResults.value = response.data ?? []
+    } catch {
+      checkInResults.value = []
+    } finally {
+      checkInSearching.value = false
+    }
+  }, CHECK_IN_SEARCH_DEBOUNCE_MS)
+}
+
+function selectLocation(location: PostLocation): void {
+  selectedLocation.value = location
+  showCheckInPicker.value = false
+  checkInQuery.value = ''
+  checkInResults.value = []
+}
+
+function clearLocation(): void {
+  selectedLocation.value = null
+}
+
 onBeforeUnmount(() => {
   if (mediaPreviewUrl.value) URL.revokeObjectURL(mediaPreviewUrl.value)
+  if (checkInDebounceTimer) clearTimeout(checkInDebounceTimer)
 })
 
 async function handleSubmit(): Promise<void> {
@@ -97,9 +157,13 @@ async function handleSubmit(): Promise<void> {
       media: mediaFile.value ?? undefined,
       media_type: mediaType.value ?? undefined,
       sticker_key: selectedStickerKey.value ?? undefined,
+      location_name: selectedLocation.value?.name,
+      location_lat: selectedLocation.value?.lat,
+      location_lng: selectedLocation.value?.lng,
     })
     body.value = ''
     clearMedia()
+    clearLocation()
   } catch {
     error.value = t('feed.postComposer.publishError')
   } finally {
@@ -159,6 +223,19 @@ async function handleSubmit(): Promise<void> {
       </button>
     </div>
 
+    <div v-if="selectedLocation" class="flex w-fit items-center gap-1.5 rounded-full border border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 px-3 py-1">
+      <MapPin class="h-3 w-3 text-cyber-neon-cyan" />
+      <span class="font-mono text-[10px] text-cyber-neon-cyan">{{ selectedLocation.name }}</span>
+      <button
+        type="button"
+        class="text-cyber-neon-cyan transition-colors duration-300 hover:text-cyber-neon-pink"
+        :aria-label="t('feed.postComposer.checkInClear')"
+        @click="clearLocation"
+      >
+        <X class="h-3 w-3" />
+      </button>
+    </div>
+
     <p v-if="error" class="font-mono text-xs text-cyber-neon-pink">{{ error }}</p>
 
     <div class="flex items-center justify-between">
@@ -209,6 +286,54 @@ async function handleSubmit(): Promise<void> {
             >
               {{ sticker.emoji }}
             </button>
+          </div>
+        </div>
+
+        <div class="relative">
+          <button
+            type="button"
+            class="rounded-full p-2 text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
+            :aria-label="t('feed.postComposer.checkIn')"
+            @click="toggleCheckInPicker"
+          >
+            <MapPin class="h-5 w-5" />
+          </button>
+
+          <div v-if="showCheckInPicker" class="fixed inset-0 z-0" @click="closeCheckInPicker" />
+
+          <div
+            v-if="showCheckInPicker"
+            class="popover-panel absolute left-0 z-10 mt-2 w-64 rounded-hud border border-cyber-border bg-cyber-glass p-3 backdrop-blur-md"
+            @click.stop
+          >
+            <input
+              v-model="checkInQuery"
+              type="text"
+              :placeholder="t('feed.postComposer.checkInSearchPlaceholder')"
+              class="block w-full rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-1.5 font-mono text-xs text-cyber-text backdrop-blur-md transition-all duration-300 placeholder:text-cyber-muted focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
+              @input="onCheckInSearchInput"
+            />
+
+            <ul v-if="checkInResults.length" class="mt-2 max-h-48 space-y-1 overflow-y-auto">
+              <li v-for="result in checkInResults" :key="`${result.lat}-${result.lng}`">
+                <button
+                  type="button"
+                  class="block w-full rounded-hud px-2 py-1.5 text-left font-mono text-xs text-cyber-text transition-all duration-300 hover:bg-cyber-surface/60 hover:text-cyber-neon-cyan"
+                  @click="selectLocation(result)"
+                >
+                  {{ result.name }}
+                </button>
+              </li>
+            </ul>
+            <p v-else-if="checkInSearching" class="mt-2 font-mono text-[10px] text-cyber-muted">
+              {{ t('common.loading') }}
+            </p>
+            <p
+              v-else-if="checkInQuery.trim().length >= 2"
+              class="mt-2 font-mono text-[10px] text-cyber-muted"
+            >
+              {{ t('feed.postComposer.checkInNoResults') }}
+            </p>
           </div>
         </div>
       </div>

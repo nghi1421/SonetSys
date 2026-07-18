@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { EllipsisVertical, Heart, Megaphone, MessageCircle, Pencil, Trash2 } from '@lucide/vue'
+import { EllipsisVertical, Heart, MapPin, Megaphone, MessageCircle, Pencil, Trash2 } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import AppButton from '@/shared/components/ui/AppButton.vue'
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog.vue'
 import { useRelativeTime } from '@/shared/composables/useRelativeTime'
 import CommentThread from './CommentThread.vue'
+import LocationMapPreview from './LocationMapPreview.vue'
 import PostMedia from './PostMedia.vue'
 import ShareMenu from './ShareMenu.vue'
 import SharedPostPreview from './SharedPostPreview.vue'
@@ -108,6 +109,14 @@ async function saveEdit(): Promise<void> {
             <Megaphone class="h-2.5 w-2.5" />
             {{ t('feed.postCard.sponsored') }}
           </span>
+          <span
+            v-if="post.location"
+            :title="t('feed.postCard.location')"
+            class="inline-flex items-center gap-1 rounded-full border border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest text-cyber-neon-cyan"
+          >
+            <MapPin class="h-2.5 w-2.5" />
+            {{ post.location.name }}
+          </span>
         </div>
       </div>
       <div v-if="isOwner || canDelete" class="relative">
@@ -181,6 +190,13 @@ async function saveEdit(): Promise<void> {
         @click="onOpenDetail"
       />
       <SharedPostPreview v-if="post.shared_post" :post="post.shared_post" class="mt-3" />
+      <LocationMapPreview
+        v-if="post.location"
+        :lat="post.location.lat"
+        :lng="post.location.lng"
+        :name="post.location.name"
+        class="mt-3"
+      />
     </template>
 
     <footer class="mt-4 flex items-center gap-2 border-t border-cyber-border pt-3">

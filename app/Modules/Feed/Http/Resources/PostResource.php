@@ -34,6 +34,11 @@ final class PostResource extends JsonResource
                 ? app(StorageService::class)->url($this->media_disk ?? 'local', $this->media_path)
                 : null,
             'sticker_key' => $this->media_type === MediaType::Sticker ? $this->media_path : null,
+            'location' => $this->location_name !== null ? [
+                'name' => $this->location_name,
+                'lat' => (float) $this->location_lat,
+                'lng' => (float) $this->location_lng,
+            ] : null,
             'published_at' => $this->published_at?->toIso8601String(),
             'created_at' => $this->created_at->toIso8601String(),
         ];

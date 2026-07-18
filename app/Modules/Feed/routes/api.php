@@ -2,12 +2,14 @@
 
 use App\Modules\Feed\Http\Controllers\CommentController;
 use App\Modules\Feed\Http\Controllers\InteractionController;
+use App\Modules\Feed\Http\Controllers\LocationSearchController;
 use App\Modules\Feed\Http\Controllers\PostController;
 use App\Modules\Feed\Http\Controllers\StickerController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function (): void {
     Route::get('stickers', [StickerController::class, 'index']);
+    Route::get('locations/search', [LocationSearchController::class, 'search'])->middleware('throttle:20,1');
     Route::get('posts', [PostController::class, 'index']);
     Route::get('posts/following', [PostController::class, 'following']);
     Route::post('posts', [PostController::class, 'store']);
