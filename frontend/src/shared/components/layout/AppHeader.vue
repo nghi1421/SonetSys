@@ -3,6 +3,7 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Menu } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
+import MessageBell from '@/modules/chat/components/MessageBell.vue'
 import NotificationBell from '@/modules/notifications/components/NotificationBell.vue'
 import WalletBalancePill from '@/modules/wallet/components/WalletBalancePill.vue'
 import AppLocaleSwitcher from '@/shared/components/locale/AppLocaleSwitcher.vue'
@@ -46,6 +47,7 @@ async function onLogout(): Promise<void> {
       <div class="flex items-center gap-3">
         <AppLocaleSwitcher variant="dark" />
         <WalletBalancePill />
+        <MessageBell />
         <NotificationBell />
         <AppButton :label="t('common.logOut')" variant="secondary" @click="onLogout" />
       </div>

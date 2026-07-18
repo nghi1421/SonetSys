@@ -2,6 +2,7 @@ import { createI18n } from 'vue-i18n'
 import admin from './locales/en/admin.json'
 import advertising from './locales/en/advertising.json'
 import auth from './locales/en/auth.json'
+import chat from './locales/en/chat.json'
 import common from './locales/en/common.json'
 import feed from './locales/en/feed.json'
 import follow from './locales/en/follow.json'
@@ -20,6 +21,7 @@ export const DEFAULT_LOCALE: SupportedLocale = 'en'
 const en = {
   common,
   auth,
+  chat,
   feed,
   groups,
   menu,

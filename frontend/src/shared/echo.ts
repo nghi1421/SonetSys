@@ -3,6 +3,8 @@ import Pusher from 'pusher-js'
 import axios from 'axios'
 import { getStoredToken } from './api/tokenStorage'
 import { useNotificationStore } from '@/modules/notifications/store/notificationStore'
+import { useChatStore } from '@/modules/chat/store/chatStore'
+import type { MessageSentPayload } from '@/modules/chat/types'
 
 declare global {
   interface Window {
@@ -61,8 +63,14 @@ export function connectEcho(userId: number): void {
       }),
     })
 
-    echo.private(`user.${userId}`).listen('.notification.created', () => {
+    const userChannel = echo.private(`user.${userId}`)
+
+    userChannel.listen('.notification.created', () => {
       useNotificationStore().receivePushed()
+    })
+
+    userChannel.listen('.message.sent', (payload: MessageSentPayload) => {
+      useChatStore().onMessagePushed(payload)
     })
   } catch (error) {
     // Real-time push is an enhancement, never a login/session blocker —

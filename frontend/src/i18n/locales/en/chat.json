@@ -1,0 +1,20 @@
+{
+  "bell": {
+    "ariaLabel": "Messages"
+  },
+  "messagesListView": {
+    "title": "Messages",
+    "emptyTitle": "No conversations yet",
+    "emptyDescription": "Start a conversation from a mutual follower's profile.",
+    "unreadIndicator": "Unread"
+  },
+  "conversationView": {
+    "back": "Back to messages",
+    "loadOlder": "Load older messages",
+    "emptyTitle": "No messages yet",
+    "emptyDescription": "Say hello to start the conversation.",
+    "placeholder": "Write a message…",
+    "send": "Send",
+    "sendError": "Failed to send message. Please try again."
+  }
+}
