@@ -23,5 +23,7 @@ final readonly class CreatePostData
         public ?string $locationName = null,
         public ?float $locationLat = null,
         public ?float $locationLng = null,
+        /** @var list<int> */
+        public array $mentionedUserIds = [],
     ) {}
 }
