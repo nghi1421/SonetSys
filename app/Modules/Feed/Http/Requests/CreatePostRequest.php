@@ -31,12 +31,15 @@ final class CreatePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'body' => ['required_without_all:shared_post_id,media,sticker_key', 'nullable', 'string', 'max:10000'],
+            'body' => ['required_without_all:shared_post_id,media,sticker_key,location_name', 'nullable', 'string', 'max:10000'],
             'visibility' => ['sometimes', new Enum(PostVisibility::class)],
             'shared_post_id' => ['sometimes', 'nullable', 'integer', Rule::exists('posts', 'id')],
             'media' => ['sometimes', 'nullable', 'file', 'max:20480', 'mimes:jpg,jpeg,png,gif,webp,mp4,mov,webm'],
             'media_type' => ['required_with:media', 'nullable', Rule::in([MediaType::Image->value, MediaType::Video->value])],
             'sticker_key' => ['sometimes', 'nullable', new Enum(StickerKey::class)],
+            'location_name' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'location_lat' => ['sometimes', 'nullable', 'numeric', 'between:-90,90'],
+            'location_lng' => ['sometimes', 'nullable', 'numeric', 'between:-180,180'],
         ];
     }
 
@@ -45,6 +48,13 @@ final class CreatePostRequest extends FormRequest
         $validator->after(function (Validator $validator): void {
             if ($this->hasFile('media') && $this->filled('sticker_key')) {
                 $validator->errors()->add('media', 'Choose either a photo/video or a sticker, not both.');
+            }
+
+            $locationFields = [$this->input('location_name'), $this->input('location_lat'), $this->input('location_lng')];
+            $filledCount = count(array_filter($locationFields, fn ($value) => $value !== null && $value !== ''));
+
+            if ($filledCount > 0 && $filledCount < 3) {
+                $validator->errors()->add('location_name', 'Provide a location name, latitude, and longitude together, or omit all three.');
             }
 
             if ($this->hasFile('media') && $this->filled('media_type')) {
@@ -95,6 +105,9 @@ final class CreatePostRequest extends FormRequest
             media: $this->file('media'),
             mediaType: $this->filled('media_type') ? MediaType::from((string) $this->validated('media_type')) : null,
             stickerKey: $this->filled('sticker_key') ? (string) $this->validated('sticker_key') : null,
+            locationName: $this->filled('location_name') ? (string) $this->validated('location_name') : null,
+            locationLat: $this->filled('location_lat') ? (float) $this->validated('location_lat') : null,
+            locationLng: $this->filled('location_lng') ? (float) $this->validated('location_lng') : null,
         );
     }
 }

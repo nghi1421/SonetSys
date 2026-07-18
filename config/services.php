@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'nominatim' => [
+        'user_agent' => env('NOMINATIM_USER_AGENT', 'Sonetsys/1.0 (+https://github.com/nghi1421/SonetSys)'),
+    ],
+
 ];
