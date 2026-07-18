@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { Menu } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import NotificationBell from '@/modules/notifications/components/NotificationBell.vue'
+import WalletBalancePill from '@/modules/wallet/components/WalletBalancePill.vue'
 import AppLocaleSwitcher from '@/shared/components/locale/AppLocaleSwitcher.vue'
 import AppButton from '@/shared/components/ui/AppButton.vue'
 
@@ -44,6 +45,7 @@ async function onLogout(): Promise<void> {
       </div>
       <div class="flex items-center gap-3">
         <AppLocaleSwitcher variant="dark" />
+        <WalletBalancePill />
         <NotificationBell />
         <AppButton :label="t('common.logOut')" variant="secondary" @click="onLogout" />
       </div>

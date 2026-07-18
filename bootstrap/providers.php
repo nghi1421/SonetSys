@@ -8,6 +8,7 @@ use App\Modules\Group\GroupServiceProvider;
 use App\Modules\Menu\MenuServiceProvider;
 use App\Modules\Notification\NotificationServiceProvider;
 use App\Modules\Story\StoryServiceProvider;
+use App\Modules\Wallet\WalletServiceProvider;
 use App\Providers\AppServiceProvider;
 
 return [
@@ -20,4 +21,5 @@ return [
     MenuServiceProvider::class,
     NotificationServiceProvider::class,
     StoryServiceProvider::class,
+    WalletServiceProvider::class,
 ];

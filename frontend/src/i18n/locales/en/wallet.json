@@ -1,0 +1,29 @@
+{
+  "balancePill": {
+    "ariaLabel": "View wallet"
+  },
+  "historyView": {
+    "title": "Wallet",
+    "subtitle": "Your credit balance and transaction history.",
+    "currentBalance": "Current balance",
+    "typeHeader": "Type",
+    "reasonHeader": "Reason",
+    "amountHeader": "Amount",
+    "balanceHeader": "Balance",
+    "dateHeader": "Date",
+    "emptyTitle": "No transactions yet",
+    "emptyDescription": "Your wallet ledger will appear here once credits move in or out.",
+    "loadError": "Could not load your wallet. Please try again.",
+    "previous": "Previous",
+    "next": "Next"
+  },
+  "types": {
+    "credit": "Credit",
+    "debit": "Debit"
+  },
+  "reasons": {
+    "admin_topup": "Admin top-up",
+    "ad_spend": "Ad spend",
+    "ad_refund": "Ad refund"
+  }
+}

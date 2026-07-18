@@ -66,6 +66,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/wallet',
+      name: 'wallet',
+      component: () => import('@/modules/wallet/views/WalletHistoryView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/groups/:slug',
       name: 'group-detail',
       component: () => import('@/modules/groups/views/GroupDetailView.vue'),
@@ -100,6 +106,11 @@ const router = createRouter({
           path: 'users',
           name: 'admin-users',
           component: () => import('@/modules/users/views/AdminUsersView.vue'),
+        },
+        {
+          path: 'wallets',
+          name: 'admin-wallets',
+          component: () => import('@/modules/wallet/views/AdminWalletsView.vue'),
         },
       ],
     },
