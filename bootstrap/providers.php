@@ -10,6 +10,7 @@ use App\Modules\Follow\FollowServiceProvider;
 use App\Modules\Group\GroupServiceProvider;
 use App\Modules\Menu\MenuServiceProvider;
 use App\Modules\Notification\NotificationServiceProvider;
+use App\Modules\Report\ReportServiceProvider;
 use App\Modules\Search\SearchServiceProvider;
 use App\Modules\Story\StoryServiceProvider;
 use App\Modules\Wallet\WalletServiceProvider;
@@ -27,6 +28,7 @@ return [
     GroupServiceProvider::class,
     MenuServiceProvider::class,
     NotificationServiceProvider::class,
+    ReportServiceProvider::class,
     SearchServiceProvider::class,
     StoryServiceProvider::class,
     WalletServiceProvider::class,

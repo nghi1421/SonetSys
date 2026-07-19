@@ -49,6 +49,13 @@ enum PermissionSlug: string
     // module-agnostic.
     case AdsReview = 'ads.review';
 
+    // Report is a feature module; kept here for the same Core -> Module
+    // dependency reason as the cases above. Unlike AdsReview/WalletManage,
+    // this is deliberately granted to Moderator as well as Admin — reviewing
+    // reports is core day-to-day moderation work, the same reasoning already
+    // applied to PostsDeleteAny/CommentsDeleteAny.
+    case ReportsReview = 'reports.review';
+
     public function group(): string
     {
         return match ($this) {
@@ -61,6 +68,7 @@ enum PermissionSlug: string
             self::StorageManage => 'storage',
             self::WalletManage => 'wallet',
             self::AdsReview => 'ads',
+            self::ReportsReview => 'reports',
         };
     }
 
@@ -83,6 +91,7 @@ enum PermissionSlug: string
             self::StorageManage,
             self::WalletManage,
             self::AdsReview,
+            self::ReportsReview,
         ];
     }
 
@@ -99,6 +108,7 @@ enum PermissionSlug: string
             self::PostsDeleteAny,
             self::CommentsDeleteAny,
             self::GroupsManageAny,
+            self::ReportsReview,
         ];
     }
 }

@@ -6,6 +6,10 @@ declare module 'vue-router' {
     requiresAuth?: boolean
     guest?: boolean
     requiresAdmin?: boolean
+    // Admin OR Moderator — for moderation pages (e.g. reports) that the
+    // Moderator role is deliberately granted access to, unlike the rest of
+    // the /admin panel which stays Admin-only.
+    requiresStaff?: boolean
   }
 }
 
@@ -116,42 +120,59 @@ const router = createRouter({
     {
       path: '/admin',
       component: () => import('@/shared/components/layout/AdminShell.vue'),
-      meta: { requiresAuth: true, requiresAdmin: true },
+      // requiresAdmin is NOT set at the parent level — Reports is deliberately
+      // reachable by Moderator too (via its own requiresStaff meta below), so
+      // each child route declares its own access requirement instead of
+      // inheriting a blanket Admin-only gate.
+      meta: { requiresAuth: true },
       children: [
         {
           path: '',
           name: 'admin-dashboard',
           component: () => import('@/modules/admin/views/AdminDashboardView.vue'),
+          meta: { requiresAdmin: true },
         },
         {
           path: 'menu',
           name: 'admin-menu',
           component: () => import('@/modules/menu/views/AdminMenuView.vue'),
+          meta: { requiresAdmin: true },
         },
         {
           path: 'storage',
           name: 'admin-storage-settings',
           component: () => import('@/modules/storage/views/StorageSettingsView.vue'),
+          meta: { requiresAdmin: true },
         },
         {
           path: 'media',
           name: 'admin-media-library',
           component: () => import('@/modules/storage/views/MediaLibraryView.vue'),
+          meta: { requiresAdmin: true },
         },
         {
           path: 'users',
           name: 'admin-users',
           component: () => import('@/modules/users/views/AdminUsersView.vue'),
+          meta: { requiresAdmin: true },
         },
         {
           path: 'wallets',
           name: 'admin-wallets',
           component: () => import('@/modules/wallet/views/AdminWalletsView.vue'),
+          meta: { requiresAdmin: true },
         },
         {
           path: 'ads',
           name: 'admin-ads',
           component: () => import('@/modules/advertising/views/AdminAdReviewView.vue'),
+          meta: { requiresAdmin: true },
+        },
+        {
+          path: 'reports',
+          name: 'admin-reports',
+          component: () => import('@/modules/report/views/AdminReportsView.vue'),
+          meta: { requiresStaff: true },
         },
       ],
     },

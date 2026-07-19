@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { EllipsisVertical, MapPin, Megaphone, MessageCircle, Pencil, Trash2 } from '@lucide/vue'
+import { EllipsisVertical, Flag, MapPin, Megaphone, MessageCircle, Pencil, Trash2 } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import AppButton from '@/shared/components/ui/AppButton.vue'
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog.vue'
+import ReportDialog from '@/shared/components/ui/ReportDialog.vue'
 import { useRelativeTime } from '@/shared/composables/useRelativeTime'
 import CommentThread from './CommentThread.vue'
 import LinkifiedText from './LinkifiedText.vue'
@@ -32,6 +33,7 @@ const showActionsMenu = ref(false)
 const editing = ref(false)
 const editBody = ref(props.post.body)
 const confirmingDelete = ref(false)
+const showReportDialog = ref(false)
 
 onMounted(async () => {
   if (showComments.value && !feedStore.commentsByPost[props.post.id]) {
@@ -80,6 +82,11 @@ function onDeleteClick(): void {
   confirmingDelete.value = true
 }
 
+function onReportClick(): void {
+  showActionsMenu.value = false
+  showReportDialog.value = true
+}
+
 async function saveEdit(): Promise<void> {
   if (!editBody.value.trim()) return
   await feedStore.updatePost(props.post.id, { body: editBody.value.trim() })
@@ -125,7 +132,7 @@ async function saveEdit(): Promise<void> {
           </span>
         </div>
       </div>
-      <div v-if="isOwner || canDelete" class="relative">
+      <div class="relative">
         <button
           type="button"
           class="rounded-full border border-cyber-border bg-cyber-glass p-1.5 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow"
@@ -157,6 +164,14 @@ async function saveEdit(): Promise<void> {
             @click="onDeleteClick"
           >
             <Trash2 class="h-3.5 w-3.5" /> {{ t('common.delete') }}
+          </button>
+          <button
+            v-if="!isOwner"
+            type="button"
+            class="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-pink"
+            @click="onReportClick"
+          >
+            <Flag class="h-3.5 w-3.5" /> {{ t('report.action') }}
           </button>
         </div>
       </div>
@@ -234,6 +249,13 @@ async function saveEdit(): Promise<void> {
       :message="t('feed.postCard.confirmDeleteMessage')"
       @confirm="onConfirmDelete"
       @cancel="confirmingDelete = false"
+    />
+
+    <ReportDialog
+      :open="showReportDialog"
+      type="post"
+      :id="post.id"
+      @update:open="showReportDialog = $event"
     />
   </article>
 </template>

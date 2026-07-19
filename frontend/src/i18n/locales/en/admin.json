@@ -95,5 +95,24 @@
     "approveError": "Could not approve this campaign. Please try again.",
     "rejectError": "Could not reject this campaign. Please try again.",
     "loadError": "Could not load the ad review queue. Please try again."
+  },
+  "reports": {
+    "title": "Reports",
+    "subtitle": "Review reported posts and comments.",
+    "reporterHeader": "Reporter",
+    "contentHeader": "Content",
+    "reasonHeader": "Reason",
+    "reportedHeader": "Reported",
+    "actionsHeader": "Actions",
+    "emptyState": "No pending reports.",
+    "resolveButton": "Resolve",
+    "dismissButton": "Dismiss",
+    "viewPostLink": "View post",
+    "contentUnavailable": "Content no longer available",
+    "typePost": "Post",
+    "typeComment": "Comment",
+    "resolveError": "Could not resolve this report. Please try again.",
+    "dismissError": "Could not dismiss this report. Please try again.",
+    "loadError": "Could not load the reports queue. Please try again."
   }
 }

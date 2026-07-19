@@ -16,5 +16,12 @@ export const authGuard: NavigationGuardWithThis<undefined> = (to) => {
     return { name: 'dashboard' }
   }
 
+  if (to.meta.requiresStaff) {
+    const role = authStore.user?.role.slug
+    if (role !== 'admin' && role !== 'moderator') {
+      return { name: 'dashboard' }
+    }
+  }
+
   return true
 }
