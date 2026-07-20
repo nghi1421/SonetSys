@@ -8,6 +8,18 @@
   </head>
   <body>
     <div id="app"></div>
+    <script>
+      // Applied before Vue mounts to avoid a flash of the wrong theme on
+      // reload — the theme store (src/modules/theme/store/themeStore.ts)
+      // keeps this in sync going forward. Wrapped in try/catch since
+      // localStorage can throw in locked-down browser contexts.
+      try {
+        var storedTheme = localStorage.getItem('sonetsys_theme');
+        if (storedTheme === 'light') {
+          document.documentElement.dataset.theme = 'light';
+        }
+      } catch (e) {}
+    </script>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

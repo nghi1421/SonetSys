@@ -7,6 +7,7 @@ import MessageBell from '@/modules/chat/components/MessageBell.vue'
 import NotificationBell from '@/modules/notifications/components/NotificationBell.vue'
 import WalletBalancePill from '@/modules/wallet/components/WalletBalancePill.vue'
 import AppLocaleSwitcher from '@/shared/components/locale/AppLocaleSwitcher.vue'
+import AppThemeSwitcher from '@/shared/components/theme/AppThemeSwitcher.vue'
 import AppButton from '@/shared/components/ui/AppButton.vue'
 
 const emit = defineEmits<{ 'toggle-sidebar': [] }>()
@@ -45,6 +46,7 @@ async function onLogout(): Promise<void> {
         </div>
       </div>
       <div class="flex items-center gap-3">
+        <AppThemeSwitcher />
         <AppLocaleSwitcher variant="dark" />
         <router-link
           :to="{ name: 'search' }"

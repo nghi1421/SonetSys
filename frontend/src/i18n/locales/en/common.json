@@ -19,6 +19,10 @@
   "controlPanel": "Control Panel",
   "adminPanel": "Admin Panel",
   "blockedUsers": "Blocked Users",
+  "theme": {
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode"
+  },
   "nav": {
     "dashboard": "Dashboard",
     "menuPages": "Menu & Pages",
