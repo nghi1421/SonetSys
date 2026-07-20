@@ -83,8 +83,12 @@ async function onLogout(): Promise<void> {
     </RouterLink>
 
     <nav class="space-y-1">
-      <div v-if="menuStore.loading" class="space-y-2">
-        <div v-for="i in 3" :key="i" class="h-8 animate-pulse rounded-hud bg-cyber-surface/60" />
+      <div v-if="menuStore.loading && menuStore.items.length === 0" class="space-y-2">
+        <div
+          v-for="i in 3"
+          :key="i"
+          class="h-8 animate-pulse rounded-hud border border-cyber-border bg-cyber-surface/60 backdrop-blur-md"
+        />
       </div>
 
       <RouterLink
@@ -110,23 +114,25 @@ async function onLogout(): Promise<void> {
       </RouterLink>
     </nav>
 
-    <RouterLink
-      v-if="isAdmin"
-      :to="{ name: 'admin-dashboard' }"
-      :title="t('common.adminPanel')"
-      class="mt-6 flex items-center gap-2.5 rounded-hud border-t border-cyber-border px-3 pt-4 font-mono text-xs font-bold uppercase tracking-wider text-cyber-neon-indigo transition-all duration-300 hover:text-cyber-neon-cyan"
-    >
-      <LayoutDashboard class="h-4 w-4 shrink-0" />
-      <span>{{ t('common.adminPanel') }}</span>
-    </RouterLink>
+    <div class="mt-6 space-y-1 border-t border-cyber-border pt-4">
+      <RouterLink
+        v-if="isAdmin"
+        :to="{ name: 'admin-dashboard' }"
+        :title="t('common.adminPanel')"
+        class="flex items-center gap-2.5 rounded-hud px-3 py-2 font-mono text-xs font-bold uppercase tracking-wider text-cyber-neon-indigo transition-all duration-300 hover:text-cyber-neon-cyan"
+      >
+        <LayoutDashboard class="h-4 w-4 shrink-0" />
+        <span>{{ t('common.adminPanel') }}</span>
+      </RouterLink>
 
-    <button
-      type="button"
-      class="mt-6 flex w-full items-center gap-2.5 rounded-hud border-t border-cyber-border px-3 pt-4 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-pink"
-      @click="onLogout"
-    >
-      <LogOut class="h-4 w-4 shrink-0" />
-      <span>{{ t('common.logOut') }}</span>
-    </button>
+      <button
+        type="button"
+        class="flex w-full items-center gap-2.5 rounded-hud px-3 py-2 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-pink"
+        @click="onLogout"
+      >
+        <LogOut class="h-4 w-4 shrink-0" />
+        <span>{{ t('common.logOut') }}</span>
+      </button>
+    </div>
   </aside>
 </template>
