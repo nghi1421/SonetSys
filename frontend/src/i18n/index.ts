@@ -11,6 +11,7 @@ import menu from './locales/en/menu.json'
 import notifications from './locales/en/notifications.json'
 import report from './locales/en/report.json'
 import search from './locales/en/search.json'
+import settings from './locales/en/settings.json'
 import stories from './locales/en/stories.json'
 import storage from './locales/en/storage.json'
 import wallet from './locales/en/wallet.json'
@@ -36,6 +37,7 @@ const en = {
   advertising,
   search,
   report,
+  settings,
 }
 
 export const i18n = createI18n({

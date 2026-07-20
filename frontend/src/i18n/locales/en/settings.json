@@ -1,0 +1,42 @@
+{
+  "title": "System Settings",
+  "subtitle": "Configure mail server, cache, Redis, and upload limits.",
+  "saved": "Settings saved.",
+  "saveError": "Could not save settings. Please check the values and try again.",
+  "saveButton": "Save Settings",
+  "saving": "Saving…",
+  "mail": {
+    "heading": "Mail Server",
+    "hostLabel": "SMTP Host",
+    "portLabel": "SMTP Port",
+    "usernameLabel": "Username",
+    "passwordLabel": "Password",
+    "passwordHintExisting": "A password is already saved — leave blank to keep it.",
+    "passwordHintRequired": "Optional, depending on your mail server.",
+    "encryptionLabel": "Encryption (e.g. tls, ssl — optional)",
+    "fromAddressLabel": "From Address",
+    "fromNameLabel": "From Name"
+  },
+  "cache": {
+    "heading": "Cache",
+    "driverLabel": "Cache Driver",
+    "database": "Database",
+    "redis": "Redis",
+    "driverHint": "Which store the app uses for cached data (feeds, groups, etc.)."
+  },
+  "redis": {
+    "heading": "Redis Connection",
+    "clientLabel": "Client Library",
+    "hostLabel": "Host",
+    "portLabel": "Port",
+    "passwordLabel": "Password",
+    "passwordHintExisting": "A password is already saved — leave blank to keep it.",
+    "passwordHintRequired": "Optional.",
+    "databaseLabel": "Database Index"
+  },
+  "uploads": {
+    "heading": "Uploads",
+    "maxSizeLabel": "Maximum Upload Size (KB)",
+    "maxSizeHint": "Applies to post media, group post media, story media, and profile avatar/cover uploads."
+  }
+}
