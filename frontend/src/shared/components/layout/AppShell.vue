@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import FloatingChatBubble from '@/modules/chat/components/FloatingChatBubble.vue'
 import AppHeader from './AppHeader.vue'
 import AppSidebar from './AppSidebar.vue'
 
@@ -17,5 +18,7 @@ const sidebarOpen = ref(false)
         <slot />
       </main>
     </div>
+
+    <FloatingChatBubble />
   </div>
 </template>
