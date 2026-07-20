@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace App\Modules\Feed\Application\Support;
 
+use App\Core\Support\TaggableCache;
 use Closure;
-use Illuminate\Support\Facades\Cache;
 
 /**
  * Caches the expensive part of feed listing (which posts, in order) behind
- * Redis tags so a mutation can invalidate exactly the affected feed without
+ * cache tags so a mutation can invalidate exactly the affected feed without
  * scanning keys. Per-viewer overlays (liked_by_me) are applied by the caller
- * after this returns, never cached here — see PostService::feed().
+ * after this returns, never cached here — see PostService::feed(). Tagging
+ * requires a taggable store (redis, memcached, array); see TaggableCache for
+ * the fallback behavior on stores that don't support it (e.g. database).
  *
  * Known tradeoff: remember()/forget() form a plain cache-aside pattern with
  * no lock. A request that starts a slow read right before a concurrent
@@ -31,7 +33,8 @@ final class FeedCache
      */
     public function rememberFeed(int $viewerId, ?string $cursor, Closure $callback): mixed
     {
-        return Cache::tags([$this->feedTag()])->remember(
+        return TaggableCache::remember(
+            [$this->feedTag()],
             $this->feedKey($viewerId, $cursor),
             self::TTL_SECONDS,
             $callback,
@@ -44,7 +47,8 @@ final class FeedCache
      */
     public function rememberGroupFeed(int $groupId, ?string $cursor, Closure $callback): mixed
     {
-        return Cache::tags([$this->groupTag($groupId)])->remember(
+        return TaggableCache::remember(
+            [$this->groupTag($groupId)],
             $this->groupKey($groupId, $cursor),
             self::TTL_SECONDS,
             $callback,
@@ -58,7 +62,8 @@ final class FeedCache
      */
     public function rememberFollowingFeed(int $viewerId, ?string $cursor, Closure $callback): mixed
     {
-        return Cache::tags([$this->feedTag()])->remember(
+        return TaggableCache::remember(
+            [$this->feedTag()],
             $this->followingKey($viewerId, $cursor),
             self::TTL_SECONDS,
             $callback,
@@ -67,12 +72,12 @@ final class FeedCache
 
     public function forgetFeed(): void
     {
-        Cache::tags([$this->feedTag()])->flush();
+        TaggableCache::forget([$this->feedTag()]);
     }
 
     public function forgetGroupFeed(int $groupId): void
     {
-        Cache::tags([$this->groupTag($groupId)])->flush();
+        TaggableCache::forget([$this->groupTag($groupId)]);
     }
 
     private function feedTag(): string
