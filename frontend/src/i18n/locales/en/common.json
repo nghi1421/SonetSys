@@ -27,7 +27,8 @@
     "users": "Users",
     "wallets": "Wallets",
     "ads": "Ad Review",
-    "reports": "Reports"
+    "reports": "Reports",
+    "settings": "System Settings"
   },
   "mediaPreview": {
     "closePreview": "Close preview",

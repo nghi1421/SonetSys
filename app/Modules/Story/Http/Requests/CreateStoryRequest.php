@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Story\Http\Requests;
 
+use App\Core\Settings\Application\Services\SystemSettingApplier;
 use App\Core\Storage\Domain\Enums\MediaType;
 use App\Modules\Story\Application\DTOs\CreateStoryData;
 use Illuminate\Contracts\Validation\Validator;
@@ -12,6 +13,12 @@ use Illuminate\Validation\Rule;
 
 final class CreateStoryRequest extends FormRequest
 {
+    public function __construct(
+        private readonly SystemSettingApplier $settings,
+    ) {
+        parent::__construct();
+    }
+
     public function authorize(): bool
     {
         return true;
@@ -20,7 +27,7 @@ final class CreateStoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'media' => ['required', 'file', 'max:20480', 'mimes:jpg,jpeg,png,gif,webp,mp4,mov,webm'],
+            'media' => ['required', 'file', 'max:'.$this->settings->maxUploadKb(), 'mimes:jpg,jpeg,png,gif,webp,mp4,mov,webm'],
             'media_type' => ['required', Rule::in([MediaType::Image->value, MediaType::Video->value])],
             'caption' => ['sometimes', 'nullable', 'string', 'max:200'],
         ];

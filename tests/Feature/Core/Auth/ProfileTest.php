@@ -182,8 +182,11 @@ final class ProfileTest extends TestCase
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
+        // Avatar/cover share the site-wide max_upload_size_kb setting
+        // (20480 KB by default, see SystemSetting) rather than a hardcoded
+        // avatar-only limit, so this must exceed that to be rejected.
         $this->postJson('/api/v1/profile', [
-            'avatar' => UploadedFile::fake()->create('big.jpg', 6000, 'image/jpeg'),
+            'avatar' => UploadedFile::fake()->create('big.jpg', 21000, 'image/jpeg'),
         ])->assertStatus(422);
     }
 
