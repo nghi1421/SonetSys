@@ -1,6 +1,7 @@
 <?php
 
 use App\Core\Auth\CoreAuthServiceProvider;
+use App\Core\Settings\CoreSettingsServiceProvider;
 use App\Core\Storage\CoreStorageServiceProvider;
 use App\Modules\Advertising\AdvertisingServiceProvider;
 use App\Modules\Block\BlockServiceProvider;
@@ -19,6 +20,7 @@ use App\Providers\AppServiceProvider;
 return [
     AppServiceProvider::class,
     CoreAuthServiceProvider::class,
+    CoreSettingsServiceProvider::class,
     CoreStorageServiceProvider::class,
     AdvertisingServiceProvider::class,
     BlockServiceProvider::class,
