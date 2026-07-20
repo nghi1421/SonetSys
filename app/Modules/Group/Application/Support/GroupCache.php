@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace App\Modules\Group\Application\Support;
 
+use App\Core\Support\TaggableCache;
 use Closure;
-use Illuminate\Support\Facades\Cache;
 
 /**
  * Caches the site-wide group listing (no per-viewer filtering in the query
  * itself — viewer_membership is attached separately by the caller), behind a
- * Redis tag so any group mutation invalidates it directly.
+ * cache tag so any group mutation invalidates it directly. Tagging requires
+ * a taggable store; see TaggableCache for the fallback on stores that don't
+ * support it (e.g. database).
  *
  * Known tradeoff: same cache-aside race as FeedCache — see that class's
  * docblock. Accepted for this app's traffic level.
@@ -21,7 +23,8 @@ final class GroupCache
 
     public function rememberList(Closure $callback): mixed
     {
-        return Cache::tags([$this->tag()])->remember(
+        return TaggableCache::remember(
+            [$this->tag()],
             $this->tag().':list',
             self::TTL_SECONDS,
             $callback,
@@ -30,7 +33,7 @@ final class GroupCache
 
     public function forgetList(): void
     {
-        Cache::tags([$this->tag()])->flush();
+        TaggableCache::forget([$this->tag()]);
     }
 
     private function tag(): string
