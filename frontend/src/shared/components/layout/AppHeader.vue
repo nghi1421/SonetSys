@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Menu, Search } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
@@ -8,18 +7,11 @@ import NotificationBell from '@/modules/notifications/components/NotificationBel
 import WalletBalancePill from '@/modules/wallet/components/WalletBalancePill.vue'
 import AppLocaleSwitcher from '@/shared/components/locale/AppLocaleSwitcher.vue'
 import AppThemeSwitcher from '@/shared/components/theme/AppThemeSwitcher.vue'
-import AppButton from '@/shared/components/ui/AppButton.vue'
 
 const emit = defineEmits<{ 'toggle-sidebar': [] }>()
 
-const router = useRouter()
 const authStore = useAuthStore()
 const { t } = useI18n()
-
-async function onLogout(): Promise<void> {
-  await authStore.logout()
-  router.push({ name: 'login' })
-}
 </script>
 
 <template>
@@ -58,7 +50,6 @@ async function onLogout(): Promise<void> {
         <WalletBalancePill />
         <MessageBell />
         <NotificationBell />
-        <AppButton :label="t('common.logOut')" variant="secondary" @click="onLogout" />
       </div>
     </div>
   </header>
