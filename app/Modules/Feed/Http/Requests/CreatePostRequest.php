@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Feed\Http\Requests;
 
+use App\Core\Settings\Application\Services\SystemSettingApplier;
 use App\Modules\Feed\Application\Contracts\GroupAccessCheckerInterface;
 use App\Modules\Feed\Application\DTOs\CreatePostData;
 use App\Modules\Feed\Domain\Enums\MediaType;
@@ -19,6 +20,7 @@ final class CreatePostRequest extends FormRequest
 {
     public function __construct(
         private readonly GroupAccessCheckerInterface $groupAccess,
+        private readonly SystemSettingApplier $settings,
     ) {
         parent::__construct();
     }
@@ -34,7 +36,7 @@ final class CreatePostRequest extends FormRequest
             'body' => ['required_without_all:shared_post_id,media,sticker_key,location_name', 'nullable', 'string', 'max:10000'],
             'visibility' => ['sometimes', new Enum(PostVisibility::class)],
             'shared_post_id' => ['sometimes', 'nullable', 'integer', Rule::exists('posts', 'id')],
-            'media' => ['sometimes', 'nullable', 'file', 'max:20480', 'mimes:jpg,jpeg,png,gif,webp,mp4,mov,webm'],
+            'media' => ['sometimes', 'nullable', 'file', 'max:'.$this->settings->maxUploadKb(), 'mimes:jpg,jpeg,png,gif,webp,mp4,mov,webm'],
             'media_type' => ['required_with:media', 'nullable', Rule::in([MediaType::Image->value, MediaType::Video->value])],
             'sticker_key' => ['sometimes', 'nullable', new Enum(StickerKey::class)],
             'location_name' => ['sometimes', 'nullable', 'string', 'max:255'],
