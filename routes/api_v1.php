@@ -3,6 +3,7 @@
 require base_path('routes/admin.php');
 require app_path('Core/Auth/routes/api.php');
 require app_path('Core/Storage/routes/api.php');
+require app_path('Core/Settings/routes/api.php');
 require app_path('Modules/Advertising/routes/api.php');
 require app_path('Modules/Block/routes/api.php');
 require app_path('Modules/Chat/routes/api.php');
