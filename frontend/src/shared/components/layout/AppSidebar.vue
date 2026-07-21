@@ -55,7 +55,7 @@ async function onLogout(): Promise<void> {
   />
 
   <aside
-    class="fixed inset-y-0 left-0 top-16 z-20 w-56 -translate-x-full overflow-y-auto border-r border-cyber-border bg-cyber-glass py-6 pr-2 pl-4 backdrop-blur-md transition-transform duration-300 sm:static sm:z-auto sm:w-56 sm:translate-x-0 sm:px-4 sm:pl-0"
+    class="fixed inset-y-0 left-0 top-16 z-20 w-56 -translate-x-full overflow-y-auto border-r border-cyber-border bg-cyber-glass py-6 pr-2 pl-4 backdrop-blur-md transition-transform duration-300 sm:sticky sm:top-16 sm:z-auto sm:w-56 sm:max-h-[calc(100vh-4rem)] sm:translate-x-0 sm:self-start sm:px-4 sm:pl-0"
     :class="props.open && 'translate-x-0'"
   >
     <RouterLink
