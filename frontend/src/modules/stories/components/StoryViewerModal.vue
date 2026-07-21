@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Eye, Trash2, X } from '@lucide/vue'
+import { ChevronLeft, ChevronRight, Eye, Trash2, X } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog.vue'
 import { useStoryStore } from '../store/storyStore'
@@ -53,18 +53,34 @@ function close(): void {
 }
 
 function next(): void {
-  if (!activeGroup.value) return
+  if (!activeGroup.value || storyStore.activeViewerGroupIndex === null) return
 
   if (storyStore.activeViewerStoryIndex < activeGroup.value.stories.length - 1) {
     storyStore.activeViewerStoryIndex += 1
+    return
+  }
+
+  const nextGroupIndex = storyStore.activeViewerGroupIndex + 1
+  if (nextGroupIndex < storyStore.storyGroups.length) {
+    storyStore.openViewer(nextGroupIndex)
   } else {
     close()
   }
 }
 
 function prev(): void {
+  if (storyStore.activeViewerGroupIndex === null) return
+
   if (storyStore.activeViewerStoryIndex > 0) {
     storyStore.activeViewerStoryIndex -= 1
+    return
+  }
+
+  const prevGroupIndex = storyStore.activeViewerGroupIndex - 1
+  const prevGroup = storyStore.storyGroups[prevGroupIndex]
+  if (prevGroup) {
+    storyStore.openViewer(prevGroupIndex)
+    storyStore.activeViewerStoryIndex = prevGroup.stories.length - 1
   }
 }
 
@@ -177,35 +193,56 @@ onBeforeUnmount(stopProgressTimer)
       </div>
 
       <div class="relative flex h-full w-full items-center justify-center">
-        <img
-          v-if="currentStory.media_type === 'image'"
-          :src="currentStory.media_url"
-          :alt="currentStory.caption ?? ''"
-          class="max-h-full max-w-full object-contain"
-        />
-        <video
-          v-else
-          ref="videoRef"
-          :src="currentStory.media_url"
-          class="max-h-full max-w-full object-contain"
-          playsinline
-          autoplay
-          @timeupdate="onVideoTimeUpdate"
-          @ended="next"
-        />
+        <div
+          class="relative flex h-full w-full items-center justify-center overflow-hidden sm:mx-auto sm:aspect-[9/16] sm:h-[min(90vh,800px)] sm:w-auto sm:rounded-hud sm:border sm:border-white/10 sm:shadow-2xl"
+        >
+          <img
+            v-if="currentStory.media_type === 'image'"
+            :src="currentStory.media_url"
+            :alt="currentStory.caption ?? ''"
+            class="max-h-full max-w-full object-contain"
+          />
+          <video
+            v-else
+            ref="videoRef"
+            :src="currentStory.media_url"
+            class="max-h-full max-w-full object-contain"
+            playsinline
+            autoplay
+            @timeupdate="onVideoTimeUpdate"
+            @ended="next"
+          />
+        </div>
 
         <button
           type="button"
           class="absolute inset-y-0 left-0 w-1/3"
-          :aria-label="t('common.cancel')"
+          :aria-label="t('common.previous')"
           @click="prev"
         />
         <button
           type="button"
           class="absolute inset-y-0 right-0 w-1/3"
-          :aria-label="t('common.cancel')"
+          :aria-label="t('common.next')"
           @click="next"
         />
+
+        <button
+          type="button"
+          class="absolute left-4 top-1/2 z-10 hidden -translate-y-1/2 rounded-full bg-black/40 p-2 text-white backdrop-blur-md transition-all duration-300 hover:bg-black/60 hover:text-cyber-neon-cyan sm:flex"
+          :aria-label="t('common.previous')"
+          @click="prev"
+        >
+          <ChevronLeft class="h-6 w-6" />
+        </button>
+        <button
+          type="button"
+          class="absolute right-4 top-1/2 z-10 hidden -translate-y-1/2 rounded-full bg-black/40 p-2 text-white backdrop-blur-md transition-all duration-300 hover:bg-black/60 hover:text-cyber-neon-cyan sm:flex"
+          :aria-label="t('common.next')"
+          @click="next"
+        >
+          <ChevronRight class="h-6 w-6" />
+        </button>
       </div>
 
       <div

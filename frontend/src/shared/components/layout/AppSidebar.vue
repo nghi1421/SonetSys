@@ -2,7 +2,17 @@
 import { computed, onMounted, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { FileText, Home, LayoutDashboard, LogOut, Megaphone, ShieldOff, UserRound, Users } from '@lucide/vue'
+import {
+  Clapperboard,
+  FileText,
+  Home,
+  LayoutDashboard,
+  LogOut,
+  Megaphone,
+  ShieldOff,
+  UserRound,
+  Users,
+} from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import { useMenuStore } from '@/modules/menu/store/menuStore'
 import type { MenuItem } from '@/modules/menu/types'
@@ -101,6 +111,16 @@ async function onLogout(): Promise<void> {
       >
         <component :is="iconFor(item)" class="h-4 w-4 shrink-0" />
         <span>{{ item.label }}</span>
+      </RouterLink>
+
+      <RouterLink
+        :to="{ name: 'stories' }"
+        :title="t('common.stories')"
+        class="flex items-center gap-2.5 rounded-hud px-3 py-2 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
+        active-class="text-cyber-neon-cyan bg-cyber-glass border border-cyber-border shadow-cyan-glow"
+      >
+        <Clapperboard class="h-4 w-4 shrink-0" />
+        <span>{{ t('common.stories') }}</span>
       </RouterLink>
 
       <RouterLink
