@@ -15,6 +15,7 @@ async function onLogout(): Promise<void> {
   await authStore.logout()
   router.push({ name: 'login' })
 }
+
 </script>
 
 <template>
