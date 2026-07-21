@@ -71,7 +71,7 @@ final class CommentService
             );
 
             if ($mentionedUserIds !== []) {
-                UserMentioned::dispatch('comment', $comment->id, $data->authorId, $mentionedUserIds);
+                UserMentioned::dispatch('comment', $comment->id, $data->authorId, $mentionedUserIds, $data->postId);
             }
 
             return $comment;
