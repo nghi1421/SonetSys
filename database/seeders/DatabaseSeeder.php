@@ -24,10 +24,6 @@ final class DatabaseSeeder extends Seeder
         $adminRole = Role::query()->where('slug', RoleSlug::Admin->value)->firstOrFail();
 
         if (! User::query()->where('email', 'admin@sonetsys.test')->exists()) {
-            // Deliberately not User::factory() — the factory's definition()
-            // calls fake() unconditionally (even for overridden fields), and
-            // fakerphp/faker is a require-dev package unavailable in the
-            // --no-dev production image this seeder runs in on deploy.
             User::query()->create([
                 'role_id' => $adminRole->id,
                 'name' => 'Admin',
