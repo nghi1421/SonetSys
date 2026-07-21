@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Modules\Feed;
 
 use App\Core\Auth\Domain\Models\User;
+use App\Modules\Feed\Application\Services\ReactionTypeService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
@@ -12,6 +13,13 @@ use Tests\TestCase;
 final class ReactionTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        app(ReactionTypeService::class)->seedDefaults();
+    }
 
     private function createPost(User $author): int
     {

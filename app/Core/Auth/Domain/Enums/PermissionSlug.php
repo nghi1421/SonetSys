@@ -61,6 +61,11 @@ enum PermissionSlug: string
     // applied to PostsDeleteAny/CommentsDeleteAny.
     case ReportsReview = 'reports.review';
 
+    // Reactions (the reaction_types catalog admins can add/remove/re-icon)
+    // is a feature module; kept here for the same Core -> Module dependency
+    // reason as the cases above, so RoleSeeder stays module-agnostic.
+    case ReactionsManage = 'reactions.manage';
+
     public function group(): string
     {
         return match ($this) {
@@ -75,6 +80,7 @@ enum PermissionSlug: string
             self::WalletManage => 'wallet',
             self::AdsReview => 'ads',
             self::ReportsReview => 'reports',
+            self::ReactionsManage => 'reactions',
         };
     }
 
@@ -99,6 +105,7 @@ enum PermissionSlug: string
             self::WalletManage,
             self::AdsReview,
             self::ReportsReview,
+            self::ReactionsManage,
         ];
     }
 

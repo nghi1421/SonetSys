@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Heart } from '@lucide/vue'
-import { REACTION_EMOJI, type ReactionType } from '../types'
-
-const REACTION_TYPES: ReactionType[] = ['like', 'love', 'haha', 'wow', 'sad', 'angry']
+import { useReactionTypeStore } from '@/modules/reactions/store/reactionTypeStore'
+import type { ReactionType } from '../types'
 
 const props = withDefaults(
   defineProps<{ count: number; myReaction: ReactionType | null; variant?: 'pill' | 'inline' }>(),
@@ -13,9 +12,20 @@ const props = withDefaults(
 
 const emit = defineEmits<{ react: [type: ReactionType]; unreact: [] }>()
 
+const reactionTypeStore = useReactionTypeStore()
 const { t } = useI18n()
 
 const showPicker = ref(false)
+
+onMounted(() => {
+  reactionTypeStore.fetchTypesOnce()
+})
+
+// A stored my_reaction can point at a key an admin has since deleted — falls
+// back to null (renders the generic Heart glyph) rather than crashing.
+const myReactionOption = computed(
+  () => reactionTypeStore.types.find((option) => option.key === props.myReaction) ?? null,
+)
 
 function closePicker(): void {
   showPicker.value = false
@@ -49,8 +59,9 @@ function pick(type: ReactionType): void {
       :aria-label="t('feed.reactions.reactLabel')"
       @click="togglePicker"
     >
-      <Heart v-if="!myReaction" class="h-3 w-3" />
-      <span v-else class="text-xs leading-none">{{ REACTION_EMOJI[myReaction] }}</span>
+      <Heart v-if="!myReactionOption" class="h-3 w-3" />
+      <img v-else-if="myReactionOption.icon_url" :src="myReactionOption.icon_url" :alt="myReactionOption.label" class="h-3.5 w-3.5" />
+      <span v-else class="text-xs leading-none">{{ myReactionOption.emoji }}</span>
       {{ count }}
     </button>
 
@@ -62,8 +73,9 @@ function pick(type: ReactionType): void {
       :aria-label="t('feed.reactions.reactLabel')"
       @click="togglePicker"
     >
-      <Heart v-if="!myReaction" class="h-3 w-3" />
-      <span v-else class="text-xs leading-none">{{ REACTION_EMOJI[myReaction] }}</span>
+      <Heart v-if="!myReactionOption" class="h-3 w-3" />
+      <img v-else-if="myReactionOption.icon_url" :src="myReactionOption.icon_url" :alt="myReactionOption.label" class="h-3.5 w-3.5" />
+      <span v-else class="text-xs leading-none">{{ myReactionOption.emoji }}</span>
       {{ count }}
     </button>
 
@@ -75,15 +87,16 @@ function pick(type: ReactionType): void {
       @click.stop
     >
       <button
-        v-for="type in REACTION_TYPES"
-        :key="type"
+        v-for="option in reactionTypeStore.types"
+        :key="option.id"
         type="button"
         class="flex h-8 w-8 items-center justify-center rounded-full text-lg transition-all duration-300 hover:scale-125 hover:bg-cyber-surface/60"
-        :class="myReaction === type && 'bg-cyber-neon-pink/10 shadow-pink-glow'"
-        :aria-label="t(`feed.reactions.${type}`)"
-        @click="pick(type)"
+        :class="myReaction === option.key && 'bg-cyber-neon-pink/10 shadow-pink-glow'"
+        :aria-label="option.label"
+        @click="pick(option.key)"
       >
-        {{ REACTION_EMOJI[type] }}
+        <img v-if="option.icon_url" :src="option.icon_url" :alt="option.label" class="h-5 w-5" />
+        <template v-else>{{ option.emoji }}</template>
       </button>
     </div>
   </div>
