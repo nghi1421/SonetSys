@@ -25,7 +25,8 @@ final class SendLikeNotification
             data: [
                 'interactable_type' => $event->interactableType,
                 'interactable_id' => $event->interactableId,
-                'reaction_type' => $event->reactionType->value,
+                'reaction_type' => $event->reactionType,
+                'post_id' => $event->postId,
             ],
         ));
     }

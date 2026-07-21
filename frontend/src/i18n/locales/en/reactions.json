@@ -1,0 +1,19 @@
+{
+  "admin": {
+    "title": "Reactions",
+    "subtitle": "Add, edit, or remove the reactions people can use on posts and comments.",
+    "listTitle": "Reaction types",
+    "emptyDescription": "No reactions yet.",
+    "iconHeader": "Icon",
+    "keyHeader": "Key",
+    "labelHeader": "Label",
+    "actionsHeader": "Actions",
+    "keyPlaceholder": "key (e.g. fire)",
+    "labelPlaceholder": "Label (e.g. Fire)",
+    "emojiPlaceholder": "Emoji (optional, e.g. 🔥)",
+    "addButton": "Add reaction",
+    "confirmDeleteTitle": "Delete reaction?",
+    "confirmDeleteMessage": "\"{label}\" will be removed. Posts and comments that already used it will fall back to a generic icon.",
+    "genericError": "Something went wrong. Please try again."
+  }
+}

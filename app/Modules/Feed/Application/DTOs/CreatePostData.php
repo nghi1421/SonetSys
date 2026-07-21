@@ -25,5 +25,6 @@ final readonly class CreatePostData
         public ?float $locationLng = null,
         /** @var list<int> */
         public array $mentionedUserIds = [],
+        public bool $isReel = false,
     ) {}
 }

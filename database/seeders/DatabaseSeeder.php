@@ -8,6 +8,7 @@ use App\Core\Auth\Domain\Enums\RoleSlug;
 use App\Core\Auth\Domain\Enums\UserStatus;
 use App\Core\Auth\Domain\Models\Role;
 use App\Core\Auth\Domain\Models\User;
+use App\Modules\Feed\Application\Services\ReactionTypeService;
 use App\Modules\Menu\Application\Services\MenuService;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -24,10 +25,6 @@ final class DatabaseSeeder extends Seeder
         $adminRole = Role::query()->where('slug', RoleSlug::Admin->value)->firstOrFail();
 
         if (! User::query()->where('email', 'admin@sonetsys.test')->exists()) {
-            // Deliberately not User::factory() — the factory's definition()
-            // calls fake() unconditionally (even for overridden fields), and
-            // fakerphp/faker is a require-dev package unavailable in the
-            // --no-dev production image this seeder runs in on deploy.
             User::query()->create([
                 'role_id' => $adminRole->id,
                 'name' => 'Admin',
@@ -38,5 +35,6 @@ final class DatabaseSeeder extends Seeder
         }
 
         app(MenuService::class)->seedDefaults();
+        app(ReactionTypeService::class)->seedDefaults();
     }
 }

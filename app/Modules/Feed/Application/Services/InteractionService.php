@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Modules\Feed\Application\Services;
 
 use App\Modules\Feed\Application\Contracts\InteractionRepositoryInterface;
-use App\Modules\Feed\Domain\Enums\InteractionType;
 use App\Modules\Feed\Domain\Events\ContentLiked;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +19,7 @@ final class InteractionService
     /**
      * @return array{my_reaction: ?string, likes_count: int}
      */
-    public function react(string $morphAlias, int $interactableId, int $userId, InteractionType $type): array
+    public function react(string $morphAlias, int $interactableId, int $userId, string $type): array
     {
         $modelClass = Relation::getMorphedModel($morphAlias)
             ?? throw new InvalidArgumentException("Unknown interactable type [{$morphAlias}].");
@@ -33,14 +32,17 @@ final class InteractionService
                     'user_id' => $userId,
                     'interactable_type' => $morphAlias,
                     'interactable_id' => $interactableId,
-                    'type' => $type->value,
+                    'type' => $type,
                 ]);
                 $modelClass::whereKey($interactableId)->increment('likes_count');
-                $myReaction = $type->value;
+                $myReaction = $type;
 
                 $authorId = (int) $modelClass::whereKey($interactableId)->value('author_id');
                 if ($authorId !== $userId) {
-                    ContentLiked::dispatch($morphAlias, $interactableId, $userId, $authorId, $type);
+                    $postId = $morphAlias === 'comment'
+                        ? (int) $modelClass::whereKey($interactableId)->value('post_id')
+                        : $interactableId;
+                    ContentLiked::dispatch($morphAlias, $interactableId, $userId, $authorId, $type, $postId);
                 }
             } elseif ($existing->type === $type) {
                 $this->interactions->delete($existing);
@@ -48,7 +50,7 @@ final class InteractionService
                 $myReaction = null;
             } else {
                 $this->interactions->update($existing, $type);
-                $myReaction = $type->value;
+                $myReaction = $type;
             }
 
             return [

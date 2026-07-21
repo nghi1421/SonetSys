@@ -26,6 +26,7 @@ final class SendMentionNotification
                 data: [
                     'mentionable_type' => $event->mentionableType,
                     'mentionable_id' => $event->mentionableId,
+                    'post_id' => $event->postId,
                 ],
             ));
         }

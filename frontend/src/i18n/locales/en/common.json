@@ -18,6 +18,8 @@
   "adminSiteName": "Sonetsys Admin",
   "controlPanel": "Control Panel",
   "adminPanel": "Admin Panel",
+  "stories": "Stories",
+  "reels": "Reels",
   "blockedUsers": "Blocked Users",
   "viewProfile": "View profile",
   "theme": {
@@ -33,7 +35,8 @@
     "wallets": "Wallets",
     "ads": "Ad Review",
     "reports": "Reports",
-    "settings": "System Settings"
+    "settings": "System Settings",
+    "reactions": "Reactions"
   },
   "mediaPreview": {
     "closePreview": "Close preview",
