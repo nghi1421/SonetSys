@@ -17,5 +17,6 @@ final class ContentLiked
         public readonly int $likedByUserId,
         public readonly int $contentAuthorId,
         public readonly InteractionType $reactionType,
+        public readonly int $postId,
     ) {}
 }

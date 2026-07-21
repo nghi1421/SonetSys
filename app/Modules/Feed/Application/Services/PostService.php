@@ -118,7 +118,7 @@ final class PostService
         }
 
         if ($mentionedUserIds !== []) {
-            UserMentioned::dispatch('post', $post->id, $data->authorId, $mentionedUserIds);
+            UserMentioned::dispatch('post', $post->id, $data->authorId, $mentionedUserIds, $post->id);
         }
 
         $this->forgetFeedCache($post);
