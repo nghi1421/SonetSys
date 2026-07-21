@@ -18,16 +18,11 @@ export interface PostLocation {
   lng: number
 }
 
-export type ReactionType = 'like' | 'love' | 'haha' | 'wow' | 'sad' | 'angry'
-
-export const REACTION_EMOJI: Record<ReactionType, string> = {
-  like: '👍',
-  love: '❤️',
-  haha: '😆',
-  wow: '😮',
-  sad: '😢',
-  angry: '😠',
-}
+// Dynamic now — a reaction type is whatever key currently exists in the
+// admin-managed reaction_types catalog (see modules/reactions), not a fixed
+// set known at compile time. Loses TS literal-union exhaustiveness in
+// exchange for the admin being able to add/remove reactions with no deploy.
+export type ReactionType = string
 
 export interface MentionCandidate {
   id: number
