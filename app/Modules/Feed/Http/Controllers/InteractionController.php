@@ -8,7 +8,6 @@ use App\Core\Support\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Modules\Feed\Application\Contracts\GroupAccessCheckerInterface;
 use App\Modules\Feed\Application\Services\InteractionService;
-use App\Modules\Feed\Domain\Enums\InteractionType;
 use App\Modules\Feed\Domain\Models\Comment;
 use App\Modules\Feed\Domain\Models\Post;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -55,14 +54,12 @@ final class InteractionController extends Controller
         );
     }
 
-    private function resolveReactionType(Request $request): InteractionType
+    private function resolveReactionType(Request $request): string
     {
         $request->validate([
-            'type' => ['nullable', 'string', Rule::enum(InteractionType::class)],
+            'type' => ['nullable', 'string', Rule::exists('reaction_types', 'key')],
         ]);
 
-        $type = $request->input('type');
-
-        return $type !== null ? InteractionType::from($type) : InteractionType::Like;
+        return $request->input('type') ?? 'like';
     }
 }
