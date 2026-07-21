@@ -17,6 +17,7 @@ import {
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import { useMenuStore } from '@/modules/menu/store/menuStore'
 import type { MenuItem } from '@/modules/menu/types'
+import WalletBalancePill from '@/modules/wallet/components/WalletBalancePill.vue'
 
 const props = defineProps<{ open: boolean }>()
 const emit = defineEmits<{ close: [] }>()
@@ -66,7 +67,7 @@ async function onLogout(): Promise<void> {
   />
 
   <aside
-    class="fixed inset-y-0 left-0 top-16 z-20 w-56 -translate-x-full overflow-y-auto border-r border-cyber-border bg-cyber-glass py-6 pr-2 pl-4 backdrop-blur-md transition-transform duration-300 sm:sticky sm:top-16 sm:z-auto sm:w-56 sm:max-h-[calc(100vh-4rem)] sm:translate-x-0 sm:self-start sm:px-4 sm:pl-0"
+    class="fixed inset-y-0 left-0 top-16 z-20 w-56 -translate-x-full overflow-y-auto border-r border-cyber-border bg-cyber-glass py-6 pr-2 pl-4 backdrop-blur-md transition-transform duration-300 sm:sticky sm:top-16 sm:z-auto sm:w-56 sm:max-h-[calc(100vh-4rem)] sm:translate-x-0 sm:self-start sm:px-4"
     :class="props.open && 'translate-x-0'"
   >
     <RouterLink
@@ -89,7 +90,7 @@ async function onLogout(): Promise<void> {
       </span>
       <span class="min-w-0">
         <span class="block truncate font-mono text-xs font-bold text-cyber-text">{{ authStore.user.name }}</span>
-        <span class="block truncate text-[10px] text-cyber-muted">{{ t('common.viewProfile') }}</span>
+        <WalletBalancePill/>
       </span>
     </RouterLink>
 

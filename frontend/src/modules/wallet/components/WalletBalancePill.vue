@@ -21,7 +21,7 @@ function goToWallet(): void {
 <template>
   <button
     type="button"
-    class="inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-cyber-glass px-3 py-1.5 backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/60 focus:ring-offset-2 focus:ring-offset-cyber-bg"
+    class="inline-flex items-center gap-1.5 rounded-full border-none  "
     :aria-label="t('wallet.balancePill.ariaLabel')"
     @click="goToWallet"
   >

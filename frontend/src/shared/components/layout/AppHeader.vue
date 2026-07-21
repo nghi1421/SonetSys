@@ -4,7 +4,6 @@ import { Menu, Search } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import MessageBell from '@/modules/chat/components/MessageBell.vue'
 import NotificationBell from '@/modules/notifications/components/NotificationBell.vue'
-import WalletBalancePill from '@/modules/wallet/components/WalletBalancePill.vue'
 import AppLocaleSwitcher from '@/shared/components/locale/AppLocaleSwitcher.vue'
 import AppThemeSwitcher from '@/shared/components/theme/AppThemeSwitcher.vue'
 import { useRouter } from 'vue-router'
@@ -50,7 +49,6 @@ function onDashboard(): void {
         >
           <Search class="h-4 w-4" />
         </router-link>
-        <WalletBalancePill />
         <MessageBell />
         <NotificationBell />
       </div>
