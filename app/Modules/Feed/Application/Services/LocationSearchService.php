@@ -17,7 +17,7 @@ final class LocationSearchService
     public function search(string $query): array
     {
         $normalizedQuery = mb_strtolower(trim($query));
-
+        dd($normalizedQuery);
         return Cache::remember(
             "nominatim:{$normalizedQuery}",
             self::CACHE_TTL_SECONDS,
@@ -36,6 +36,7 @@ final class LocationSearchService
             'q' => $query,
             'format' => 'jsonv2',
             'limit' => 5,
+            'verify' => false,
         ]);
 
         if ($response->failed()) {
