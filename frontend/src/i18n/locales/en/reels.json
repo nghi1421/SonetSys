@@ -1,0 +1,19 @@
+{
+  "reelsPage": {
+    "empty": "No reels yet. Be the first to share one."
+  },
+  "card": {
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "comments": "Comments"
+  },
+  "createModal": {
+    "title": "Create reel",
+    "addVideo": "Add video",
+    "captionPlaceholder": "Add a caption (optional)…",
+    "removeMedia": "Remove media",
+    "submit": "Post reel",
+    "publishError": "Could not publish your reel. Please try again.",
+    "mediaRequired": "Choose a video to share."
+  }
+}

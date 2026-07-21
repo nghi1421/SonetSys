@@ -18,6 +18,8 @@
   "adminSiteName": "Sonetsys Admin",
   "controlPanel": "Control Panel",
   "adminPanel": "Admin Panel",
+  "stories": "Stories",
+  "reels": "Reels",
   "blockedUsers": "Blocked Users",
   "viewProfile": "View profile",
   "theme": {
