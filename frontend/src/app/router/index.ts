@@ -192,6 +192,12 @@ const router = createRouter({
           component: () => import('@/modules/settings/views/AdminSettingsView.vue'),
           meta: { requiresAdmin: true },
         },
+        {
+          path: 'reactions',
+          name: 'admin-reactions',
+          component: () => import('@/modules/reactions/views/AdminReactionsView.vue'),
+          meta: { requiresAdmin: true },
+        },
       ],
     },
   ],
