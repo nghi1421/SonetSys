@@ -12,7 +12,9 @@ export function resolveNotificationRoute(notification: AppNotification): RouteLo
     case 'user.mentioned':
       return typeof postId === 'number' ? { name: 'post-detail', params: { id: postId } } : null
     case 'post.shared':
-      return typeof sharePostId === 'number' ? { name: 'post-detail', params: { id: sharePostId } } : null
+      return typeof sharePostId === 'number'
+        ? { name: 'post-detail', params: { id: sharePostId } }
+        : null
     case 'user.followed':
       return notification.actor.id !== null
         ? { name: 'user-profile', params: { id: notification.actor.id } }
