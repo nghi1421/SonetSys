@@ -64,6 +64,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/reels',
+      name: 'reels',
+      component: () => import('@/modules/reels/views/ReelsView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/blocked-users',
       name: 'blocked-users',
       component: () => import('@/modules/follow/views/BlockedUsersView.vue'),

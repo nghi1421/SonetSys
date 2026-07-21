@@ -24,6 +24,7 @@ final class PostResource extends JsonResource
             'shares_count' => $this->shares_count,
             'my_reaction' => $this->my_reaction ?? null,
             'is_sponsored' => (bool) ($this->is_sponsored ?? false),
+            'is_reel' => (bool) $this->is_reel,
             'author' => [
                 'id' => $this->whenLoaded('author', fn () => $this->author->id),
                 'name' => $this->whenLoaded('author', fn () => $this->author->name),

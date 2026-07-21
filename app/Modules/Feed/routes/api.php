@@ -5,6 +5,7 @@ use App\Modules\Feed\Http\Controllers\HashtagController;
 use App\Modules\Feed\Http\Controllers\InteractionController;
 use App\Modules\Feed\Http\Controllers\LocationSearchController;
 use App\Modules\Feed\Http\Controllers\PostController;
+use App\Modules\Feed\Http\Controllers\ReelController;
 use App\Modules\Feed\Http\Controllers\StickerController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +20,9 @@ Route::middleware('auth:sanctum')->group(function (): void {
     Route::put('posts/{post}', [PostController::class, 'update']);
     Route::delete('posts/{post}', [PostController::class, 'destroy']);
     Route::post('posts/{post}/like', [InteractionController::class, 'togglePostLike']);
+
+    Route::get('reels', [ReelController::class, 'index']);
+    Route::post('reels', [ReelController::class, 'store']);
 
     Route::get('posts/{post}/comments', [CommentController::class, 'index']);
     Route::post('posts/{post}/comments', [CommentController::class, 'store']);

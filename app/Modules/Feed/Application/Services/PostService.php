@@ -87,6 +87,7 @@ final class PostService
                 'media_type' => $mediaType,
                 'media_path' => $mediaPath,
                 'media_disk' => $mediaDisk,
+                'is_reel' => $data->isReel,
                 'location_name' => $data->locationName,
                 'location_lat' => $data->locationLat,
                 'location_lng' => $data->locationLng,
@@ -290,6 +291,25 @@ final class PostService
             $cursor,
             fn () => $this->posts->cursorPaginateForFollowing($viewerId, $afterPublishedAt, $afterId, $limit),
         );
+        $this->markReactionByViewer($posts, $viewerId);
+
+        $nextCursor = null;
+        if ($posts->count() === $limit) {
+            $last = $posts->last();
+            $nextCursor = $this->encodeCursor($last->published_at, $last->id);
+        }
+
+        return ['items' => $posts, 'next_cursor' => $nextCursor];
+    }
+
+    /**
+     * @return array{items: Collection<int, Post>, next_cursor: ?string}
+     */
+    public function reelsFeed(int $viewerId, ?string $cursor, int $limit = 20): array
+    {
+        [$afterPublishedAt, $afterId] = $this->decodeCursor($cursor);
+
+        $posts = $this->posts->cursorPaginateForReels($viewerId, $afterPublishedAt, $afterId, $limit);
         $this->markReactionByViewer($posts, $viewerId);
 
         $nextCursor = null;

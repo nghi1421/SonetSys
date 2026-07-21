@@ -45,6 +45,7 @@ export interface Post {
   shares_count: number
   my_reaction: ReactionType | null
   is_sponsored: boolean
+  is_reel: boolean
   author: PostAuthor
   hashtags: string[]
   mentions: PostAuthor[]
