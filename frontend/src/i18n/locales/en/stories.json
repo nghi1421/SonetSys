@@ -3,6 +3,9 @@
     "yourStory": "Your story",
     "addStory": "Add story"
   },
+  "storiesPage": {
+    "empty": "No stories yet. Be the first to share one."
+  },
   "viewer": {
     "viewersCount": "{count} views",
     "viewersButton": "Viewers",
