@@ -58,6 +58,18 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/stories',
+      name: 'stories',
+      component: () => import('@/modules/stories/views/StoriesView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/reels',
+      name: 'reels',
+      component: () => import('@/modules/reels/views/ReelsView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/blocked-users',
       name: 'blocked-users',
       component: () => import('@/modules/follow/views/BlockedUsersView.vue'),
@@ -178,6 +190,12 @@ const router = createRouter({
           path: 'settings',
           name: 'admin-settings',
           component: () => import('@/modules/settings/views/AdminSettingsView.vue'),
+          meta: { requiresAdmin: true },
+        },
+        {
+          path: 'reactions',
+          name: 'admin-reactions',
+          component: () => import('@/modules/reactions/views/AdminReactionsView.vue'),
           meta: { requiresAdmin: true },
         },
       ],

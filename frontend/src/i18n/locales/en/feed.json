@@ -74,12 +74,6 @@
     "attachmentAlt": "Post attachment"
   },
   "reactions": {
-    "reactLabel": "React",
-    "like": "Like",
-    "love": "Love",
-    "haha": "Haha",
-    "wow": "Wow",
-    "sad": "Sad",
-    "angry": "Angry"
+    "reactLabel": "React"
   }
 }

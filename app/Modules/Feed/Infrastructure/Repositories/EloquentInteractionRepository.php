@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Modules\Feed\Infrastructure\Repositories;
 
 use App\Modules\Feed\Application\Contracts\InteractionRepositoryInterface;
-use App\Modules\Feed\Domain\Enums\InteractionType;
 use App\Modules\Feed\Domain\Models\Interaction;
 
 final class EloquentInteractionRepository implements InteractionRepositoryInterface
@@ -24,9 +23,9 @@ final class EloquentInteractionRepository implements InteractionRepositoryInterf
         return Interaction::query()->create($attributes);
     }
 
-    public function update(Interaction $interaction, InteractionType $type): void
+    public function update(Interaction $interaction, string $type): void
     {
-        $interaction->update(['type' => $type->value]);
+        $interaction->update(['type' => $type]);
     }
 
     public function delete(Interaction $interaction): void
@@ -45,7 +44,6 @@ final class EloquentInteractionRepository implements InteractionRepositoryInterf
             ->where('interactable_type', $interactableType)
             ->whereIn('interactable_id', $interactableIds)
             ->pluck('type', 'interactable_id')
-            ->map(fn (InteractionType $type) => $type->value)
             ->all();
     }
 }

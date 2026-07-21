@@ -2,7 +2,18 @@
 import { computed, onMounted, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { FileText, Home, LayoutDashboard, LogOut, Megaphone, ShieldOff, UserRound, Users } from '@lucide/vue'
+import {
+  Clapperboard,
+  FileText,
+  Home,
+  LayoutDashboard,
+  LogOut,
+  Megaphone,
+  ShieldOff,
+  UserRound,
+  Users,
+  Video,
+} from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import { useMenuStore } from '@/modules/menu/store/menuStore'
 import type { MenuItem } from '@/modules/menu/types'
@@ -55,7 +66,7 @@ async function onLogout(): Promise<void> {
   />
 
   <aside
-    class="fixed inset-y-0 left-0 top-16 z-20 w-56 -translate-x-full overflow-y-auto border-r border-cyber-border bg-cyber-glass py-6 pr-2 pl-4 backdrop-blur-md transition-transform duration-300 sm:static sm:z-auto sm:w-56 sm:translate-x-0 sm:px-4 sm:pl-0"
+    class="fixed inset-y-0 left-0 top-16 z-20 w-56 -translate-x-full overflow-y-auto border-r border-cyber-border bg-cyber-glass py-6 pr-2 pl-4 backdrop-blur-md transition-transform duration-300 sm:sticky sm:top-16 sm:z-auto sm:w-56 sm:max-h-[calc(100vh-4rem)] sm:translate-x-0 sm:self-start sm:px-4 sm:pl-0"
     :class="props.open && 'translate-x-0'"
   >
     <RouterLink
@@ -101,6 +112,26 @@ async function onLogout(): Promise<void> {
       >
         <component :is="iconFor(item)" class="h-4 w-4 shrink-0" />
         <span>{{ item.label }}</span>
+      </RouterLink>
+
+      <RouterLink
+        :to="{ name: 'stories' }"
+        :title="t('common.stories')"
+        class="flex items-center gap-2.5 rounded-hud px-3 py-2 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
+        active-class="text-cyber-neon-cyan bg-cyber-glass border border-cyber-border shadow-cyan-glow"
+      >
+        <Clapperboard class="h-4 w-4 shrink-0" />
+        <span>{{ t('common.stories') }}</span>
+      </RouterLink>
+
+      <RouterLink
+        :to="{ name: 'reels' }"
+        :title="t('common.reels')"
+        class="flex items-center gap-2.5 rounded-hud px-3 py-2 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
+        active-class="text-cyber-neon-cyan bg-cyber-glass border border-cyber-border shadow-cyan-glow"
+      >
+        <Video class="h-4 w-4 shrink-0" />
+        <span>{{ t('common.reels') }}</span>
       </RouterLink>
 
       <RouterLink
