@@ -18,5 +18,6 @@ final class UserMentioned
         public readonly int $mentionableId,
         public readonly int $mentionedByUserId,
         public readonly array $mentionedUserIds,
+        public readonly int $postId,
     ) {}
 }

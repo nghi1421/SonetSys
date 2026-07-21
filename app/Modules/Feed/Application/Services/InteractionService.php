@@ -40,7 +40,10 @@ final class InteractionService
 
                 $authorId = (int) $modelClass::whereKey($interactableId)->value('author_id');
                 if ($authorId !== $userId) {
-                    ContentLiked::dispatch($morphAlias, $interactableId, $userId, $authorId, $type);
+                    $postId = $morphAlias === 'comment'
+                        ? (int) $modelClass::whereKey($interactableId)->value('post_id')
+                        : $interactableId;
+                    ContentLiked::dispatch($morphAlias, $interactableId, $userId, $authorId, $type, $postId);
                 }
             } elseif ($existing->type === $type) {
                 $this->interactions->delete($existing);
