@@ -10,4 +10,6 @@ enum NotificationType: string
     case CommentLiked = 'comment.liked';
     case CommentPosted = 'comment.posted';
     case PostShared = 'post.shared';
+    case UserFollowed = 'user.followed';
+    case UserMentioned = 'user.mentioned';
 }

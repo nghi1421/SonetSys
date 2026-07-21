@@ -2,7 +2,17 @@
   "feedView": {
     "emptyTitle": "No posts yet",
     "emptyDescription": "Be the first to share something with your community.",
-    "loadMore": "Load more"
+    "loadMore": "Load more",
+    "tabs": {
+      "forYou": "For You",
+      "following": "Following"
+    },
+    "followingEmptyTitle": "Nothing here yet",
+    "followingEmptyDescription": "Follow people to see their posts here."
+  },
+  "hashtagView": {
+    "emptyTitle": "No posts yet",
+    "emptyDescription": "Nobody has posted with #{tag} yet."
   },
   "postDetail": {
     "unavailable": "This post is unavailable — it may have been deleted, or you don't have permission to view it."
@@ -10,7 +20,9 @@
   "postCard": {
     "actionsLabel": "Post actions",
     "confirmDeleteTitle": "Delete post?",
-    "confirmDeleteMessage": "This can't be undone."
+    "confirmDeleteMessage": "This can't be undone.",
+    "sponsored": "Sponsored",
+    "location": "Checked in"
   },
   "postComposer": {
     "placeholder": "Share something with your community…",
@@ -21,7 +33,14 @@
     "addVideo": "Add video",
     "addSticker": "Add sticker",
     "submit": "Post",
-    "publishError": "Could not publish your post. Please try again."
+    "publishError": "Could not publish your post. Please try again.",
+    "checkIn": "Check in",
+    "checkInSearchPlaceholder": "Search for a place…",
+    "checkInNoResults": "No places found",
+    "checkInClear": "Remove location",
+    "mention": "Mention someone",
+    "mentionSearchPlaceholder": "Search for a person…",
+    "mentionNoResults": "No people found"
   },
   "commentThread": {
     "reply": "Reply",
@@ -32,7 +51,8 @@
     "submitReply": "Reply",
     "submitComment": "Comment",
     "confirmDeleteTitle": "Delete comment?",
-    "confirmDeleteMessage": "This can't be undone."
+    "confirmDeleteMessage": "This can't be undone.",
+    "mention": "Mention someone"
   },
   "shareMenu": {
     "shareToProfile": "Share to Profile",
@@ -52,5 +72,14 @@
   },
   "postMedia": {
     "attachmentAlt": "Post attachment"
+  },
+  "reactions": {
+    "reactLabel": "React",
+    "like": "Like",
+    "love": "Love",
+    "haha": "Haha",
+    "wow": "Wow",
+    "sad": "Sad",
+    "angry": "Angry"
   }
 }

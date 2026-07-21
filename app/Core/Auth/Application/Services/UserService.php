@@ -9,9 +9,12 @@ use App\Core\Auth\Application\DTOs\UpdateUserData;
 use App\Core\Auth\Domain\Models\Role;
 use App\Core\Auth\Domain\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 final readonly class UserService
 {
+    private const SEARCH_LIMIT = 10;
+
     public function __construct(
         private UserRepositoryInterface $users,
     ) {}
@@ -29,5 +32,13 @@ final readonly class UserService
             'role_id' => $role->id,
             'status' => $data->status,
         ]);
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function search(string $query): Collection
+    {
+        return $this->users->search($query, self::SEARCH_LIMIT);
     }
 }

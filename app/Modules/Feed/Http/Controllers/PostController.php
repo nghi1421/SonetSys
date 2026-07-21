@@ -7,6 +7,7 @@ namespace App\Modules\Feed\Http\Controllers;
 use App\Core\Auth\Domain\Enums\PermissionSlug;
 use App\Core\Support\ApiResponse;
 use App\Http\Controllers\Controller;
+use App\Modules\Advertising\Application\Services\AdCampaignService;
 use App\Modules\Feed\Application\Contracts\GroupAccessCheckerInterface;
 use App\Modules\Feed\Application\Services\PostService;
 use App\Modules\Feed\Domain\Enums\PostVisibility;
@@ -24,14 +25,44 @@ final class PostController extends Controller
     public function __construct(
         private readonly PostService $posts,
         private readonly GroupAccessCheckerInterface $groupAccess,
+        private readonly AdCampaignService $ads,
     ) {}
 
     public function index(Request $request): JsonResponse
     {
         $user = $request->user();
         $limit = min((int) $request->query('limit', 20), 50);
+        $cursor = $request->query('cursor');
 
         $result = $this->posts->feed(
+            $user->id,
+            $cursor,
+            $limit,
+        );
+
+        // Sponsored posts are injected only on the first page load — the
+        // cursor is null exactly once per feed session, so a boosted post
+        // never reappears duplicated as the viewer scrolls further pages.
+        if ($cursor === null) {
+            $existingIds = $result['items']->pluck('id')->all();
+
+            $sponsored = $this->ads->activeForFeed(2)
+                ->reject(fn (Post $post) => in_array($post->id, $existingIds, true));
+
+            $result['items'] = $sponsored->concat($result['items'])->values();
+        }
+
+        return ApiResponse::success(PostResource::collection($result['items']), [
+            'next_cursor' => $result['next_cursor'],
+        ]);
+    }
+
+    public function following(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        $limit = min((int) $request->query('limit', 20), 50);
+
+        $result = $this->posts->feedForFollowing(
             $user->id,
             $request->query('cursor'),
             $limit,
@@ -46,7 +77,7 @@ final class PostController extends Controller
     {
         $post = $this->posts->create($request->toDto());
 
-        return ApiResponse::success(PostResource::make($post->load(['author', 'sharedPost.author'])), status: 201);
+        return ApiResponse::success(PostResource::make($post->load(['author', 'sharedPost.author', 'hashtags', 'mentions'])), status: 201);
     }
 
     public function show(Request $request, Post $post): JsonResponse
@@ -61,9 +92,9 @@ final class PostController extends Controller
             throw new AuthorizationException('You must be a member of this group.');
         }
 
-        $this->posts->markLikedByViewer($post, $user->id);
+        $this->posts->markReactionByViewer($post, $user->id);
 
-        return ApiResponse::success(PostResource::make($post->load(['author', 'sharedPost.author'])));
+        return ApiResponse::success(PostResource::make($post->load(['author', 'sharedPost.author', 'hashtags', 'mentions'])));
     }
 
     public function update(UpdatePostRequest $request, Post $post): JsonResponse
@@ -76,7 +107,7 @@ final class PostController extends Controller
 
         $post = $this->posts->update($post, $request->toDto($post));
 
-        return ApiResponse::success(PostResource::make($post->load(['author', 'sharedPost.author'])));
+        return ApiResponse::success(PostResource::make($post->load(['author', 'sharedPost.author', 'hashtags', 'mentions'])));
     }
 
     public function destroy(Request $request, Post $post): JsonResponse

@@ -1,29 +1,49 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { EllipsisVertical, Heart, MessageCircle, Pencil, Trash2 } from '@lucide/vue'
+import { EllipsisVertical, Flag, MapPin, Megaphone, MessageCircle, Pencil, Trash2 } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import AppButton from '@/shared/components/ui/AppButton.vue'
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog.vue'
+import ReportDialog from '@/shared/components/ui/ReportDialog.vue'
 import { useRelativeTime } from '@/shared/composables/useRelativeTime'
 import CommentThread from './CommentThread.vue'
+import LinkifiedText from './LinkifiedText.vue'
+import LocationMapPreview from './LocationMapPreview.vue'
 import PostMedia from './PostMedia.vue'
+import ReactionButton from './ReactionButton.vue'
 import ShareMenu from './ShareMenu.vue'
 import SharedPostPreview from './SharedPostPreview.vue'
 import { useFeedStore } from '../store/feedStore'
-import type { Post } from '../types'
+import type { Post, ReactionType } from '../types'
 
-const props = defineProps<{ post: Post }>()
+const props = withDefaults(
+  defineProps<{ post: Post; clickable?: boolean; startWithCommentsOpen?: boolean }>(),
+  { clickable: false, startWithCommentsOpen: false },
+)
+
+const emit = defineEmits<{ open: [] }>()
 
 const feedStore = useFeedStore()
 const authStore = useAuthStore()
 const { t } = useI18n()
 
-const showComments = ref(false)
+const showComments = ref(props.startWithCommentsOpen)
 const showActionsMenu = ref(false)
 const editing = ref(false)
 const editBody = ref(props.post.body)
 const confirmingDelete = ref(false)
+const showReportDialog = ref(false)
+
+onMounted(async () => {
+  if (showComments.value && !feedStore.commentsByPost[props.post.id]) {
+    await feedStore.fetchComments(props.post.id)
+  }
+})
+
+function onOpenDetail(): void {
+  if (props.clickable) emit('open')
+}
 
 const isOwner = computed(() => authStore.user?.id === props.post.author.id)
 const canModerate = computed(
@@ -31,8 +51,12 @@ const canModerate = computed(
 )
 const canDelete = computed(() => isOwner.value || canModerate.value)
 
-async function onToggleLike(): Promise<void> {
-  await feedStore.toggleLike(props.post.id)
+async function onReact(type: ReactionType): Promise<void> {
+  await feedStore.reactToPost(props.post.id, type)
+}
+
+async function onUnreact(): Promise<void> {
+  await feedStore.unreactToPost(props.post.id)
 }
 
 async function onToggleComments(): Promise<void> {
@@ -58,6 +82,11 @@ function onDeleteClick(): void {
   confirmingDelete.value = true
 }
 
+function onReportClick(): void {
+  showActionsMenu.value = false
+  showReportDialog.value = true
+}
+
 async function saveEdit(): Promise<void> {
   if (!editBody.value.trim()) return
   await feedStore.updatePost(props.post.id, { body: editBody.value.trim() })
@@ -71,14 +100,39 @@ async function saveEdit(): Promise<void> {
   >
     <header class="flex items-start justify-between">
       <div>
-        <h4 class="text-xs font-bold tracking-wider text-cyber-text">// {{ post.author.name }}</h4>
+        <h4 class="text-xs font-bold tracking-wider text-cyber-text">
+          //
+          <router-link
+            v-if="post.author.id"
+            :to="`/users/${post.author.id}`"
+            class="transition-colors duration-300 hover:text-cyber-neon-cyan"
+          >
+            {{ post.author.name }}
+          </router-link>
+          <template v-else>{{ post.author.name }}</template>
+        </h4>
         <div class="mt-1 flex items-center gap-2">
           <span class="font-mono text-[9px] uppercase tracking-widest text-cyber-muted">
             {{ useRelativeTime(post.created_at) }}
           </span>
+          <span
+            v-if="post.is_sponsored"
+            class="inline-flex items-center gap-1 rounded-full border border-cyber-neon-indigo/30 bg-cyber-neon-indigo/10 px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest text-cyber-neon-indigo"
+          >
+            <Megaphone class="h-2.5 w-2.5" />
+            {{ t('feed.postCard.sponsored') }}
+          </span>
+          <span
+            v-if="post.location"
+            :title="t('feed.postCard.location')"
+            class="inline-flex items-center gap-1 rounded-full border border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest text-cyber-neon-cyan"
+          >
+            <MapPin class="h-2.5 w-2.5" />
+            {{ post.location.name }}
+          </span>
         </div>
       </div>
-      <div v-if="isOwner || canDelete" class="relative">
+      <div class="relative">
         <button
           type="button"
           class="rounded-full border border-cyber-border bg-cyber-glass p-1.5 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow"
@@ -111,6 +165,14 @@ async function saveEdit(): Promise<void> {
           >
             <Trash2 class="h-3.5 w-3.5" /> {{ t('common.delete') }}
           </button>
+          <button
+            v-if="!isOwner"
+            type="button"
+            class="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-pink"
+            @click="onReportClick"
+          >
+            <Flag class="h-3.5 w-3.5" /> {{ t('report.action') }}
+          </button>
         </div>
       </div>
     </header>
@@ -136,27 +198,36 @@ async function saveEdit(): Promise<void> {
       <p
         v-if="post.body"
         class="mt-3 whitespace-pre-wrap border-l border-cyber-neon-indigo pl-2 font-mono text-xs leading-relaxed text-cyber-text/90"
+        :class="clickable && 'cursor-pointer'"
+        @click="onOpenDetail"
       >
-        {{ post.body }}
+        <LinkifiedText :text="post.body" :hashtags="post.hashtags" :mentions="post.mentions" />
       </p>
-      <PostMedia v-if="post.media_type" :post="post" class="mt-3" />
+      <PostMedia
+        v-if="post.media_type"
+        :post="post"
+        class="mt-3"
+        :class="clickable && 'cursor-pointer'"
+        @click="onOpenDetail"
+      />
       <SharedPostPreview v-if="post.shared_post" :post="post.shared_post" class="mt-3" />
+      <LocationMapPreview
+        v-if="post.location"
+        :lat="post.location.lat"
+        :lng="post.location.lng"
+        :name="post.location.name"
+        class="mt-3"
+      />
     </template>
 
     <footer class="mt-4 flex items-center gap-2 border-t border-cyber-border pt-3">
-      <button
-        type="button"
-        class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[10px] transition-all duration-300"
-        :class="
-          post.liked_by_me
-            ? 'border-cyber-neon-pink/40 bg-cyber-neon-pink/10 text-cyber-neon-pink shadow-pink-glow'
-            : 'border-cyber-border bg-cyber-glass text-cyber-muted hover:border-cyber-neon-pink/40 hover:text-cyber-neon-pink'
-        "
-        @click="onToggleLike"
-      >
-        <Heart class="h-3 w-3" :fill="post.liked_by_me ? 'currentColor' : 'none'" />
-        {{ post.likes_count }}
-      </button>
+      <ReactionButton
+        :count="post.likes_count"
+        :my-reaction="post.my_reaction"
+        variant="pill"
+        @react="onReact"
+        @unreact="onUnreact"
+      />
 
       <button
         type="button"
@@ -178,6 +249,13 @@ async function saveEdit(): Promise<void> {
       :message="t('feed.postCard.confirmDeleteMessage')"
       @confirm="onConfirmDelete"
       @cancel="confirmingDelete = false"
+    />
+
+    <ReportDialog
+      :open="showReportDialog"
+      type="post"
+      :id="post.id"
+      @update:open="showReportDialog = $event"
     />
   </article>
 </template>

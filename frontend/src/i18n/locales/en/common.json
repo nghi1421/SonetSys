@@ -18,12 +18,22 @@
   "adminSiteName": "Sonetsys Admin",
   "controlPanel": "Control Panel",
   "adminPanel": "Admin Panel",
+  "blockedUsers": "Blocked Users",
+  "viewProfile": "View profile",
+  "theme": {
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode"
+  },
   "nav": {
     "dashboard": "Dashboard",
     "menuPages": "Menu & Pages",
     "storage": "Storage",
     "mediaLibrary": "Media Library",
-    "users": "Users"
+    "users": "Users",
+    "wallets": "Wallets",
+    "ads": "Ad Review",
+    "reports": "Reports",
+    "settings": "System Settings"
   },
   "mediaPreview": {
     "closePreview": "Close preview",

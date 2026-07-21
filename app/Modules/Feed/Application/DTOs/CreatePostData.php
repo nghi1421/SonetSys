@@ -20,5 +20,10 @@ final readonly class CreatePostData
         public ?UploadedFile $media = null,
         public ?MediaType $mediaType = null,
         public ?string $stickerKey = null,
+        public ?string $locationName = null,
+        public ?float $locationLat = null,
+        public ?float $locationLng = null,
+        /** @var list<int> */
+        public array $mentionedUserIds = [],
     ) {}
 }

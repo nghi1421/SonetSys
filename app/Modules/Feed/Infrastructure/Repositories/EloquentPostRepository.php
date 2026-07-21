@@ -37,6 +37,12 @@ final class EloquentPostRepository implements PostRepositoryInterface
                 $query->where('visibility', '!=', PostVisibility::Private->value)
                     ->orWhere('author_id', $viewerId);
             })
+            ->whereNotIn('author_id', function ($query) use ($viewerId): void {
+                $query->select('blocked_id')->from('blocks')->where('blocker_id', $viewerId);
+            })
+            ->whereNotIn('author_id', function ($query) use ($viewerId): void {
+                $query->select('blocker_id')->from('blocks')->where('blocked_id', $viewerId);
+            })
             ->when(
                 $afterPublishedAt !== null && $afterId !== null,
                 fn ($query) => $query->where(function ($inner) use ($afterPublishedAt, $afterId): void {
@@ -49,7 +55,7 @@ final class EloquentPostRepository implements PostRepositoryInterface
             ->orderByDesc('published_at')
             ->orderByDesc('id')
             ->limit($limit)
-            ->with(['author', 'sharedPost.author'])
+            ->with(['author', 'sharedPost.author', 'hashtags', 'mentions'])
             ->get();
     }
 
@@ -73,7 +79,116 @@ final class EloquentPostRepository implements PostRepositoryInterface
             ->orderByDesc('published_at')
             ->orderByDesc('id')
             ->limit($limit)
-            ->with(['author'])
+            ->with(['author', 'hashtags', 'mentions'])
+            ->get();
+    }
+
+    public function cursorPaginateForAuthor(
+        int $authorId,
+        int $viewerId,
+        ?Carbon $afterPublishedAt,
+        ?int $afterId,
+        int $limit,
+    ): Collection {
+        return Post::query()
+            ->whereNull('group_id')
+            ->where('author_id', $authorId)
+            ->where(function ($query) use ($viewerId): void {
+                $query->where('visibility', '!=', PostVisibility::Private->value)
+                    ->orWhere('author_id', $viewerId);
+            })
+            ->whereNotIn('author_id', function ($query) use ($viewerId): void {
+                $query->select('blocked_id')->from('blocks')->where('blocker_id', $viewerId);
+            })
+            ->whereNotIn('author_id', function ($query) use ($viewerId): void {
+                $query->select('blocker_id')->from('blocks')->where('blocked_id', $viewerId);
+            })
+            ->when(
+                $afterPublishedAt !== null && $afterId !== null,
+                fn ($query) => $query->where(function ($inner) use ($afterPublishedAt, $afterId): void {
+                    $inner->where('published_at', '<', $afterPublishedAt)
+                        ->orWhere(function ($tie) use ($afterPublishedAt, $afterId): void {
+                            $tie->where('published_at', $afterPublishedAt)->where('id', '<', $afterId);
+                        });
+                }),
+            )
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
+            ->limit($limit)
+            ->with(['author', 'sharedPost.author', 'hashtags', 'mentions'])
+            ->get();
+    }
+
+    public function cursorPaginateForFollowing(
+        int $viewerId,
+        ?Carbon $afterPublishedAt,
+        ?int $afterId,
+        int $limit,
+    ): Collection {
+        return Post::query()
+            ->whereNull('group_id')
+            ->whereIn('author_id', function ($query) use ($viewerId): void {
+                $query->select('followed_id')->from('follows')->where('follower_id', $viewerId);
+            })
+            ->where(function ($query) use ($viewerId): void {
+                $query->where('visibility', '!=', PostVisibility::Private->value)
+                    ->orWhere('author_id', $viewerId);
+            })
+            ->whereNotIn('author_id', function ($query) use ($viewerId): void {
+                $query->select('blocked_id')->from('blocks')->where('blocker_id', $viewerId);
+            })
+            ->whereNotIn('author_id', function ($query) use ($viewerId): void {
+                $query->select('blocker_id')->from('blocks')->where('blocked_id', $viewerId);
+            })
+            ->when(
+                $afterPublishedAt !== null && $afterId !== null,
+                fn ($query) => $query->where(function ($inner) use ($afterPublishedAt, $afterId): void {
+                    $inner->where('published_at', '<', $afterPublishedAt)
+                        ->orWhere(function ($tie) use ($afterPublishedAt, $afterId): void {
+                            $tie->where('published_at', $afterPublishedAt)->where('id', '<', $afterId);
+                        });
+                }),
+            )
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
+            ->limit($limit)
+            ->with(['author', 'sharedPost.author', 'hashtags', 'mentions'])
+            ->get();
+    }
+
+    public function cursorPaginateForHashtag(
+        string $tag,
+        int $viewerId,
+        ?Carbon $afterPublishedAt,
+        ?int $afterId,
+        int $limit,
+    ): Collection {
+        return Post::query()
+            ->whereNull('group_id')
+            ->whereHas('hashtags', fn ($query) => $query->where('tag', $tag))
+            ->where(function ($query) use ($viewerId): void {
+                $query->where('visibility', '!=', PostVisibility::Private->value)
+                    ->orWhere('author_id', $viewerId);
+            })
+            ->whereNotIn('author_id', function ($query) use ($viewerId): void {
+                $query->select('blocked_id')->from('blocks')->where('blocker_id', $viewerId);
+            })
+            ->whereNotIn('author_id', function ($query) use ($viewerId): void {
+                $query->select('blocker_id')->from('blocks')->where('blocked_id', $viewerId);
+            })
+            ->when(
+                $afterPublishedAt !== null && $afterId !== null,
+                fn ($query) => $query->where(function ($inner) use ($afterPublishedAt, $afterId): void {
+                    $inner->where('published_at', '<', $afterPublishedAt)
+                        ->orWhere(function ($tie) use ($afterPublishedAt, $afterId): void {
+                            $tie->where('published_at', $afterPublishedAt)->where('id', '<', $afterId);
+                        });
+                }),
+            )
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
+            ->limit($limit)
+            ->with(['author', 'sharedPost.author', 'hashtags', 'mentions'])
             ->get();
     }
 

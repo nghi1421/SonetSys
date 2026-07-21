@@ -26,7 +26,7 @@ final class EloquentCommentRepository implements CommentRepositoryInterface
     {
         return Comment::query()
             ->where('post_id', $postId)
-            ->with('author')
+            ->with(['author', 'hashtags', 'mentions'])
             ->orderBy('created_at')
             ->get();
     }

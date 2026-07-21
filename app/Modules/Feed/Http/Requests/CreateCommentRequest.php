@@ -7,6 +7,7 @@ namespace App\Modules\Feed\Http\Requests;
 use App\Modules\Feed\Application\DTOs\CreateCommentData;
 use App\Modules\Feed\Domain\Models\Post;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 final class CreateCommentRequest extends FormRequest
 {
@@ -20,6 +21,8 @@ final class CreateCommentRequest extends FormRequest
         return [
             'body' => ['required', 'string', 'max:5000'],
             'parent_id' => ['sometimes', 'nullable', 'integer', 'exists:comments,id'],
+            'mentioned_user_ids' => ['sometimes', 'array'],
+            'mentioned_user_ids.*' => ['integer', Rule::exists('users', 'id')],
         ];
     }
 
@@ -34,6 +37,7 @@ final class CreateCommentRequest extends FormRequest
             postId: $post->id,
             parentId: $this->input('parent_id') !== null ? (int) $this->input('parent_id') : null,
             authorId: (int) $user->id,
+            mentionedUserIds: array_map('intval', (array) ($this->validated('mentioned_user_ids') ?? [])),
         );
     }
 }

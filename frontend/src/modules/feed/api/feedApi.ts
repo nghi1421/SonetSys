@@ -5,7 +5,8 @@ import type {
   CreateCommentPayload,
   CreatePostPayload,
   Post,
-  ToggleLikeResult,
+  ReactionResult,
+  ReactionType,
   UpdatePostPayload,
 } from '../types'
 
@@ -19,6 +20,10 @@ function toRequestBody(payload: CreatePostPayload): FormData | CreatePostPayload
   if (payload.media) form.append('media', payload.media)
   if (payload.media_type) form.append('media_type', payload.media_type)
   if (payload.sticker_key) form.append('sticker_key', payload.sticker_key)
+  if (payload.location_name) form.append('location_name', payload.location_name)
+  if (payload.location_lat !== undefined) form.append('location_lat', String(payload.location_lat))
+  if (payload.location_lng !== undefined) form.append('location_lng', String(payload.location_lng))
+  payload.mentioned_user_ids?.forEach((id) => form.append('mentioned_user_ids[]', String(id)))
   return form
 }
 
@@ -50,8 +55,8 @@ export const feedApi = {
     return data
   },
 
-  async togglePostLike(postId: number) {
-    const { data } = await http.post<ApiResponse<ToggleLikeResult>>(`/posts/${postId}/like`)
+  async togglePostLike(postId: number, type?: ReactionType) {
+    const { data } = await http.post<ApiResponse<ReactionResult>>(`/posts/${postId}/like`, type ? { type } : undefined)
     return data
   },
 
@@ -70,13 +75,27 @@ export const feedApi = {
     return data
   },
 
-  async toggleCommentLike(commentId: number) {
-    const { data } = await http.post<ApiResponse<ToggleLikeResult>>(`/comments/${commentId}/like`)
+  async toggleCommentLike(commentId: number, type?: ReactionType) {
+    const { data } = await http.post<ApiResponse<ReactionResult>>(`/comments/${commentId}/like`, type ? { type } : undefined)
+    return data
+  },
+
+  async fetchFollowingFeed(cursor: string | null) {
+    const { data } = await http.get<ApiResponse<Post[]>>('/posts/following', {
+      params: cursor ? { cursor } : {},
+    })
     return data
   },
 
   async fetchGroupFeed(groupId: number, cursor: string | null) {
     const { data } = await http.get<ApiResponse<Post[]>>(`/groups/${groupId}/posts`, {
+      params: cursor ? { cursor } : {},
+    })
+    return data
+  },
+
+  async fetchHashtagFeed(tag: string, cursor: string | null) {
+    const { data } = await http.get<ApiResponse<Post[]>>(`/hashtags/${tag}/posts`, {
       params: cursor ? { cursor } : {},
     })
     return data

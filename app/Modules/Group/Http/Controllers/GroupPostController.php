@@ -51,7 +51,7 @@ final class GroupPostController extends Controller
 
         $post = $this->posts->create($request->toDto($group));
 
-        return ApiResponse::success(PostResource::make($post->load('author')), status: 201);
+        return ApiResponse::success(PostResource::make($post->load(['author', 'hashtags', 'mentions'])), status: 201);
     }
 
     private function ensureApprovedMember(Group $group, User $user): void

@@ -14,6 +14,10 @@ export function describeNotification(notification: AppNotification, t: Translate
       return t('notifications.types.commentPosted', { actor })
     case 'post.shared':
       return t('notifications.types.postShared', { actor })
+    case 'user.followed':
+      return t('notifications.types.userFollowed', { actor })
+    case 'user.mentioned':
+      return t('notifications.types.userMentioned', { actor })
     default:
       return t('notifications.types.default', { actor })
   }

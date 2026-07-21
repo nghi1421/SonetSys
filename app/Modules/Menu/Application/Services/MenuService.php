@@ -64,6 +64,10 @@ final class MenuService
 
     public function seedDefaults(): void
     {
+        if ($this->items->count() > 0) {
+            return;
+        }
+
         $this->items->create([
             'label' => 'Home',
             'slug' => 'home',

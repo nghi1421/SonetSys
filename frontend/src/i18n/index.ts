@@ -1,13 +1,20 @@
 import { createI18n } from 'vue-i18n'
 import admin from './locales/en/admin.json'
+import advertising from './locales/en/advertising.json'
 import auth from './locales/en/auth.json'
+import chat from './locales/en/chat.json'
 import common from './locales/en/common.json'
 import feed from './locales/en/feed.json'
+import follow from './locales/en/follow.json'
 import groups from './locales/en/groups.json'
 import menu from './locales/en/menu.json'
 import notifications from './locales/en/notifications.json'
+import report from './locales/en/report.json'
+import search from './locales/en/search.json'
+import settings from './locales/en/settings.json'
 import stories from './locales/en/stories.json'
 import storage from './locales/en/storage.json'
+import wallet from './locales/en/wallet.json'
 
 export const SUPPORTED_LOCALES = ['en'] as const
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number]
@@ -17,6 +24,7 @@ export const DEFAULT_LOCALE: SupportedLocale = 'en'
 const en = {
   common,
   auth,
+  chat,
   feed,
   groups,
   menu,
@@ -24,6 +32,12 @@ const en = {
   admin,
   notifications,
   stories,
+  follow,
+  wallet,
+  advertising,
+  search,
+  report,
+  settings,
 }
 
 export const i18n = createI18n({

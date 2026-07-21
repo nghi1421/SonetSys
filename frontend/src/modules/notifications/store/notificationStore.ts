@@ -7,6 +7,7 @@ export const useNotificationStore = defineStore('notifications', () => {
   const items = ref<AppNotification[]>([])
   const unreadCount = ref(0)
   const loading = ref(false)
+  const justReceived = ref(false)
 
   async function fetchNotifications(): Promise<void> {
     loading.value = true
@@ -17,6 +18,16 @@ export const useNotificationStore = defineStore('notifications', () => {
     } finally {
       loading.value = false
     }
+  }
+
+  async function receivePushed(): Promise<void> {
+    // The push payload only carries actor_id (no name) — re-fetch so the
+    // list/badge stay authoritative rather than hand-building a partial item.
+    await fetchNotifications()
+    justReceived.value = true
+    window.setTimeout(() => {
+      justReceived.value = false
+    }, 3000)
   }
 
   async function markAsRead(notificationId: string): Promise<void> {
@@ -37,5 +48,14 @@ export const useNotificationStore = defineStore('notifications', () => {
     unreadCount.value = 0
   }
 
-  return { items, unreadCount, loading, fetchNotifications, markAsRead, markAllAsRead }
+  return {
+    items,
+    unreadCount,
+    loading,
+    justReceived,
+    fetchNotifications,
+    receivePushed,
+    markAsRead,
+    markAllAsRead,
+  }
 })

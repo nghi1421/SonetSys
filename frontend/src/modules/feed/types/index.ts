@@ -12,6 +12,29 @@ export interface Sticker {
   emoji: string
 }
 
+export interface PostLocation {
+  name: string
+  lat: number
+  lng: number
+}
+
+export type ReactionType = 'like' | 'love' | 'haha' | 'wow' | 'sad' | 'angry'
+
+export const REACTION_EMOJI: Record<ReactionType, string> = {
+  like: '👍',
+  love: '❤️',
+  haha: '😆',
+  wow: '😮',
+  sad: '😢',
+  angry: '😠',
+}
+
+export interface MentionCandidate {
+  id: number
+  name: string
+  avatar_url: string | null
+}
+
 export interface Post {
   id: number
   body: string
@@ -20,12 +43,16 @@ export interface Post {
   likes_count: number
   comments_count: number
   shares_count: number
-  liked_by_me: boolean
+  my_reaction: ReactionType | null
+  is_sponsored: boolean
   author: PostAuthor
+  hashtags: string[]
+  mentions: PostAuthor[]
   shared_post: Post | null
   media_type: MediaType | null
   media_url: string | null
   sticker_key: string | null
+  location: PostLocation | null
   published_at: string | null
   created_at: string
 }
@@ -36,13 +63,15 @@ export interface Comment {
   parent_id: number | null
   body: string
   likes_count: number
-  liked_by_me: boolean
+  my_reaction: ReactionType | null
   author: PostAuthor
+  hashtags: string[]
+  mentions: PostAuthor[]
   created_at: string
 }
 
-export interface ToggleLikeResult {
-  liked: boolean
+export interface ReactionResult {
+  my_reaction: ReactionType | null
   likes_count: number
 }
 
@@ -53,6 +82,10 @@ export interface CreatePostPayload {
   media?: File
   media_type?: 'image' | 'video'
   sticker_key?: string
+  location_name?: string
+  location_lat?: number
+  location_lng?: number
+  mentioned_user_ids?: number[]
 }
 
 export interface UpdatePostPayload {
@@ -63,4 +96,5 @@ export interface UpdatePostPayload {
 export interface CreateCommentPayload {
   body: string
   parent_id?: number
+  mentioned_user_ids?: number[]
 }

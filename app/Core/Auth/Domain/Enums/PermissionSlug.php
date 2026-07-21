@@ -39,6 +39,28 @@ enum PermissionSlug: string
     // kept here anyway for a single source of truth alongside the others.
     case StorageManage = 'storage.manage';
 
+    // System settings (mail server, cache driver, Redis connection, max
+    // upload size) is a Core module, kept here for the same single-source-
+    // of-truth reason as StorageManage.
+    case SettingsManage = 'settings.manage';
+
+    // Wallet is a feature module; kept here for the same Core -> Module
+    // dependency reason as the cases above, so RoleSeeder stays
+    // module-agnostic.
+    case WalletManage = 'wallet.manage';
+
+    // Advertising is a feature module; kept here for the same Core -> Module
+    // dependency reason as the cases above, so RoleSeeder stays
+    // module-agnostic.
+    case AdsReview = 'ads.review';
+
+    // Report is a feature module; kept here for the same Core -> Module
+    // dependency reason as the cases above. Unlike AdsReview/WalletManage,
+    // this is deliberately granted to Moderator as well as Admin — reviewing
+    // reports is core day-to-day moderation work, the same reasoning already
+    // applied to PostsDeleteAny/CommentsDeleteAny.
+    case ReportsReview = 'reports.review';
+
     public function group(): string
     {
         return match ($this) {
@@ -49,6 +71,10 @@ enum PermissionSlug: string
             self::MenuManage => 'menu',
             self::GroupsManageAny => 'groups',
             self::StorageManage => 'storage',
+            self::SettingsManage => 'settings',
+            self::WalletManage => 'wallet',
+            self::AdsReview => 'ads',
+            self::ReportsReview => 'reports',
         };
     }
 
@@ -69,6 +95,10 @@ enum PermissionSlug: string
             self::MenuManage,
             self::GroupsManageAny,
             self::StorageManage,
+            self::SettingsManage,
+            self::WalletManage,
+            self::AdsReview,
+            self::ReportsReview,
         ];
     }
 
@@ -85,6 +115,7 @@ enum PermissionSlug: string
             self::PostsDeleteAny,
             self::CommentsDeleteAny,
             self::GroupsManageAny,
+            self::ReportsReview,
         ];
     }
 }

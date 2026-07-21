@@ -10,6 +10,8 @@
     "commentLiked": "{actor} liked your comment",
     "commentPosted": "{actor} commented on your post",
     "postShared": "{actor} shared your post",
+    "userFollowed": "{actor} started following you",
+    "userMentioned": "{actor} mentioned you",
     "default": "{actor} interacted with your content"
   }
 }

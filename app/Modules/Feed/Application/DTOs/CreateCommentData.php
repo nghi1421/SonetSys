@@ -11,5 +11,7 @@ final readonly class CreateCommentData
         public int $postId,
         public ?int $parentId,
         public int $authorId,
+        /** @var list<int> */
+        public array $mentionedUserIds = [],
     ) {}
 }

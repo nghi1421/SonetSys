@@ -32,4 +32,9 @@ export const authApi = {
     const { data } = await http.post<ApiResponse<null>>('/auth/reset-password', payload)
     return data
   },
+
+  async updateProfile(formData: FormData) {
+    const { data } = await http.post<ApiResponse<User>>('/profile', formData)
+    return data
+  },
 }

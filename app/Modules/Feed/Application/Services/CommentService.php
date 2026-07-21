@@ -10,6 +10,7 @@ use App\Modules\Feed\Application\Contracts\PostRepositoryInterface;
 use App\Modules\Feed\Application\DTOs\CreateCommentData;
 use App\Modules\Feed\Application\DTOs\UpdateCommentData;
 use App\Modules\Feed\Domain\Events\CommentPosted;
+use App\Modules\Feed\Domain\Events\UserMentioned;
 use App\Modules\Feed\Domain\Models\Comment;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -20,11 +21,15 @@ final class CommentService
         private readonly CommentRepositoryInterface $comments,
         private readonly PostRepositoryInterface $posts,
         private readonly InteractionRepositoryInterface $interactions,
+        private readonly HashtagService $hashtags,
+        private readonly MentionService $mentions,
     ) {}
 
     public function create(CreateCommentData $data): Comment
     {
-        return DB::transaction(function () use ($data): Comment {
+        $mentionedUserIds = $this->mentions->filterRecipients($data->mentionedUserIds, $data->authorId);
+
+        return DB::transaction(function () use ($data, $mentionedUserIds): Comment {
             $parentId = $data->parentId;
             $directParentAuthorId = null;
 
@@ -51,6 +56,12 @@ final class CommentService
 
             $post = $this->posts->findById($data->postId);
 
+            $this->hashtags->extractAndAttach($data->body, $comment);
+
+            if ($mentionedUserIds !== []) {
+                $comment->mentions()->sync($mentionedUserIds);
+            }
+
             CommentPosted::dispatch(
                 $comment->id,
                 $data->postId,
@@ -58,6 +69,10 @@ final class CommentService
                 $directParentAuthorId,
                 (int) $post->author_id,
             );
+
+            if ($mentionedUserIds !== []) {
+                UserMentioned::dispatch('comment', $comment->id, $data->authorId, $mentionedUserIds, $data->postId);
+            }
 
             return $comment;
         });
@@ -69,7 +84,7 @@ final class CommentService
     public function listForPost(int $postId, int $viewerId): Collection
     {
         $comments = $this->comments->listForPost($postId);
-        $this->markLikedByViewer($comments, $viewerId);
+        $this->markReactionByViewer($comments, $viewerId);
 
         return $comments;
     }
@@ -77,12 +92,12 @@ final class CommentService
     /**
      * @param  Collection<int, Comment>  $comments
      */
-    private function markLikedByViewer(Collection $comments, int $viewerId): void
+    private function markReactionByViewer(Collection $comments, int $viewerId): void
     {
-        $likedIds = $this->interactions->likedInteractableIds($viewerId, 'comment', $comments->pluck('id')->all());
+        $myReactions = $this->interactions->myReactionsAmong($viewerId, 'comment', $comments->pluck('id')->all());
 
-        $comments->each(function (Comment $comment) use ($likedIds): void {
-            $comment->liked_by_me = in_array($comment->id, $likedIds, true);
+        $comments->each(function (Comment $comment) use ($myReactions): void {
+            $comment->my_reaction = $myReactions[$comment->id] ?? null;
         });
     }
 

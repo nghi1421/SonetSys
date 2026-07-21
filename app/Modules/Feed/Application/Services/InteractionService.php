@@ -18,43 +18,44 @@ final class InteractionService
     ) {}
 
     /**
-     * @return array{liked: bool, likes_count: int}
+     * @return array{my_reaction: ?string, likes_count: int}
      */
-    public function toggleLike(string $morphAlias, int $interactableId, int $userId): array
+    public function react(string $morphAlias, int $interactableId, int $userId, InteractionType $type): array
     {
         $modelClass = Relation::getMorphedModel($morphAlias)
             ?? throw new InvalidArgumentException("Unknown interactable type [{$morphAlias}].");
 
-        return DB::transaction(function () use ($morphAlias, $interactableId, $userId, $modelClass): array {
-            $existing = $this->interactions->findExisting(
-                $userId,
-                $morphAlias,
-                $interactableId,
-                InteractionType::Like->value,
-            );
+        return DB::transaction(function () use ($morphAlias, $interactableId, $userId, $modelClass, $type): array {
+            $existing = $this->interactions->findExisting($userId, $morphAlias, $interactableId);
 
-            if ($existing !== null) {
-                $this->interactions->delete($existing);
-                $modelClass::whereKey($interactableId)->decrement('likes_count');
-                $liked = false;
-            } else {
+            if ($existing === null) {
                 $this->interactions->create([
                     'user_id' => $userId,
                     'interactable_type' => $morphAlias,
                     'interactable_id' => $interactableId,
-                    'type' => InteractionType::Like->value,
+                    'type' => $type->value,
                 ]);
                 $modelClass::whereKey($interactableId)->increment('likes_count');
-                $liked = true;
+                $myReaction = $type->value;
 
                 $authorId = (int) $modelClass::whereKey($interactableId)->value('author_id');
                 if ($authorId !== $userId) {
-                    ContentLiked::dispatch($morphAlias, $interactableId, $userId, $authorId);
+                    $postId = $morphAlias === 'comment'
+                        ? (int) $modelClass::whereKey($interactableId)->value('post_id')
+                        : $interactableId;
+                    ContentLiked::dispatch($morphAlias, $interactableId, $userId, $authorId, $type, $postId);
                 }
+            } elseif ($existing->type === $type) {
+                $this->interactions->delete($existing);
+                $modelClass::whereKey($interactableId)->decrement('likes_count');
+                $myReaction = null;
+            } else {
+                $this->interactions->update($existing, $type);
+                $myReaction = $type->value;
             }
 
             return [
-                'liked' => $liked,
+                'my_reaction' => $myReaction,
                 'likes_count' => (int) $modelClass::whereKey($interactableId)->value('likes_count'),
             ];
         });

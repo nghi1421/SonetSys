@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 final class Post extends Model
@@ -28,6 +29,9 @@ final class Post extends Model
         'media_type',
         'media_path',
         'media_disk',
+        'location_name',
+        'location_lat',
+        'location_lng',
         'published_at',
     ];
 
@@ -37,6 +41,8 @@ final class Post extends Model
             'visibility' => PostVisibility::class,
             'metadata' => 'array',
             'media_type' => MediaType::class,
+            'location_lat' => 'float',
+            'location_lng' => 'float',
             'published_at' => 'datetime',
         ];
     }
@@ -59,5 +65,15 @@ final class Post extends Model
     public function interactions(): MorphMany
     {
         return $this->morphMany(Interaction::class, 'interactable');
+    }
+
+    public function hashtags(): MorphToMany
+    {
+        return $this->morphToMany(Hashtag::class, 'hashtaggable');
+    }
+
+    public function mentions(): MorphToMany
+    {
+        return $this->morphToMany(User::class, 'mentionable', 'mentions', 'mentionable_id', 'user_id');
     }
 }

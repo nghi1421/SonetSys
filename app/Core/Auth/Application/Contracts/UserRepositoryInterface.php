@@ -6,6 +6,7 @@ namespace App\Core\Auth\Application\Contracts;
 
 use App\Core\Auth\Domain\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 interface UserRepositoryInterface
 {
@@ -18,4 +19,9 @@ interface UserRepositoryInterface
     public function paginate(int $page, int $perPage): LengthAwarePaginator;
 
     public function update(User $user, array $attributes): User;
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function search(string $query, int $limit): Collection;
 }

@@ -10,8 +10,17 @@ export interface User {
   email: string
   status: 'active' | 'suspended' | 'banned'
   role: Role
+  avatar_url: string | null
+  cover_url: string | null
   last_login_at: string | null
   created_at: string
+}
+
+export interface UpdateProfilePayload {
+  avatar?: File
+  cover?: File
+  removeAvatar?: boolean
+  removeCover?: boolean
 }
 
 export interface LoginPayload {

@@ -24,6 +24,11 @@ final class User extends Authenticatable
         'password',
         'status',
         'avatar_url',
+        'avatar_disk',
+        'avatar_path',
+        'cover_url',
+        'cover_disk',
+        'cover_path',
     ];
 
     protected $hidden = [

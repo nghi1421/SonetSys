@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Bell } from '@lucide/vue'
 import { useRelativeTime } from '@/shared/composables/useRelativeTime'
 import { useNotificationStore } from '../store/notificationStore'
 import { describeNotification } from '../utils/describeNotification'
+import { resolveNotificationRoute } from '../utils/resolveNotificationRoute'
+import type { AppNotification } from '../types'
 
 const notificationStore = useNotificationStore()
+const router = useRouter()
 const { t } = useI18n()
 const open = ref(false)
 
@@ -18,8 +22,12 @@ function toggle(): void {
   open.value = !open.value
 }
 
-async function onItemClick(notificationId: string): Promise<void> {
-  await notificationStore.markAsRead(notificationId)
+async function onItemClick(notification: AppNotification): Promise<void> {
+  await notificationStore.markAsRead(notification.id)
+  open.value = false
+
+  const target = resolveNotificationRoute(notification)
+  if (target) router.push(target)
 }
 </script>
 
@@ -28,10 +36,11 @@ async function onItemClick(notificationId: string): Promise<void> {
     <button
       type="button"
       class="relative rounded-full border border-cyber-border bg-cyber-glass p-2 text-cyber-muted backdrop-blur-none transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/60 focus:ring-offset-2 focus:ring-offset-cyber-bg"
+      :class="notificationStore.justReceived && 'border-cyber-neon-cyan/60 text-cyber-neon-cyan shadow-cyan-glow'"
       :aria-label="t('notifications.bell.ariaLabel')"
       @click="toggle"
     >
-      <Bell class="h-4 w-4" />
+      <Bell class="h-4 w-4" :class="notificationStore.justReceived && 'animate-pulse'" />
       <span
         v-if="notificationStore.unreadCount > 0"
         class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-cyber-neon-pink px-1 font-mono text-[9px] font-bold text-white shadow-pink-glow"
@@ -72,7 +81,7 @@ async function onItemClick(notificationId: string): Promise<void> {
           :key="item.id"
           class="cursor-pointer px-4 py-3 transition-all duration-300 hover:bg-cyber-surface/60"
           :class="!item.read_at && 'bg-cyber-neon-indigo/10'"
-          @click="onItemClick(item.id)"
+          @click="onItemClick(item)"
         >
           <p class="font-mono text-xs text-cyber-text/90">{{ describeNotification(item, t) }}</p>
           <p class="mt-0.5 font-mono text-[9px] uppercase tracking-widest text-cyber-muted">
