@@ -8,6 +8,7 @@ use App\Core\Auth\Domain\Enums\RoleSlug;
 use App\Core\Auth\Domain\Enums\UserStatus;
 use App\Core\Auth\Domain\Models\Role;
 use App\Core\Auth\Domain\Models\User;
+use App\Modules\Feed\Application\Services\ReactionTypeService;
 use App\Modules\Menu\Application\Services\MenuService;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -38,5 +39,6 @@ final class DatabaseSeeder extends Seeder
         }
 
         app(MenuService::class)->seedDefaults();
+        app(ReactionTypeService::class)->seedDefaults();
     }
 }

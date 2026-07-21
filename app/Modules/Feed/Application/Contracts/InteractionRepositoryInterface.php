@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Modules\Feed\Application\Contracts;
 
-use App\Modules\Feed\Domain\Enums\InteractionType;
 use App\Modules\Feed\Domain\Models\Interaction;
 
 interface InteractionRepositoryInterface
@@ -13,7 +12,7 @@ interface InteractionRepositoryInterface
 
     public function create(array $attributes): Interaction;
 
-    public function update(Interaction $interaction, InteractionType $type): void;
+    public function update(Interaction $interaction, string $type): void;
 
     public function delete(Interaction $interaction): void;
 

@@ -9,6 +9,7 @@ import follow from './locales/en/follow.json'
 import groups from './locales/en/groups.json'
 import menu from './locales/en/menu.json'
 import notifications from './locales/en/notifications.json'
+import reactions from './locales/en/reactions.json'
 import reels from './locales/en/reels.json'
 import report from './locales/en/report.json'
 import search from './locales/en/search.json'
@@ -34,6 +35,7 @@ const en = {
   notifications,
   stories,
   reels,
+  reactions,
   follow,
   wallet,
   advertising,
