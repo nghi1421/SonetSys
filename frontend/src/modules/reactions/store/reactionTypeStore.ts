@@ -1,7 +1,11 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { reactionTypeApi } from '../api/reactionTypeApi'
-import type { CreateReactionTypePayload, ReactionTypeDef, UpdateReactionTypePayload } from '../types'
+import type {
+  CreateReactionTypePayload,
+  ReactionTypeDef,
+  UpdateReactionTypePayload,
+} from '../types'
 
 export const useReactionTypeStore = defineStore('reactionTypes', () => {
   const types = ref<ReactionTypeDef[]>([])

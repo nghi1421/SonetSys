@@ -1,6 +1,10 @@
 import { http } from '@/shared/api/http'
 import type { ApiResponse } from '@/shared/api/types'
-import type { CreateReactionTypePayload, ReactionTypeDef, UpdateReactionTypePayload } from '../types'
+import type {
+  CreateReactionTypePayload,
+  ReactionTypeDef,
+  UpdateReactionTypePayload,
+} from '../types'
 
 function toRequestBody(payload: CreateReactionTypePayload | UpdateReactionTypePayload): FormData {
   const form = new FormData()
@@ -24,14 +28,20 @@ export const reactionTypeApi = {
   },
 
   async createReactionType(payload: CreateReactionTypePayload) {
-    const { data } = await http.post<ApiResponse<ReactionTypeDef>>('/admin/reaction-types', toRequestBody(payload))
+    const { data } = await http.post<ApiResponse<ReactionTypeDef>>(
+      '/admin/reaction-types',
+      toRequestBody(payload),
+    )
     return data
   },
 
   async updateReactionType(id: number, payload: UpdateReactionTypePayload) {
     const form = toRequestBody(payload)
     form.append('_method', 'PUT')
-    const { data } = await http.post<ApiResponse<ReactionTypeDef>>(`/admin/reaction-types/${id}`, form)
+    const { data } = await http.post<ApiResponse<ReactionTypeDef>>(
+      `/admin/reaction-types/${id}`,
+      form,
+    )
     return data
   },
 
