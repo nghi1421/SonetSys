@@ -6,9 +6,6 @@ declare module 'vue-router' {
     requiresAuth?: boolean
     guest?: boolean
     requiresAdmin?: boolean
-    // Admin OR Moderator — for moderation pages (e.g. reports) that the
-    // Moderator role is deliberately granted access to, unlike the rest of
-    // the /admin panel which stays Admin-only.
     requiresStaff?: boolean
   }
 }

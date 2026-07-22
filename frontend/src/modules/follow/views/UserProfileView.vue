@@ -307,7 +307,7 @@ watch(userId, load)
 
                 <div
                   v-if="showActionsMenu"
-                  class="popover-panel absolute right-0 z-10 mt-1 w-40 rounded-hud border border-cyber-border bg-cyber-glass py-1 backdrop-blur-md"
+                  class="popover-panel absolute right-0 z-10 mt-1 w-40 rounded-hud border border-cyber-border bg-cyber-surface py-1"
                   @click.stop
                 >
                   <button

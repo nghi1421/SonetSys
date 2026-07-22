@@ -21,6 +21,7 @@ final class CommentResource extends JsonResource
             'author' => [
                 'id' => $this->whenLoaded('author', fn () => $this->author->id),
                 'name' => $this->whenLoaded('author', fn () => $this->author->name),
+                'avatar_url' => $this->whenLoaded('author', fn () => $this->author->avatar_url),
             ],
             'hashtags' => $this->relationLoaded('hashtags') ? $this->hashtags->pluck('tag')->values() : [],
             'mentions' => $this->relationLoaded('mentions') ? $this->mentions->map(fn ($user) => [

@@ -1,6 +1,7 @@
-export interface PostAuthor {
+export interface User {
   id: number | null
   name: string | null
+  avatar_url: string | null
 }
 
 export type PostVisibility = 'public' | 'members' | 'private'
@@ -18,10 +19,6 @@ export interface PostLocation {
   lng: number
 }
 
-// Dynamic now — a reaction type is whatever key currently exists in the
-// admin-managed reaction_types catalog (see modules/reactions), not a fixed
-// set known at compile time. Loses TS literal-union exhaustiveness in
-// exchange for the admin being able to add/remove reactions with no deploy.
 export type ReactionType = string
 
 export interface MentionCandidate {
@@ -41,9 +38,9 @@ export interface Post {
   my_reaction: ReactionType | null
   is_sponsored: boolean
   is_reel: boolean
-  author: PostAuthor
+  author: User
   hashtags: string[]
-  mentions: PostAuthor[]
+  mentions: User[]
   shared_post: Post | null
   media_type: MediaType | null
   media_url: string | null
@@ -60,9 +57,9 @@ export interface Comment {
   body: string
   likes_count: number
   my_reaction: ReactionType | null
-  author: PostAuthor
+  author: User
   hashtags: string[]
-  mentions: PostAuthor[]
+  mentions: User[]
   created_at: string
 }
 

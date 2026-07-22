@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { Trash2, UserPlus } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import AppButton from '@/shared/components/ui/AppButton.vue'
+import AppUsername from '@/shared/components/ui/AppUsername.vue'
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog.vue'
 import ReportDialog from '@/shared/components/ui/ReportDialog.vue'
 import { useRelativeTime } from '@/shared/composables/useRelativeTime'
@@ -103,13 +104,23 @@ async function onConfirmDelete(): Promise<void> {
 <template>
   <div class="mt-4 space-y-3 border-t border-cyber-border pt-3">
     <div v-for="comment in topLevel" :key="comment.id" class="space-y-2">
-      <div class="relative flex items-start justify-between gap-2 rounded-hud border border-cyber-border bg-cyber-surface/40 p-3 backdrop-blur-md has-[.popover-panel]:z-20">
+      <div
+        class="relative flex items-start justify-between gap-2 rounded-hud border border-cyber-border bg-cyber-surface/40 p-3 backdrop-blur-md has-[.popover-panel]:z-20"
+      >
         <div class="flex-1">
-          <p class="text-xs font-bold tracking-wider text-cyber-text">// {{ comment.author.name }}</p>
-          <p class="mt-1 border-l border-cyber-neon-indigo pl-2 font-mono text-xs leading-relaxed text-cyber-text/90">
-            <LinkifiedText :text="comment.body" :hashtags="comment.hashtags" :mentions="comment.mentions" />
+          <AppUsername :user="comment.author" />
+          <p
+            class="mt-1 border-l border-cyber-neon-indigo pl-2 font-mono text-xs leading-relaxed text-cyber-text/90"
+          >
+            <LinkifiedText
+              :text="comment.body"
+              :hashtags="comment.hashtags"
+              :mentions="comment.mentions"
+            />
           </p>
-          <div class="mt-2 flex items-center gap-3 font-mono text-[9px] uppercase tracking-widest text-cyber-muted">
+          <div
+            class="mt-2 flex items-center gap-3 font-mono text-[9px] uppercase tracking-widest text-cyber-muted"
+          >
             <span>{{ useRelativeTime(comment.created_at) }}</span>
             <ReactionButton
               :count="comment.likes_count"
@@ -118,7 +129,13 @@ async function onConfirmDelete(): Promise<void> {
               @react="(type) => onReact(comment.id, type)"
               @unreact="onUnreact(comment.id)"
             />
-            <button type="button" class="hover:text-cyber-neon-cyan" @click="replyingTo = comment.id">{{ t('feed.commentThread.reply') }}</button>
+            <button
+              type="button"
+              class="hover:text-cyber-neon-cyan"
+              @click="replyingTo = comment.id"
+            >
+              {{ t('feed.commentThread.reply') }}
+            </button>
             <button
               v-if="!isOwnComment(comment)"
               type="button"
@@ -146,11 +163,19 @@ async function onConfirmDelete(): Promise<void> {
         class="relative ml-6 flex items-start justify-between gap-2 rounded-hud border border-cyber-border bg-cyber-surface/40 p-3 backdrop-blur-md has-[.popover-panel]:z-20"
       >
         <div class="flex-1">
-          <p class="text-xs font-bold tracking-wider text-cyber-text">// {{ reply.author.name }}</p>
-          <p class="mt-1 border-l border-cyber-neon-indigo pl-2 font-mono text-xs leading-relaxed text-cyber-text/90">
-            <LinkifiedText :text="reply.body" :hashtags="reply.hashtags" :mentions="reply.mentions" />
+          <AppUsername :user="reply.author" />
+          <p
+            class="mt-1 border-l border-cyber-neon-indigo pl-2 font-mono text-xs leading-relaxed text-cyber-text/90"
+          >
+            <LinkifiedText
+              :text="reply.body"
+              :hashtags="reply.hashtags"
+              :mentions="reply.mentions"
+            />
           </p>
-          <div class="mt-2 flex items-center gap-3 font-mono text-[9px] uppercase tracking-widest text-cyber-muted">
+          <div
+            class="mt-2 flex items-center gap-3 font-mono text-[9px] uppercase tracking-widest text-cyber-muted"
+          >
             <span>{{ useRelativeTime(reply.created_at) }}</span>
             <ReactionButton
               :count="reply.likes_count"
@@ -206,7 +231,7 @@ async function onConfirmDelete(): Promise<void> {
 
           <div
             v-if="mention.showPicker.value"
-            class="popover-panel absolute right-0 z-10 mt-2 w-64 rounded-hud border border-cyber-border bg-cyber-glass p-3 backdrop-blur-md"
+            class="popover-panel absolute right-0 z-10 mt-2 w-64 rounded-hud border border-cyber-border bg-cyber-surface p-3"
             @click.stop
           >
             <input
@@ -228,7 +253,10 @@ async function onConfirmDelete(): Promise<void> {
                 </button>
               </li>
             </ul>
-            <p v-else-if="mention.searching.value" class="mt-2 font-mono text-[10px] text-cyber-muted">
+            <p
+              v-else-if="mention.searching.value"
+              class="mt-2 font-mono text-[10px] text-cyber-muted"
+            >
               {{ t('common.loading') }}
             </p>
             <p
@@ -240,7 +268,11 @@ async function onConfirmDelete(): Promise<void> {
           </div>
         </div>
 
-        <AppButton type="submit" :label="t('feed.commentThread.submitReply')" :loading="submitting" />
+        <AppButton
+          type="submit"
+          :label="t('feed.commentThread.submitReply')"
+          :loading="submitting"
+        />
         <button
           type="button"
           class="font-mono text-xs text-cyber-muted transition-colors duration-300 hover:text-cyber-text"
@@ -251,7 +283,11 @@ async function onConfirmDelete(): Promise<void> {
       </form>
     </div>
 
-    <form v-if="replyingTo === null" class="relative flex gap-2 has-[.popover-panel]:z-20" @submit.prevent="submitComment()">
+    <form
+      v-if="replyingTo === null"
+      class="relative flex gap-2 has-[.popover-panel]:z-20"
+      @submit.prevent="submitComment()"
+    >
       <input
         v-model="newComment"
         type="text"
@@ -273,7 +309,7 @@ async function onConfirmDelete(): Promise<void> {
 
         <div
           v-if="mention.showPicker.value"
-          class="popover-panel absolute right-0 z-10 mt-2 w-64 rounded-hud border border-cyber-border bg-cyber-glass p-3 backdrop-blur-md"
+          class="popover-panel absolute right-0 z-10 mt-2 w-64 rounded-hud border border-cyber-border bg-cyber-surface p-3"
           @click.stop
         >
           <input
@@ -295,7 +331,10 @@ async function onConfirmDelete(): Promise<void> {
               </button>
             </li>
           </ul>
-          <p v-else-if="mention.searching.value" class="mt-2 font-mono text-[10px] text-cyber-muted">
+          <p
+            v-else-if="mention.searching.value"
+            class="mt-2 font-mono text-[10px] text-cyber-muted"
+          >
             {{ t('common.loading') }}
           </p>
           <p
@@ -307,7 +346,11 @@ async function onConfirmDelete(): Promise<void> {
         </div>
       </div>
 
-      <AppButton type="submit" :label="t('feed.commentThread.submitComment')" :loading="submitting" />
+      <AppButton
+        type="submit"
+        :label="t('feed.commentThread.submitComment')"
+        :loading="submitting"
+      />
     </form>
 
     <ConfirmDialog

@@ -83,7 +83,7 @@ function pick(type: ReactionType): void {
 
     <div
       v-if="showPicker"
-      class="popover-panel absolute left-0 top-full z-10 mt-2 flex items-center gap-1 rounded-hud border border-cyber-border bg-cyber-glass p-1.5 backdrop-blur-md"
+      class="popover-panel absolute left-0 top-full z-10 mt-2 flex items-center gap-1 rounded-hud border border-cyber-border bg-cyber-surface p-1.5"
       @click.stop
     >
       <button

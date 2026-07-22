@@ -4,14 +4,18 @@ import { Menu, Search } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import MessageBell from '@/modules/chat/components/MessageBell.vue'
 import NotificationBell from '@/modules/notifications/components/NotificationBell.vue'
-import WalletBalancePill from '@/modules/wallet/components/WalletBalancePill.vue'
 import AppLocaleSwitcher from '@/shared/components/locale/AppLocaleSwitcher.vue'
 import AppThemeSwitcher from '@/shared/components/theme/AppThemeSwitcher.vue'
+import { useRouter } from 'vue-router'
 
 const emit = defineEmits<{ 'toggle-sidebar': [] }>()
 
-const authStore = useAuthStore()
+const router = useRouter()
 const { t } = useI18n()
+
+function onDashboard(): void {
+  router.push({ name: 'dashboard' })
+}
 </script>
 
 <template>
@@ -28,13 +32,11 @@ const { t } = useI18n()
         </button>
         <div>
           <h1
-            class="bg-gradient-to-r from-cyber-neon-cyan via-cyber-neon-indigo to-cyber-neon-pink bg-clip-text text-sm font-bold uppercase tracking-widest text-transparent"
+            class="bg-gradient-to-r from-cyber-neon-cyan via-cyber-neon-indigo to-cyber-neon-pink bg-clip-text text-sm font-bold uppercase tracking-widest text-transparent cursor-pointer"
+            @click="onDashboard"
           >
             {{ t('common.siteName') }}
           </h1>
-          <p v-if="authStore.user" class="mt-0.5 font-mono text-[9px] uppercase tracking-widest text-cyber-neon-cyan">
-            // {{ authStore.user.name }}
-          </p>
         </div>
       </div>
       <div class="flex items-center gap-3">
@@ -47,7 +49,6 @@ const { t } = useI18n()
         >
           <Search class="h-4 w-4" />
         </router-link>
-        <WalletBalancePill />
         <MessageBell />
         <NotificationBell />
       </div>
