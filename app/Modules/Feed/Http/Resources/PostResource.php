@@ -28,6 +28,7 @@ final class PostResource extends JsonResource
             'author' => [
                 'id' => $this->whenLoaded('author', fn () => $this->author->id),
                 'name' => $this->whenLoaded('author', fn () => $this->author->name),
+                'avatar_url' => $this->whenLoaded('author', fn () => $this->author->avatar_url),
             ],
             // Always an array (never omitted) — the nested shared_post below
             // doesn't get these relations eager-loaded, and the frontend

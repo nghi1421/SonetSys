@@ -4,6 +4,8 @@ import { useI18n } from 'vue-i18n'
 import AppAlert from '@/shared/components/ui/AppAlert.vue'
 import AppButton from '@/shared/components/ui/AppButton.vue'
 import AppInput from '@/shared/components/ui/AppInput.vue'
+import AppModal from '@/shared/components/ui/AppModal.vue'
+import AppTextarea from '@/shared/components/ui/AppTextarea.vue'
 import { useGroupStore } from '../store/groupStore'
 import type { GroupVisibility } from '../types'
 
@@ -40,34 +42,23 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <Teleport to="body">
-  <div
-    class="fixed inset-0 z-50 flex items-center justify-center bg-cyber-bg/80 px-4 backdrop-blur-sm"
-    @click="emit('close')"
-  >
-    <form
-      class="w-full max-w-md space-y-4 rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md"
-      @click.stop
-      @submit.prevent="onSubmit"
-    >
-      <h2 class="font-mono text-xs font-bold uppercase tracking-widest text-cyber-text">// {{ t('groups.createGroupModal.title') }}</h2>
+  <AppModal :open="true" size="md" @close="emit('close')">
+    <form class="space-y-4" @submit.prevent="onSubmit">
+      <h2 class="font-mono text-xs font-bold uppercase tracking-widest text-cyber-text">
+        // {{ t('groups.createGroupModal.title') }}
+      </h2>
 
       <AppAlert v-if="error">{{ error }}</AppAlert>
 
       <AppInput v-model="name" :label="t('groups.createGroupModal.nameLabel')" />
 
-      <div class="space-y-1.5">
-        <label class="block text-[9px] font-mono uppercase tracking-widest text-cyber-neon-cyan">
-          {{ t('groups.createGroupModal.descriptionLabel') }}
-        </label>
-        <textarea
-          v-model="description"
-          rows="3"
-          maxlength="5000"
-          :placeholder="t('groups.createGroupModal.descriptionPlaceholder')"
-          class="block w-full resize-none rounded-hud border border-cyber-border bg-cyber-glass px-3 py-2 font-mono text-xs text-cyber-text backdrop-blur-md transition-all duration-300 placeholder:text-cyber-muted focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40 focus:ring-offset-2 focus:ring-offset-cyber-bg"
-        />
-      </div>
+      <AppTextarea
+        v-model="description"
+        :label="t('groups.createGroupModal.descriptionLabel')"
+        :rows="3"
+        :maxlength="5000"
+        :placeholder="t('groups.createGroupModal.descriptionPlaceholder')"
+      />
 
       <div class="space-y-1.5">
         <label class="block text-[9px] font-mono uppercase tracking-widest text-cyber-neon-cyan">
@@ -85,7 +76,9 @@ async function onSubmit(): Promise<void> {
             @click="visibility = 'public'"
           >
             {{ t('groups.visibility.public') }}
-            <span class="mt-0.5 block font-mono text-[9px] normal-case text-cyber-muted">{{ t('groups.visibility.publicHint') }}</span>
+            <span class="mt-0.5 block font-mono text-[9px] normal-case text-cyber-muted">{{
+              t('groups.visibility.publicHint')
+            }}</span>
           </button>
           <button
             type="button"
@@ -98,7 +91,9 @@ async function onSubmit(): Promise<void> {
             @click="visibility = 'private'"
           >
             {{ t('groups.visibility.private') }}
-            <span class="mt-0.5 block font-mono text-[9px] normal-case text-cyber-muted">{{ t('groups.visibility.privateHint') }}</span>
+            <span class="mt-0.5 block font-mono text-[9px] normal-case text-cyber-muted">{{
+              t('groups.visibility.privateHint')
+            }}</span>
           </button>
         </div>
       </div>
@@ -111,9 +106,13 @@ async function onSubmit(): Promise<void> {
         >
           {{ t('common.cancel') }}
         </button>
-        <AppButton type="submit" :label="t('groups.createGroupModal.submit')" :loading="creating" :disabled="!name.trim()" />
+        <AppButton
+          type="submit"
+          :label="t('groups.createGroupModal.submit')"
+          :loading="creating"
+          :disabled="!name.trim()"
+        />
       </div>
     </form>
-  </div>
-  </Teleport>
+  </AppModal>
 </template>

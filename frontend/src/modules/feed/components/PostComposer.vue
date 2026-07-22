@@ -298,7 +298,7 @@ async function handleSubmit(): Promise<void> {
 
           <div
             v-if="showStickerPicker"
-            class="popover-panel absolute left-0 z-10 mt-2 grid w-44 grid-cols-3 gap-1 rounded-hud border border-cyber-border bg-cyber-glass p-2 backdrop-blur-md sm:w-56 sm:grid-cols-4"
+            class="popover-panel absolute left-0 z-10 mt-2 grid w-44 grid-cols-3 gap-1 rounded-hud border border-cyber-border bg-cyber-surface p-2 sm:w-56 sm:grid-cols-4"
             @click.stop
           >
             <button
@@ -327,7 +327,7 @@ async function handleSubmit(): Promise<void> {
 
           <div
             v-if="showCheckInPicker"
-            class="popover-panel absolute left-0 z-10 mt-2 w-64 rounded-hud border border-cyber-border bg-cyber-glass p-3 backdrop-blur-md"
+            class="popover-panel absolute left-0 z-10 mt-2 w-64 rounded-hud border border-cyber-border bg-cyber-surface p-3"
             @click.stop
           >
             <input
@@ -375,7 +375,7 @@ async function handleSubmit(): Promise<void> {
 
           <div
             v-if="mention.showPicker.value"
-            class="popover-panel absolute left-0 z-10 mt-2 w-64 rounded-hud border border-cyber-border bg-cyber-glass p-3 backdrop-blur-md"
+            class="popover-panel absolute left-0 z-10 mt-2 w-64 rounded-hud border border-cyber-border bg-cyber-surface p-3"
             @click.stop
           >
             <input
