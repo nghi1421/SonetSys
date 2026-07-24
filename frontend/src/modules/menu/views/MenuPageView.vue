@@ -41,19 +41,13 @@ watch(
 <template>
   <AppShell>
     <div class="mx-auto max-w-2xl">
-      <div v-if="loading" class="animate-pulse space-y-3">
-        <div class="h-4 w-40 rounded-full bg-cyber-border" />
-        <div class="h-3 w-full rounded-full bg-cyber-border" />
-        <div class="h-3 w-5/6 rounded-full bg-cyber-border" />
-      </div>
-
       <div
-        v-else-if="error"
+        v-if="error"
         class="rounded-hud border border-cyber-neon-pink/30 bg-cyber-neon-pink/10 p-5 font-mono text-xs text-cyber-neon-pink"
       >
         <TriangleAlert class="mb-2 h-5 w-5" />
         {{ t('menu.page.loadError') }}
-      </div>
+      </div> 
 
       <div v-else-if="item" class="rounded-hud border border-cyber-border bg-cyber-glass p-6 backdrop-blur-md">
         <h1 class="text-sm font-bold tracking-wider text-cyber-text">// {{ item.label }}</h1>
@@ -72,5 +66,5 @@ watch(
         </div>
       </div>
     </div>
-  </AppShell>
+  </AppShell> 
 </template>

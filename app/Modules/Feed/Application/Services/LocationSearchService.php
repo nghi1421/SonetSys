@@ -17,7 +17,6 @@ final class LocationSearchService
     public function search(string $query): array
     {
         $normalizedQuery = mb_strtolower(trim($query));
-        dd($normalizedQuery);
         return Cache::remember(
             "nominatim:{$normalizedQuery}",
             self::CACHE_TTL_SECONDS,

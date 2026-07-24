@@ -25,6 +25,7 @@
     "location": "Checked in"
   },
   "postComposer": {
+    "title": "Create post",
     "placeholder": "Share something with your community…",
     "photoPreviewAlt": "Selected photo preview",
     "removeMedia": "Remove media",

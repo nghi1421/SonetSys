@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { PostAuthor } from '../types'
+import type { User } from '../types'
 
 interface HashtagSegment {
   type: 'hashtag'
@@ -24,7 +24,7 @@ type Segment = HashtagSegment | MentionSegment | TextSegment
 const props = defineProps<{
   text: string
   hashtags: string[]
-  mentions: PostAuthor[]
+  mentions: User[]
 }>()
 
 function escapeRegExp(value: string): string {
@@ -38,7 +38,8 @@ function escapeRegExp(value: string): string {
 // RouterLinks, so it can't inject markup from user content.
 const segments = computed<Segment[]>(() => {
   const validMentions = props.mentions.filter(
-    (mention): mention is { id: number; name: string } => mention.id !== null && mention.name !== null,
+    (mention): mention is User & { id: number; name: string } =>
+      mention.id !== null && mention.name !== null,
   )
 
   const patternParts: string[] = []
@@ -76,7 +77,9 @@ const segments = computed<Segment[]>(() => {
       result.push({ type: 'hashtag', content: matchText, tag: matchText.slice(1).toLowerCase() })
     } else {
       const name = matchText.slice(1)
-      const mention = validMentions.find((candidate) => candidate.name.toLowerCase() === name.toLowerCase())
+      const mention = validMentions.find(
+        (candidate) => candidate.name.toLowerCase() === name.toLowerCase(),
+      )
       result.push(
         mention
           ? { type: 'mention', content: matchText, userId: mention.id }
@@ -102,12 +105,14 @@ const segments = computed<Segment[]>(() => {
         v-if="segment.type === 'hashtag'"
         :to="{ name: 'hashtag', params: { tag: segment.tag } }"
         class="text-cyber-neon-cyan transition-colors duration-300 hover:underline"
-      >{{ segment.content }}</router-link>
+        >{{ segment.content }}</router-link
+      >
       <router-link
         v-else-if="segment.type === 'mention'"
         :to="`/users/${segment.userId}`"
         class="text-cyber-neon-indigo transition-colors duration-300 hover:underline"
-      >{{ segment.content }}</router-link>
+        >{{ segment.content }}</router-link
+      >
       <template v-else>{{ segment.content }}</template>
     </template>
   </span>

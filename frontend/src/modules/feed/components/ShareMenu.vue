@@ -16,8 +16,6 @@ const showSocialDialog = ref(false)
 const copied = ref(false)
 const copyError = ref(false)
 
-// Reposting an already-shared post should preview the real content, not an
-// empty reshare wrapper — the backend flattens shared_post_id either way.
 const repostTarget = computed(() => props.post.shared_post ?? props.post)
 
 function toggle(): void {
@@ -62,7 +60,7 @@ async function onCopyLink(): Promise<void> {
 
     <div
       v-if="open"
-      class="popover-panel absolute right-0 z-10 mt-2 w-56 rounded-hud border border-cyber-border bg-cyber-glass py-1 backdrop-blur-md"
+      class="popover-panel absolute right-0 z-10 mt-2 w-56 rounded-hud border border-cyber-border bg-cyber-surface py-1"
       @click.stop
     >
       <button
@@ -85,7 +83,13 @@ async function onCopyLink(): Promise<void> {
         @click="onCopyLink"
       >
         <Copy class="h-4 w-4" />
-        {{ copyError ? t('feed.shareMenu.copyError') : copied ? t('feed.shareMenu.copied') : t('feed.shareMenu.copyLink') }}
+        {{
+          copyError
+            ? t('feed.shareMenu.copyError')
+            : copied
+              ? t('feed.shareMenu.copied')
+              : t('feed.shareMenu.copyLink')
+        }}
       </button>
     </div>
 

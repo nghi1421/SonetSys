@@ -1,7 +1,15 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { EllipsisVertical, Flag, MapPin, Megaphone, MessageCircle, Pencil, Trash2 } from '@lucide/vue'
+import {
+  EllipsisVertical,
+  Flag,
+  MapPin,
+  Megaphone,
+  MessageCircle,
+  Pencil,
+  Trash2,
+} from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import AppButton from '@/shared/components/ui/AppButton.vue'
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog.vue'
@@ -16,6 +24,7 @@ import ShareMenu from './ShareMenu.vue'
 import SharedPostPreview from './SharedPostPreview.vue'
 import { useFeedStore } from '../store/feedStore'
 import type { Post, ReactionType } from '../types'
+import AppUsername from '@/shared/components/ui/AppUsername.vue'
 
 const props = withDefaults(
   defineProps<{ post: Post; clickable?: boolean; startWithCommentsOpen?: boolean }>(),
@@ -100,19 +109,10 @@ async function saveEdit(): Promise<void> {
   >
     <header class="flex items-start justify-between">
       <div>
-        <h4 class="text-xs font-bold tracking-wider text-cyber-text">
-          //
-          <router-link
-            v-if="post.author.id"
-            :to="`/users/${post.author.id}`"
-            class="transition-colors duration-300 hover:text-cyber-neon-cyan"
-          >
-            {{ post.author.name }}
-          </router-link>
-          <template v-else>{{ post.author.name }}</template>
-        </h4>
+        <AppUsername :user="post.author" />
+
         <div class="mt-1 flex items-center gap-2">
-          <span class="font-mono text-[9px] uppercase tracking-widest text-cyber-muted">
+          <span class="font-mono text-[9px] text-cyber-muted">
             {{ useRelativeTime(post.created_at) }}
           </span>
           <span
@@ -125,7 +125,7 @@ async function saveEdit(): Promise<void> {
           <span
             v-if="post.location"
             :title="t('feed.postCard.location')"
-            class="inline-flex items-center gap-1 rounded-full border border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest text-cyber-neon-cyan"
+            class="inline-flex items-center gap-1 rounded-full border border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 px-2 py-0.5 font-mono text-[9px] text-cyber-neon-cyan"
           >
             <MapPin class="h-2.5 w-2.5" />
             {{ post.location.name }}
@@ -135,7 +135,7 @@ async function saveEdit(): Promise<void> {
       <div class="relative">
         <button
           type="button"
-          class="rounded-full border border-cyber-border bg-cyber-glass p-1.5 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow"
+          class="rounded-full border border-cyber-border bg-cyber-glass p-1.5 text-cyber-muted backdrop-blur-none transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow"
           :aria-label="t('feed.postCard.actionsLabel')"
           @click="showActionsMenu = !showActionsMenu"
         >
@@ -146,7 +146,7 @@ async function saveEdit(): Promise<void> {
 
         <div
           v-if="showActionsMenu"
-          class="popover-panel absolute right-0 z-10 mt-1 w-36 rounded-hud border border-cyber-border bg-cyber-glass py-1 backdrop-blur-md"
+          class="popover-panel absolute right-0 z-10 mt-1 w-36 rounded-hud border border-cyber-border bg-cyber-surface py-1 z-[1000000]"
           @click.stop
         >
           <button
@@ -249,13 +249,6 @@ async function saveEdit(): Promise<void> {
       :message="t('feed.postCard.confirmDeleteMessage')"
       @confirm="onConfirmDelete"
       @cancel="confirmingDelete = false"
-    />
-
-    <ReportDialog
-      :open="showReportDialog"
-      type="post"
-      :id="post.id"
-      @update:open="showReportDialog = $event"
     />
   </article>
 </template>
