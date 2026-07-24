@@ -1,7 +1,7 @@
 <script setup lang="ts">
 interface ModalProps {
   open: boolean
-  size?: 'sm' | 'md' | 'lg'
+  size?: 'sm' | 'md' | 'lg' | 'xl'
   variant?: 'center' | 'sheet'
   bare?: boolean
   closeOnBackdrop?: boolean
@@ -22,6 +22,7 @@ const SIZE_CLASS: Record<NonNullable<ModalProps['size']>, string> = {
   sm: 'max-w-sm',
   md: 'max-w-md',
   lg: 'max-w-lg',
+  xl: 'max-w-xl',
 }
 
 function onBackdropClick(): void {

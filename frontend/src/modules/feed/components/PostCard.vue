@@ -125,7 +125,7 @@ async function saveEdit(): Promise<void> {
           <span
             v-if="post.location"
             :title="t('feed.postCard.location')"
-            class="inline-flex items-center gap-1 rounded-full border border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest text-cyber-neon-cyan"
+            class="inline-flex items-center gap-1 rounded-full border border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 px-2 py-0.5 font-mono text-[9px] text-cyber-neon-cyan"
           >
             <MapPin class="h-2.5 w-2.5" />
             {{ post.location.name }}
@@ -146,7 +146,7 @@ async function saveEdit(): Promise<void> {
 
         <div
           v-if="showActionsMenu"
-          class="popover-panel absolute right-0 z-10 mt-1 w-36 rounded-hud border border-cyber-border bg-cyber-surface py-1"
+          class="popover-panel absolute right-0 z-10 mt-1 w-36 rounded-hud border border-cyber-border bg-cyber-surface py-1 z-[1000000]"
           @click.stop
         >
           <button

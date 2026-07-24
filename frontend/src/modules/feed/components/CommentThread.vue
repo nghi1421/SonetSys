@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Trash2, UserPlus } from '@lucide/vue'
+import { Trash2 } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import AppButton from '@/shared/components/ui/AppButton.vue'
 import AppUsername from '@/shared/components/ui/AppUsername.vue'
@@ -10,6 +10,7 @@ import ReportDialog from '@/shared/components/ui/ReportDialog.vue'
 import { useRelativeTime } from '@/shared/composables/useRelativeTime'
 import { useMentionPicker } from '../composables/useMentionPicker'
 import LinkifiedText from './LinkifiedText.vue'
+import MentionPicker from './MentionPicker.vue'
 import ReactionButton from './ReactionButton.vue'
 import { useFeedStore } from '../store/feedStore'
 import type { Comment, MentionCandidate, ReactionType } from '../types'
@@ -28,10 +29,6 @@ const reportTargetId = ref<number | null>(null)
 
 const mention = useMentionPicker()
 const mentionedUserIds = ref<number[]>([])
-
-function toggleMentionPicker(): void {
-  mention.toggle()
-}
 
 function selectMention(candidate: MentionCandidate): void {
   const trimmed = newComment.value.trimEnd()
@@ -119,7 +116,7 @@ async function onConfirmDelete(): Promise<void> {
             />
           </p>
           <div
-            class="mt-2 flex items-center gap-3 font-mono text-[9px] uppercase tracking-widest text-cyber-muted"
+            class="mt-2 flex items-center gap-3 font-mono text-[9px] text-cyber-muted"
           >
             <span>{{ useRelativeTime(comment.created_at) }}</span>
             <ReactionButton
@@ -174,7 +171,7 @@ async function onConfirmDelete(): Promise<void> {
             />
           </p>
           <div
-            class="mt-2 flex items-center gap-3 font-mono text-[9px] uppercase tracking-widest text-cyber-muted"
+            class="mt-2 flex items-center gap-3 font-mono text-[9px] text-cyber-muted"
           >
             <span>{{ useRelativeTime(reply.created_at) }}</span>
             <ReactionButton
@@ -217,56 +214,11 @@ async function onConfirmDelete(): Promise<void> {
           class="flex-1 rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-1.5 font-mono text-xs text-cyber-text backdrop-blur-md focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
         />
 
-        <div class="relative">
-          <button
-            type="button"
-            class="rounded-full p-1.5 text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
-            :aria-label="t('feed.commentThread.mention')"
-            @click="toggleMentionPicker"
-          >
-            <UserPlus class="h-4 w-4" />
-          </button>
-
-          <div v-if="mention.showPicker.value" class="fixed inset-0 z-0" @click="mention.close()" />
-
-          <div
-            v-if="mention.showPicker.value"
-            class="popover-panel absolute right-0 z-10 mt-2 w-64 rounded-hud border border-cyber-border bg-cyber-surface p-3"
-            @click.stop
-          >
-            <input
-              v-model="mention.query.value"
-              type="text"
-              :placeholder="t('feed.postComposer.mentionSearchPlaceholder')"
-              class="block w-full rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-1.5 font-mono text-xs text-cyber-text backdrop-blur-md transition-all duration-300 placeholder:text-cyber-muted focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
-              @input="mention.onSearchInput()"
-            />
-
-            <ul v-if="mention.results.value.length" class="mt-2 max-h-48 space-y-1 overflow-y-auto">
-              <li v-for="candidate in mention.results.value" :key="candidate.id">
-                <button
-                  type="button"
-                  class="block w-full rounded-hud px-2 py-1.5 text-left font-mono text-xs text-cyber-text transition-all duration-300 hover:bg-cyber-surface/60 hover:text-cyber-neon-cyan"
-                  @click="selectMention(candidate)"
-                >
-                  {{ candidate.name }}
-                </button>
-              </li>
-            </ul>
-            <p
-              v-else-if="mention.searching.value"
-              class="mt-2 font-mono text-[10px] text-cyber-muted"
-            >
-              {{ t('common.loading') }}
-            </p>
-            <p
-              v-else-if="mention.query.value.trim().length >= 2"
-              class="mt-2 font-mono text-[10px] text-cyber-muted"
-            >
-              {{ t('feed.postComposer.mentionNoResults') }}
-            </p>
-          </div>
-        </div>
+        <MentionPicker
+          :mention="mention"
+          :trigger-label="t('feed.commentThread.mention')"
+          @select="selectMention"
+        />
 
         <AppButton
           type="submit"
@@ -295,56 +247,11 @@ async function onConfirmDelete(): Promise<void> {
         class="flex-1 rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-1.5 font-mono text-xs text-cyber-text backdrop-blur-md focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
       />
 
-      <div class="relative">
-        <button
-          type="button"
-          class="rounded-full p-1.5 text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
-          :aria-label="t('feed.commentThread.mention')"
-          @click="toggleMentionPicker"
-        >
-          <UserPlus class="h-4 w-4" />
-        </button>
-
-        <div v-if="mention.showPicker.value" class="fixed inset-0 z-0" @click="mention.close()" />
-
-        <div
-          v-if="mention.showPicker.value"
-          class="popover-panel absolute right-0 z-10 mt-2 w-64 rounded-hud border border-cyber-border bg-cyber-surface p-3"
-          @click.stop
-        >
-          <input
-            v-model="mention.query.value"
-            type="text"
-            :placeholder="t('feed.postComposer.mentionSearchPlaceholder')"
-            class="block w-full rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-1.5 font-mono text-xs text-cyber-text backdrop-blur-md transition-all duration-300 placeholder:text-cyber-muted focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
-            @input="mention.onSearchInput()"
-          />
-
-          <ul v-if="mention.results.value.length" class="mt-2 max-h-48 space-y-1 overflow-y-auto">
-            <li v-for="candidate in mention.results.value" :key="candidate.id">
-              <button
-                type="button"
-                class="block w-full rounded-hud px-2 py-1.5 text-left font-mono text-xs text-cyber-text transition-all duration-300 hover:bg-cyber-surface/60 hover:text-cyber-neon-cyan"
-                @click="selectMention(candidate)"
-              >
-                {{ candidate.name }}
-              </button>
-            </li>
-          </ul>
-          <p
-            v-else-if="mention.searching.value"
-            class="mt-2 font-mono text-[10px] text-cyber-muted"
-          >
-            {{ t('common.loading') }}
-          </p>
-          <p
-            v-else-if="mention.query.value.trim().length >= 2"
-            class="mt-2 font-mono text-[10px] text-cyber-muted"
-          >
-            {{ t('feed.postComposer.mentionNoResults') }}
-          </p>
-        </div>
-      </div>
+      <MentionPicker
+        :mention="mention"
+        :trigger-label="t('feed.commentThread.mention')"
+        @select="selectMention"
+      />
 
       <AppButton
         type="submit"
