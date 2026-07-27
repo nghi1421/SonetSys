@@ -27,6 +27,12 @@
   "postComposer": {
     "title": "Create post",
     "placeholder": "Share something with your community…",
+    "visibilityLabel": "Who can see this?",
+    "visibilityOptions": {
+      "public": "Public",
+      "members": "Members",
+      "private": "Only me"
+    },
     "photoPreviewAlt": "Selected photo preview",
     "removeMedia": "Remove media",
     "removeSticker": "Remove sticker",

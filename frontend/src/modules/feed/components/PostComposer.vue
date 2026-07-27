@@ -5,10 +5,11 @@ import { Image, MapPin, Smile, UserPlus, UserRound, Video, X } from '@lucide/vue
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import AppButton from '@/shared/components/ui/AppButton.vue'
 import AppModal from '@/shared/components/ui/AppModal.vue'
+import AppSelect from '@/shared/components/ui/AppSelect.vue'
 import { locationApi } from '../api/locationApi'
 import { useMentionPicker } from '../composables/useMentionPicker'
 import { useStickerStore } from '../store/stickerStore'
-import type { CreatePostPayload, MentionCandidate, PostLocation } from '../types'
+import type { CreatePostPayload, MentionCandidate, PostLocation, PostVisibility } from '../types'
 
 const CHECK_IN_SEARCH_DEBOUNCE_MS = 400
 const CHECK_IN_MIN_QUERY_LENGTH = 2
@@ -32,6 +33,7 @@ function closeComposer(): void {
 const body = ref('')
 const loading = ref(false)
 const error = ref<string | null>(null)
+const visibility = ref<PostVisibility>('members')
 
 const mediaFile = ref<File | null>(null)
 const mediaType = ref<'image' | 'video' | null>(null)
@@ -216,6 +218,7 @@ async function handleSubmit(): Promise<void> {
   try {
     await props.onSubmit({
       body: body.value.trim(),
+      visibility: visibility.value,
       media: mediaFile.value ?? undefined,
       media_type: mediaType.value ?? undefined,
       sticker_key: selectedStickerKey.value ?? undefined,
@@ -225,6 +228,7 @@ async function handleSubmit(): Promise<void> {
       mentioned_user_ids: mentionedUserIds.value.length ? [...mentionedUserIds.value] : undefined,
     })
     body.value = ''
+    visibility.value = 'members'
     clearMedia()
     clearLocation()
     mentionedUserIds.value = []
@@ -274,6 +278,16 @@ async function handleSubmit(): Promise<void> {
         :placeholder="t('feed.postComposer.placeholder')"
         class="block w-full resize-none rounded-hud border border-cyber-border bg-cyber-surface/60 px-4 py-3 font-mono text-xs text-cyber-text backdrop-blur-md transition-all duration-300 placeholder:text-cyber-muted focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
       />
+
+      <AppSelect
+        v-model="visibility"
+        :label="t('feed.postComposer.visibilityLabel')"
+        class="w-48"
+      >
+        <option value="public">{{ t('feed.postComposer.visibilityOptions.public') }}</option>
+        <option value="members">{{ t('feed.postComposer.visibilityOptions.members') }}</option>
+        <option value="private">{{ t('feed.postComposer.visibilityOptions.private') }}</option>
+      </AppSelect>
 
       <div v-if="mediaPreviewUrl" class="relative w-fit">
         <img
