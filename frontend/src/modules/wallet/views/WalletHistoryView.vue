@@ -48,7 +48,7 @@ function signedAmount(transaction: WalletTransaction): string {
       <header class="rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md">
         <div class="flex items-center justify-between">
           <div>
-            <h1 class="text-sm font-bold tracking-wider text-cyber-text">// {{ t('wallet.historyView.title') }}</h1>
+            <h1 class="text-sm font-bold text-cyber-text">{{ t('wallet.historyView.title') }}</h1>
             <p class="mt-1 font-mono text-xs text-cyber-muted">{{ t('wallet.historyView.subtitle') }}</p>
           </div>
           <div class="flex items-center gap-2 rounded-full border border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 px-4 py-2">
@@ -87,7 +87,7 @@ function signedAmount(transaction: WalletTransaction): string {
             class="flex items-center justify-between gap-3 px-4 py-3 transition-all duration-300 hover:shadow-cyan-glow"
           >
             <div class="min-w-0">
-              <p class="font-mono text-xs font-bold uppercase tracking-wider text-cyber-text">
+              <p class="font-mono text-xs font-bold uppercase text-cyber-text">
                 {{ t(`wallet.reasons.${transaction.reason}`) }}
               </p>
               <p class="mt-0.5 font-mono text-[10px] uppercase tracking-widest text-cyber-muted">

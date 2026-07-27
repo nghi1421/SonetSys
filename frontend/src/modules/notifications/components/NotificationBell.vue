@@ -61,7 +61,7 @@ async function onItemClick(notification: AppNotification): Promise<void> {
         <button
           v-if="notificationStore.unreadCount > 0"
           type="button"
-          class="font-mono text-[10px] uppercase tracking-wider text-cyber-neon-indigo transition-colors duration-300 hover:text-cyber-neon-cyan"
+          class="font-mono text-[10px] uppercase text-cyber-neon-indigo transition-colors duration-300 hover:text-cyber-neon-cyan"
           @click="notificationStore.markAllAsRead"
         >
           {{ t('notifications.bell.markAllRead') }}

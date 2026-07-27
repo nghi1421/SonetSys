@@ -45,7 +45,7 @@ async function onSubmit(): Promise<void> {
   <AppModal :open="true" size="md" @close="emit('close')">
     <form class="space-y-4" @submit.prevent="onSubmit">
       <h2 class="font-mono text-xs font-bold uppercase tracking-widest text-cyber-text">
-        // {{ t('groups.createGroupModal.title') }}
+        {{ t('groups.createGroupModal.title') }}
       </h2>
 
       <AppAlert v-if="error">{{ error }}</AppAlert>
@@ -101,7 +101,7 @@ async function onSubmit(): Promise<void> {
       <div class="flex justify-end gap-3 pt-2">
         <button
           type="button"
-          class="rounded-full border border-cyber-border bg-cyber-glass px-4 py-1.5 font-mono text-xs uppercase tracking-wider text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
+          class="rounded-full border border-cyber-border bg-cyber-glass px-4 py-1.5 font-mono text-xs uppercase text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
           @click="emit('close')"
         >
           {{ t('common.cancel') }}

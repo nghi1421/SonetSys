@@ -275,7 +275,7 @@ watch(userId, load)
                 </template>
               </div>
               <div>
-                <h1 class="text-sm font-bold tracking-wider text-cyber-text">// {{ followStore.profile.name }}</h1>
+                <h1 class="text-sm font-bold text-cyber-text">{{ followStore.profile.name }}</h1>
                 <p class="mt-1 font-mono text-[10px] uppercase tracking-widest text-cyber-muted">
                   {{ t('follow.joined') }} {{ useRelativeTime(followStore.profile.created_at) }}
                 </p>

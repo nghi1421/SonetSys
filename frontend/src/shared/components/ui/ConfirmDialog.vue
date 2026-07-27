@@ -23,14 +23,14 @@ const { t } = useI18n()
     <div class="mt-4 flex justify-end gap-3">
       <button
         type="button"
-        class="rounded-full border border-cyber-border bg-cyber-glass px-4 py-1.5 font-mono text-xs uppercase tracking-wider text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
+        class="rounded-full border border-cyber-border bg-cyber-glass px-4 py-1.5 font-mono text-xs uppercase text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
         @click="emit('cancel')"
       >
         {{ t('common.cancel') }}
       </button>
       <button
         type="button"
-        class="rounded-full border border-cyber-neon-pink/30 bg-cyber-neon-pink/10 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-cyber-neon-pink transition-all duration-300 hover:shadow-pink-glow"
+        class="rounded-full border border-cyber-neon-pink/30 bg-cyber-neon-pink/10 px-4 py-1.5 font-mono text-xs font-bold uppercase text-cyber-neon-pink transition-all duration-300 hover:shadow-pink-glow"
         @click="emit('confirm')"
       >
         {{ t('common.delete') }}

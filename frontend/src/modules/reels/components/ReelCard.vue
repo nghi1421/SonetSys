@@ -167,7 +167,7 @@ async function onConfirmDelete(): Promise<void> {
           :to="`/users/${reel.author.id}`"
           class="font-mono text-xs font-bold uppercase tracking-widest text-white drop-shadow transition-colors duration-300 hover:text-cyber-neon-cyan"
         >
-          // {{ reel.author.name }}
+          {{ reel.author.name }}
         </router-link>
         <p v-if="reel.body" class="mt-1 font-mono text-xs text-white/90 drop-shadow">
           <LinkifiedText :text="reel.body" :hashtags="reel.hashtags" :mentions="reel.mentions" />
@@ -206,7 +206,7 @@ async function onConfirmDelete(): Promise<void> {
         </p>
         <button
           type="button"
-          class="font-mono text-[10px] uppercase tracking-wider text-cyber-muted hover:text-cyber-neon-cyan"
+          class="font-mono text-[10px] uppercase text-cyber-muted hover:text-cyber-neon-cyan"
           @click="showComments = false"
         >
           {{ t('common.close') }}

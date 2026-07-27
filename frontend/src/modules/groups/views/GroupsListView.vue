@@ -38,7 +38,7 @@ async function onJoin(groupId: number): Promise<void> {
   <AppShell>
     <div class="mx-auto max-w-4xl space-y-4">
       <div class="flex items-center justify-between">
-        <h1 class="text-sm font-bold tracking-wider text-cyber-text">// {{ t('groups.groupsList.title') }}</h1>
+        <h1 class="text-sm font-bold text-cyber-text">{{ t('groups.groupsList.title') }}</h1>
         <AppButton :label="t('groups.groupsList.createButton')" @click="showCreateModal = true" />
       </div>
 

@@ -151,7 +151,7 @@ async function onLogout(): Promise<void> {
         v-if="isAdmin"
         :to="{ name: 'admin-dashboard' }"
         :title="t('common.adminPanel')"
-        class="flex items-center gap-2.5 rounded-hud px-3 py-2 font-mono text-xs font-bold uppercase tracking-wider text-cyber-neon-indigo transition-all duration-300 hover:text-cyber-neon-cyan"
+        class="flex items-center gap-2.5 rounded-hud px-3 py-2 font-mono text-xs font-bold uppercase text-cyber-neon-indigo transition-all duration-300 hover:text-cyber-neon-cyan"
       >
         <LayoutDashboard class="h-4 w-4 shrink-0" />
         <span>{{ t('common.adminPanel') }}</span>

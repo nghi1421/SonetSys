@@ -186,7 +186,7 @@ async function saveEdit(): Promise<void> {
       <div class="flex justify-end gap-3">
         <button
           type="button"
-          class="rounded-full border border-cyber-border bg-cyber-glass px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
+          class="rounded-full border border-cyber-border bg-cyber-glass px-3 py-1.5 font-mono text-xs uppercase text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
           @click="editing = false"
         >
           {{ t('common.cancel') }}
