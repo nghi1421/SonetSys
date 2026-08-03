@@ -21,7 +21,7 @@ onMounted(() => {
 <template>
   <AppShell>
     <div class="mx-auto max-w-2xl space-y-4">
-      <h1 class="text-sm font-bold tracking-wider text-cyber-text">// {{ t('follow.blockedUsers.title') }}</h1>
+      <h1 class="text-sm font-bold text-cyber-text">{{ t('follow.blockedUsers.title') }}</h1>
 
       <div v-if="followStore.blockedUsersLoading" class="space-y-3">
         <div

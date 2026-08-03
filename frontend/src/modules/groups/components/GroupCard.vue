@@ -33,7 +33,7 @@ const membershipDotClass = computed(() => {
     class="flex flex-col gap-3 rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
   >
     <div class="flex items-start justify-between gap-2">
-      <h3 class="text-xs font-bold tracking-wider text-cyber-text">// {{ group.name }}</h3>
+      <h3 class="text-xs font-bold text-cyber-text">{{ group.name }}</h3>
 
       <span
         class="inline-flex shrink-0 items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest"

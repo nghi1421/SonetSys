@@ -85,7 +85,7 @@ function createGroupPost(payload: Parameters<typeof feedStore.createGroupPost>[1
         <header class="rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md">
           <div class="flex items-start justify-between gap-3">
             <div class="min-w-0">
-              <h1 class="text-sm font-bold tracking-wider text-cyber-text">// {{ group.name }}</h1>
+              <h1 class="text-sm font-bold text-cyber-text">{{ group.name }}</h1>
               <div class="mt-2 flex flex-wrap items-center gap-2">
                 <span
                   class="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest"
@@ -116,7 +116,7 @@ function createGroupPost(payload: Parameters<typeof feedStore.createGroupPost>[1
               v-else-if="group.viewer_membership.status === 'pending'"
               type="button"
               disabled
-              class="shrink-0 rounded-full border border-amber-500/30 bg-amber-500/10 px-4 py-2 font-mono text-xs uppercase tracking-wider text-amber-400"
+              class="shrink-0 rounded-full border border-amber-500/30 bg-amber-500/10 px-4 py-2 font-mono text-xs uppercase text-amber-400"
             >
               {{ t('groups.roles.requested') }}
             </button>
@@ -124,7 +124,7 @@ function createGroupPost(payload: Parameters<typeof feedStore.createGroupPost>[1
               v-else-if="!isOwner"
               type="button"
               :disabled="joiningOrLeaving"
-              class="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-cyber-border bg-cyber-glass px-4 py-2 font-mono text-xs uppercase tracking-wider text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-pink/50 hover:text-cyber-neon-pink hover:shadow-pink-glow disabled:cursor-not-allowed disabled:opacity-40"
+              class="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-cyber-border bg-cyber-glass px-4 py-2 font-mono text-xs uppercase text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-pink/50 hover:text-cyber-neon-pink hover:shadow-pink-glow disabled:cursor-not-allowed disabled:opacity-40"
               @click="onLeave"
             >
               <LogOut class="h-3.5 w-3.5" /> {{ t('groups.groupDetail.leave') }}

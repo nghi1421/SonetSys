@@ -117,7 +117,7 @@ async function onConfirmDelete(): Promise<void> {
       </p>
       <button
         type="button"
-        class="mt-4 rounded-full border border-cyber-neon-pink/30 bg-cyber-neon-pink/10 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-cyber-neon-pink transition-all duration-300 hover:shadow-pink-glow disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
+        class="mt-4 rounded-full border border-cyber-neon-pink/30 bg-cyber-neon-pink/10 px-4 py-1.5 font-mono text-xs font-bold uppercase text-cyber-neon-pink transition-all duration-300 hover:shadow-pink-glow disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
         :disabled="deleting"
         @click="confirmingDelete = true"
       >

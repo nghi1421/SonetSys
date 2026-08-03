@@ -23,7 +23,7 @@ function onChange(event: Event): void {
   <select
     v-if="showSwitcher"
     :value="localeStore.currentLocale"
-    class="rounded-full border px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider focus:outline-none focus:ring-2"
+    class="rounded-full border px-2.5 py-1 text-[10px] font-medium uppercase focus:outline-none focus:ring-2"
     :class="
       variant === 'dark'
         ? 'border-cyber-border bg-cyber-glass text-cyber-muted backdrop-blur-md focus:ring-cyber-neon-indigo/60'

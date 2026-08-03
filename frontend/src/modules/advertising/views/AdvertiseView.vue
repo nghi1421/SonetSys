@@ -110,8 +110,8 @@ async function onCancel(campaign: AdCampaign): Promise<void> {
       <header class="rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md">
         <div class="flex items-center justify-between">
           <div>
-            <h1 class="text-sm font-bold tracking-wider text-cyber-text">
-              // {{ t('advertising.advertiseView.title') }}
+            <h1 class="text-sm font-bold text-cyber-text">
+              {{ t('advertising.advertiseView.title') }}
             </h1>
             <p class="mt-1 font-mono text-xs text-cyber-muted">{{ t('advertising.advertiseView.subtitle') }}</p>
           </div>

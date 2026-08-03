@@ -50,7 +50,7 @@ watch(
       </div> 
 
       <div v-else-if="item" class="rounded-hud border border-cyber-border bg-cyber-glass p-6 backdrop-blur-md">
-        <h1 class="text-sm font-bold tracking-wider text-cyber-text">// {{ item.label }}</h1>
+        <h1 class="text-sm font-bold text-cyber-text">{{ item.label }}</h1>
 
         <div v-if="item.static_page" class="mt-4">
           <h2 class="text-xs font-bold text-cyber-text">{{ item.static_page.title }}</h2>
