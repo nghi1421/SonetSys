@@ -14,6 +14,7 @@ use App\Modules\Notification\NotificationServiceProvider;
 use App\Modules\Report\ReportServiceProvider;
 use App\Modules\Search\SearchServiceProvider;
 use App\Modules\Story\StoryServiceProvider;
+use App\Modules\Subscription\SubscriptionServiceProvider;
 use App\Modules\Wallet\WalletServiceProvider;
 use App\Providers\AppServiceProvider;
 
@@ -33,5 +34,6 @@ return [
     ReportServiceProvider::class,
     SearchServiceProvider::class,
     StoryServiceProvider::class,
+    SubscriptionServiceProvider::class,
     WalletServiceProvider::class,
 ];

@@ -29,6 +29,8 @@ enum PermissionSlug: string
 
     case ReactionsManage = 'reactions.manage';
 
+    case SubscriptionManage = 'subscription.manage';
+
     public function group(): string
     {
         return match ($this) {
@@ -44,6 +46,7 @@ enum PermissionSlug: string
             self::AdsReview => 'ads',
             self::ReportsReview => 'reports',
             self::ReactionsManage => 'reactions',
+            self::SubscriptionManage => 'subscription',
         };
     }
 
@@ -63,6 +66,7 @@ enum PermissionSlug: string
             self::AdsReview,
             self::ReportsReview,
             self::ReactionsManage,
+            self::SubscriptionManage,
         ];
     }
 

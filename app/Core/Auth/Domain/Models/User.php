@@ -7,6 +7,7 @@ namespace App\Core\Auth\Domain\Models;
 use App\Core\Auth\Domain\Enums\RoleSlug;
 use App\Core\Auth\Domain\Enums\UserStatus;
 use App\Core\Auth\Domain\Notifications\ResetPasswordNotification;
+use App\Modules\Subscription\Application\Services\SubscriptionService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -61,6 +62,11 @@ final class User extends Authenticatable
         $slug = $slug instanceof RoleSlug ? $slug->value : $slug;
 
         return $this->role?->slug === $slug;
+    }
+
+    public function isPremium(): bool
+    {
+        return app(SubscriptionService::class)->isPremium((int) $this->id);
     }
 
     /**

@@ -36,7 +36,8 @@
     "ads": "Ad Review",
     "reports": "Reports",
     "settings": "System Settings",
-    "reactions": "Reactions"
+    "reactions": "Reactions",
+    "subscriptions": "Subscriptions"
   },
   "mediaPreview": {
     "closePreview": "Close preview",

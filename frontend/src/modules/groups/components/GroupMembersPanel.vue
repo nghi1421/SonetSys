@@ -123,7 +123,7 @@ function canRemove(member: GroupMember): boolean {
         <li v-for="member in groupStore.members" :key="member.id" class="flex items-center justify-between gap-3 py-3">
           <div class="min-w-0">
             <p class="truncate text-xs font-bold text-cyber-text">{{ member.user.name }}</p>
-            <p class="mt-0.5 font-mono text-[9px] uppercase tracking-widest text-cyber-muted">{{ member.role }}</p>
+            <p class="mt-0.5 font-mono text-xs uppercase tracking-widest text-cyber-muted">{{ member.role }}</p>
           </div>
 
           <div class="flex shrink-0 items-center gap-1">

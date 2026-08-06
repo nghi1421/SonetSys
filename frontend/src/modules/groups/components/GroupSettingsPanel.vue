@@ -65,7 +65,7 @@ async function onConfirmDelete(): Promise<void> {
       <AppInput v-model="name" :label="t('groups.groupSettings.nameLabel')" />
 
       <div class="space-y-1.5">
-        <label class="block text-[9px] font-mono uppercase tracking-widest text-cyber-neon-cyan">
+        <label class="block text-xs font-mono uppercase tracking-widest text-cyber-neon-cyan">
           {{ t('groups.groupSettings.descriptionLabel') }}
         </label>
         <textarea
@@ -76,7 +76,7 @@ async function onConfirmDelete(): Promise<void> {
       </div>
 
       <div class="space-y-1.5">
-        <label class="block text-[9px] font-mono uppercase tracking-widest text-cyber-neon-cyan">
+        <label class="block text-xs font-mono uppercase tracking-widest text-cyber-neon-cyan">
           {{ t('groups.groupSettings.visibilityLabel') }}
         </label>
         <div class="grid grid-cols-2 gap-2">

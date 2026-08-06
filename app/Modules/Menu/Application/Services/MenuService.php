@@ -91,6 +91,14 @@ final class MenuService
             'is_home' => false,
             'static_page_id' => null,
         ]);
+
+        $this->items->create([
+            'label' => 'Subscription',
+            'slug' => 'subscription',
+            'position' => 3,
+            'is_home' => false,
+            'static_page_id' => null,
+        ]);
     }
 
     private function uniqueSlug(string $base): string

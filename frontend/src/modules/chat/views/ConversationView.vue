@@ -151,7 +151,7 @@ onBeforeUnmount(() => {
             "
           >
             <p class="whitespace-pre-wrap break-words font-mono text-xs text-cyber-text">{{ message.body }}</p>
-            <p class="mt-1 font-mono text-[9px] uppercase tracking-widest text-cyber-muted">
+            <p class="mt-1 font-mono text-xs uppercase tracking-widest text-cyber-muted">
               {{ useRelativeTime(message.created_at) }}
             </p>
           </div>

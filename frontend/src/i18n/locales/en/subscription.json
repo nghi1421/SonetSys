@@ -1,0 +1,38 @@
+{
+  "subscriptionView": {
+    "title": "Subscription",
+    "subtitle": "Subscribe with wallet credits for a premium badge and boost perks.",
+    "walletHint": "Available balance",
+    "loadError": "Could not load subscription data. Please try again.",
+    "plans": {
+      "basic": "Basic",
+      "pro": "Pro"
+    },
+    "form": {
+      "title": "Choose a plan",
+      "subscribe": "Subscribe",
+      "subscribeError": "Could not subscribe. Please try again.",
+      "boostWaiver": "{percent}% off boost platform fees"
+    },
+    "current": {
+      "title": "Your subscription",
+      "renewsOn": "Renews",
+      "endsOn": "Ends",
+      "cancel": "Cancel",
+      "cancelError": "Could not cancel your subscription. Please try again."
+    }
+  },
+  "adminSubscriptionsView": {
+    "title": "Subscriptions",
+    "subtitle": "Review and manage user subscriptions.",
+    "userHeader": "User",
+    "planHeader": "Plan",
+    "statusHeader": "Status",
+    "autoRenewHeader": "Auto-renew",
+    "actionsHeader": "Actions",
+    "emptyState": "No subscriptions yet.",
+    "forceCancel": "Force cancel",
+    "cancelError": "Could not cancel this subscription. Please try again.",
+    "loadError": "Could not load subscriptions. Please try again."
+  }
+}

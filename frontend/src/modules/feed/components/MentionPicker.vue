@@ -113,13 +113,13 @@ onBeforeUnmount(unbindReposition)
         </ul>
         <p
           v-else-if="mention.searching.value"
-          class="mt-2 font-mono text-[10px] text-cyber-muted"
+          class="mt-2 font-mono text-xs text-cyber-muted"
         >
           {{ t('common.loading') }}
         </p>
         <p
           v-else-if="mention.query.value.trim().length >= 2"
-          class="mt-2 font-mono text-[10px] text-cyber-muted"
+          class="mt-2 font-mono text-xs text-cyber-muted"
         >
           {{ t('feed.postComposer.mentionNoResults') }}
         </p>

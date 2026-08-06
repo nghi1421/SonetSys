@@ -23,6 +23,7 @@ final class UserProfileResource extends JsonResource
             'is_followed_by' => (bool) ($this->is_followed_by ?? false),
             'is_blocked' => (bool) ($this->is_blocked ?? false),
             'is_blocked_by' => (bool) ($this->is_blocked_by ?? false),
+            'is_premium' => $this->isPremium(),
         ];
     }
 }

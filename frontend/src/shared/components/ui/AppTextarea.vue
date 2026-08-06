@@ -26,7 +26,7 @@ const id = `field-${Math.random().toString(36).slice(2, 9)}`
     <label
       v-if="label"
       :for="id"
-      class="block text-[9px] font-mono uppercase tracking-widest text-cyber-neon-cyan"
+      class="block text-xs font-mono uppercase tracking-widest text-cyber-neon-cyan"
     >
       {{ label }}
     </label>

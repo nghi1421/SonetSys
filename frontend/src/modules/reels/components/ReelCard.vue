@@ -185,7 +185,7 @@ async function onConfirmDelete(): Promise<void> {
 
         <button
           type="button"
-          class="inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-black/40 px-2.5 py-1 font-mono text-[10px] text-white backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/40 hover:text-cyber-neon-cyan"
+          class="inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-black/40 px-2.5 py-1 font-mono text-xs text-white backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/40 hover:text-cyber-neon-cyan"
           @click="onToggleComments"
         >
           <MessageCircle class="h-3 w-3" />
@@ -206,7 +206,7 @@ async function onConfirmDelete(): Promise<void> {
         </p>
         <button
           type="button"
-          class="font-mono text-[10px] uppercase text-cyber-muted hover:text-cyber-neon-cyan"
+          class="font-mono text-xs uppercase text-cyber-muted hover:text-cyber-neon-cyan"
           @click="showComments = false"
         >
           {{ t('common.close') }}

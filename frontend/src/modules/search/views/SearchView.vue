@@ -90,7 +90,7 @@ onBeforeUnmount(() => {
 
       <template v-else>
         <section v-if="searchStore.results.posts.length" class="space-y-2">
-          <h2 class="font-mono text-[10px] uppercase tracking-widest text-cyber-neon-cyan">
+          <h2 class="font-mono text-xs uppercase tracking-widest text-cyber-neon-cyan">
             {{ t('search.searchView.sections.posts') }}
           </h2>
           <router-link
@@ -99,13 +99,13 @@ onBeforeUnmount(() => {
             :to="{ name: 'post-detail', params: { id: post.id } }"
             class="block rounded-hud border border-cyber-border bg-cyber-glass p-3 backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
           >
-            <p class="font-mono text-[9px] uppercase tracking-widest text-cyber-muted">{{ post.author.name }}</p>
+            <p class="font-mono text-xs uppercase tracking-widest text-cyber-muted">{{ post.author.name }}</p>
             <p class="mt-1 line-clamp-2 font-mono text-xs leading-relaxed text-cyber-text/90">{{ post.body }}</p>
           </router-link>
         </section>
 
         <section v-if="searchStore.results.users.length" class="space-y-2">
-          <h2 class="font-mono text-[10px] uppercase tracking-widest text-cyber-neon-indigo">
+          <h2 class="font-mono text-xs uppercase tracking-widest text-cyber-neon-indigo">
             {{ t('search.searchView.sections.people') }}
           </h2>
           <router-link
@@ -131,7 +131,7 @@ onBeforeUnmount(() => {
         </section>
 
         <section v-if="searchStore.results.groups.length" class="space-y-2">
-          <h2 class="font-mono text-[10px] uppercase tracking-widest text-cyber-neon-pink">
+          <h2 class="font-mono text-xs uppercase tracking-widest text-cyber-neon-pink">
             {{ t('search.searchView.sections.groups') }}
           </h2>
           <router-link
@@ -157,7 +157,7 @@ onBeforeUnmount(() => {
         </section>
 
         <section v-if="searchStore.results.hashtags.length" class="space-y-2">
-          <h2 class="font-mono text-[10px] uppercase tracking-widest text-cyber-neon-cyan">
+          <h2 class="font-mono text-xs uppercase tracking-widest text-cyber-neon-cyan">
             {{ t('search.searchView.sections.hashtags') }}
           </h2>
           <div class="flex flex-wrap gap-2">

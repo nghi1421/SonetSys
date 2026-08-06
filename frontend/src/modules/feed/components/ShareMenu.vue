@@ -49,7 +49,7 @@ async function onCopyLink(): Promise<void> {
   <div class="relative">
     <button
       type="button"
-      class="inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-cyber-glass px-2.5 py-1 font-mono text-[10px] text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-indigo/40 hover:text-cyber-neon-indigo"
+      class="inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-cyber-glass px-2.5 py-1 font-mono text-xs text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-indigo/40 hover:text-cyber-neon-indigo"
       @click="toggle"
     >
       <Share2 class="h-3 w-3" />

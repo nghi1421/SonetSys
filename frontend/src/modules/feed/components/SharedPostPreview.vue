@@ -10,7 +10,7 @@ defineProps<{ post: Post }>()
 <template>
   <div class="rounded-hud border border-cyber-border bg-cyber-surface/40 p-3 backdrop-blur-md">
     <AppUsername :user="post.author" />
-    <p class="mt-0.5 font-mono text-[9px] uppercase tracking-widest text-cyber-muted">
+    <p class="mt-0.5 font-mono text-xs uppercase tracking-widest text-cyber-muted">
       {{ useRelativeTime(post.created_at) }}
     </p>
     <p

@@ -117,7 +117,7 @@ async function onSubmit(): Promise<void> {
       @click="pickVideo"
     >
       <Video class="h-6 w-6" />
-      <span class="font-mono text-[10px] uppercase tracking-widest">{{
+      <span class="font-mono text-xs uppercase tracking-widest">{{
         t('reels.createModal.addVideo')
       }}</span>
     </button>

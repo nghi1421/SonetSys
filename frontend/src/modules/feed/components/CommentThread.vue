@@ -116,7 +116,7 @@ async function onConfirmDelete(): Promise<void> {
             />
           </p>
           <div
-            class="mt-2 flex items-center gap-3 font-mono text-[9px] text-cyber-muted"
+            class="mt-2 flex items-center gap-3 font-mono text-xs text-cyber-muted"
           >
             <span>{{ useRelativeTime(comment.created_at) }}</span>
             <ReactionButton
@@ -171,7 +171,7 @@ async function onConfirmDelete(): Promise<void> {
             />
           </p>
           <div
-            class="mt-2 flex items-center gap-3 font-mono text-[9px] text-cyber-muted"
+            class="mt-2 flex items-center gap-3 font-mono text-xs text-cyber-muted"
           >
             <span>{{ useRelativeTime(reply.created_at) }}</span>
             <ReactionButton
