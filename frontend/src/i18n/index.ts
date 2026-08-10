@@ -17,6 +17,7 @@ import settings from './locales/en/settings.json'
 import stories from './locales/en/stories.json'
 import storage from './locales/en/storage.json'
 import wallet from './locales/en/wallet.json'
+import widgets from './locales/en/widgets.json'
 
 export const SUPPORTED_LOCALES = ['en'] as const
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number]
@@ -42,6 +43,7 @@ const en = {
   search,
   report,
   settings,
+  widgets,
 }
 
 export const i18n = createI18n({

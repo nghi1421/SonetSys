@@ -4,7 +4,9 @@ import { useI18n } from 'vue-i18n'
 import { Inbox } from '@lucide/vue'
 import AppShell from '@/shared/components/layout/AppShell.vue'
 import AppButton from '@/shared/components/ui/AppButton.vue'
+import PopularGroupsWidget from '@/modules/groups/components/PopularGroupsWidget.vue'
 import StoriesReel from '@/modules/stories/components/StoriesReel.vue'
+import NewMembersWidget from '@/modules/users/components/NewMembersWidget.vue'
 import PostCard from '../components/PostCard.vue'
 import PostComposer from '../components/PostComposer.vue'
 import PostDetailModal from '../components/PostDetailModal.vue'
@@ -137,6 +139,11 @@ onMounted(() => {
         </template>
       </template>
     </div>
+
+    <template #right>
+      <NewMembersWidget />
+      <PopularGroupsWidget />
+    </template>
 
     <PostDetailModal v-if="modalPost" :post="modalPost" @close="modalPost = null" />
   </AppShell>

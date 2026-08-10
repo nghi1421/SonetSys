@@ -4,11 +4,16 @@ import { userApi } from '../api/userApi'
 import type { UpdateUserPayload } from '../api/userApi'
 import type { PaginationMeta } from '@/shared/api/types'
 import type { User } from '@/modules/auth/types'
+import type { RecentUser } from '../types'
 
 export const useUserStore = defineStore('users', () => {
   const users = ref<User[]>([])
   const meta = ref<PaginationMeta | null>(null)
   const loading = ref(false)
+
+  const recentUsers = ref<RecentUser[]>([])
+  const recentLoading = ref(false)
+  const recentError = ref(false)
 
   async function fetchUsers(page = 1): Promise<void> {
     loading.value = true
@@ -29,11 +34,27 @@ export const useUserStore = defineStore('users', () => {
     }
   }
 
+  async function fetchRecent(): Promise<void> {
+    recentLoading.value = true
+    recentError.value = false
+    try {
+      recentUsers.value = await userApi.recent()
+    } catch {
+      recentError.value = true
+    } finally {
+      recentLoading.value = false
+    }
+  }
+
   return {
     users,
     meta,
     loading,
     fetchUsers,
     updateUser,
+    recentUsers,
+    recentLoading,
+    recentError,
+    fetchRecent,
   }
 })
