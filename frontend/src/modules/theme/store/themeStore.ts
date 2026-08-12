@@ -4,7 +4,7 @@ import { getStoredTheme, setStoredTheme } from '@/shared/api/themeStorage'
 
 export type Theme = 'dark' | 'light'
 
-const DEFAULT_THEME: Theme = 'dark'
+const DEFAULT_THEME: Theme = 'light'
 
 function resolveInitialTheme(): Theme {
   const stored = getStoredTheme()
