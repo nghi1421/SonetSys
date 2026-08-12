@@ -124,11 +124,11 @@ async function saveEdit(): Promise<void> {
           </span>
           <span
             v-if="post.location"
-            :title="t('feed.postCard.location')"
- class="inline-flex items-center gap-1 rounded-full border border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 px-2 py-0.5 text-xs text-cyber-neon-cyan"
+            :title="post.location.name"
+            class="inline-flex max-w-[120px] items-center gap-1 rounded-full border border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 px-2 py-0.5 text-xs text-cyber-neon-cyan sm:max-w-[220px]"
           >
-            <MapPin class="h-2.5 w-2.5" />
-            {{ post.location.name }}
+            <MapPin class="h-2.5 w-2.5 shrink-0" />
+            <span class="min-w-0 truncate">{{ post.location.name }}</span>
           </span>
         </div>
       </div>
