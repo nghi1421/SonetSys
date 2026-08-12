@@ -108,7 +108,7 @@ async function onSubmit(): Promise<void> {
 
 <template>
   <AppModal :open="open" size="md" @close="close">
-    <h2 class="font-mono text-xs font-bold uppercase tracking-widest text-cyber-text">
+ <h2 class="text-xs font-bold text-cyber-text">
       {{ t('stories.createModal.title') }}
     </h2>
 
@@ -145,7 +145,7 @@ async function onSubmit(): Promise<void> {
         @click="pickPhoto"
       >
         <Image class="h-5 w-5" />
-        <span class="font-mono text-xs uppercase tracking-widest">{{
+ <span class="text-xs">{{
           t('stories.createModal.addPhoto')
         }}</span>
       </button>
@@ -155,7 +155,7 @@ async function onSubmit(): Promise<void> {
         @click="pickVideo"
       >
         <Video class="h-5 w-5" />
-        <span class="font-mono text-xs uppercase tracking-widest">{{
+ <span class="text-xs">{{
           t('stories.createModal.addVideo')
         }}</span>
       </button>
@@ -169,12 +169,12 @@ async function onSubmit(): Promise<void> {
       :placeholder="t('stories.createModal.captionPlaceholder')"
     />
 
-    <p v-if="error" class="mt-2 font-mono text-xs text-cyber-neon-pink">{{ error }}</p>
+ <p v-if="error" class="mt-2 text-xs text-cyber-neon-pink">{{ error }}</p>
 
     <div class="mt-4 flex justify-end gap-3">
       <button
         type="button"
-        class="rounded-full border border-cyber-border bg-cyber-glass px-4 py-1.5 font-mono text-xs uppercase text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
+ class="rounded-full border border-cyber-border bg-cyber-glass px-4 py-1.5 text-xs text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
         @click="close"
       >
         {{ t('common.cancel') }}

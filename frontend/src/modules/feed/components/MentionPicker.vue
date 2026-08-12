@@ -96,7 +96,7 @@ onBeforeUnmount(unbindReposition)
           v-model="mention.query.value"
           type="text"
           :placeholder="t('feed.postComposer.mentionSearchPlaceholder')"
-          class="block w-full rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-1.5 font-mono text-xs text-cyber-text backdrop-blur-md transition-all duration-300 placeholder:text-cyber-muted focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
+ class="block w-full rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-1.5 text-xs text-cyber-text backdrop-blur-md transition-all duration-300 placeholder:text-cyber-muted focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
           @input="mention.onSearchInput()"
         />
 
@@ -104,7 +104,7 @@ onBeforeUnmount(unbindReposition)
           <li v-for="candidate in mention.results.value" :key="candidate.id">
             <button
               type="button"
-              class="block w-full rounded-hud px-2 py-1.5 text-left font-mono text-xs text-cyber-text transition-all duration-300 hover:bg-cyber-surface/60 hover:text-cyber-neon-cyan"
+ class="block w-full rounded-hud px-2 py-1.5 text-left text-xs text-cyber-text transition-all duration-300 hover:bg-cyber-surface/60 hover:text-cyber-neon-cyan"
               @click="onSelect(candidate)"
             >
               {{ candidate.name }}
@@ -113,13 +113,13 @@ onBeforeUnmount(unbindReposition)
         </ul>
         <p
           v-else-if="mention.searching.value"
-          class="mt-2 font-mono text-xs text-cyber-muted"
+ class="mt-2 text-xs text-cyber-muted"
         >
           {{ t('common.loading') }}
         </p>
         <p
           v-else-if="mention.query.value.trim().length >= 2"
-          class="mt-2 font-mono text-xs text-cyber-muted"
+ class="mt-2 text-xs text-cyber-muted"
         >
           {{ t('feed.postComposer.mentionNoResults') }}
         </p>

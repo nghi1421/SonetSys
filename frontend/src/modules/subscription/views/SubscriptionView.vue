@@ -86,12 +86,12 @@ function extractError(err: unknown, fallback: string): string {
             <h1 class="text-sm font-bold text-cyber-text">
               {{ t('subscription.subscriptionView.title') }}
             </h1>
-            <p class="mt-1 font-mono text-xs text-cyber-muted">{{ t('subscription.subscriptionView.subtitle') }}</p>
+ <p class="mt-1 text-xs text-cyber-muted">{{ t('subscription.subscriptionView.subtitle') }}</p>
           </div>
           <div class="flex items-center gap-2 rounded-full border border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 px-4 py-2">
             <Coins class="h-4 w-4 text-cyber-neon-cyan" />
             <div class="text-right">
-              <p class="hidden font-mono text-xs uppercase tracking-widest text-cyber-neon-cyan sm:block">
+ <p class="hidden text-xs text-cyber-neon-cyan sm:block">
                 {{ t('subscription.subscriptionView.walletHint') }}
               </p>
               <p class="font-mono text-sm font-bold tabular-nums text-cyber-text">{{ walletStore.balance }}</p>
@@ -107,7 +107,7 @@ function extractError(err: unknown, fallback: string): string {
         v-if="subscriptionStore.current"
         class="rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md"
       >
-        <h2 class="text-xs font-bold uppercase tracking-widest text-cyber-text">
+ <h2 class="text-xs font-bold text-cyber-text">
           {{ t('subscription.subscriptionView.current.title') }}
         </h2>
 
@@ -115,11 +115,11 @@ function extractError(err: unknown, fallback: string): string {
 
         <div class="mt-3 flex items-center justify-between">
           <div>
-            <p class="flex items-center gap-1.5 font-mono text-xs text-cyber-text">
+ <p class="flex items-center gap-1.5 text-xs text-cyber-text">
               <Crown class="h-3.5 w-3.5 text-cyber-neon-indigo" />
               {{ t(`subscription.subscriptionView.plans.${subscriptionStore.current.plan}`) }}
             </p>
-            <p class="mt-1 font-mono text-xs uppercase tracking-widest text-cyber-muted">
+ <p class="mt-1 text-xs text-cyber-muted">
               {{
                 subscriptionStore.current.auto_renew
                   ? t('subscription.subscriptionView.current.renewsOn')
@@ -140,7 +140,7 @@ function extractError(err: unknown, fallback: string): string {
       </section>
 
       <section v-if="isOnFreePlan" class="rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md">
-        <h2 class="text-xs font-bold uppercase tracking-widest text-cyber-text">
+ <h2 class="text-xs font-bold text-cyber-text">
           {{ t('subscription.subscriptionView.form.title') }}
         </h2>
 
@@ -150,11 +150,11 @@ function extractError(err: unknown, fallback: string): string {
             :key="plan.id"
             class="rounded-hud border border-cyber-border bg-cyber-surface/60 p-4 backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-indigo/50 hover:shadow-cyan-glow"
           >
-            <p class="font-mono text-xs font-bold uppercase tracking-widest text-cyber-text">
+ <p class="text-xs font-bold text-cyber-text">
               {{ t(`subscription.subscriptionView.plans.${plan.id}`) }}
             </p>
             <p class="mt-2 font-mono text-lg font-bold tabular-nums text-cyber-neon-cyan">{{ plan.price }}</p>
-            <p class="mt-1 font-mono text-xs text-cyber-muted">
+ <p class="mt-1 text-xs text-cyber-muted">
               {{ t('subscription.subscriptionView.form.boostWaiver', { percent: plan.boost_fee_waiver_percent }) }}
             </p>
             <AppButton

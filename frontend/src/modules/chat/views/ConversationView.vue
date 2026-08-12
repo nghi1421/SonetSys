@@ -105,7 +105,7 @@ onBeforeUnmount(() => {
           />
           <span
             v-else
-            class="flex h-8 w-8 items-center justify-center rounded-full border border-cyber-border bg-cyber-surface font-mono text-xs font-bold text-cyber-text"
+ class="flex h-8 w-8 items-center justify-center rounded-full border border-cyber-border bg-cyber-surface text-xs font-bold text-cyber-text"
           >
             {{ initialOf(conversation.other_participant.name) }}
           </span>
@@ -137,7 +137,7 @@ onBeforeUnmount(() => {
           <div v-if="messages.length === 0" class="flex flex-col items-center py-16 text-center">
             <MessageCircle class="h-8 w-8 text-cyber-muted" />
             <p class="mt-4 text-xs font-bold text-cyber-text">{{ t('chat.conversationView.emptyTitle') }}</p>
-            <p class="mt-1 font-mono text-xs text-cyber-muted">{{ t('chat.conversationView.emptyDescription') }}</p>
+ <p class="mt-1 text-xs text-cyber-muted">{{ t('chat.conversationView.emptyDescription') }}</p>
           </div>
 
           <div
@@ -150,8 +150,8 @@ onBeforeUnmount(() => {
                 : 'mr-auto border-cyber-border bg-cyber-glass'
             "
           >
-            <p class="whitespace-pre-wrap break-words font-mono text-xs text-cyber-text">{{ message.body }}</p>
-            <p class="mt-1 font-mono text-xs uppercase tracking-widest text-cyber-muted">
+ <p class="whitespace-pre-wrap break-words text-xs text-cyber-text">{{ message.body }}</p>
+ <p class="mt-1 text-xs text-cyber-muted">
               {{ useRelativeTime(message.created_at) }}
             </p>
           </div>
@@ -166,7 +166,7 @@ onBeforeUnmount(() => {
           v-model="body"
           rows="1"
           :placeholder="t('chat.conversationView.placeholder')"
-          class="block w-full resize-none rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-2 font-mono text-xs text-cyber-text backdrop-blur-md transition-all duration-300 placeholder:text-cyber-muted focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
+ class="block w-full resize-none rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-2 text-xs text-cyber-text backdrop-blur-md transition-all duration-300 placeholder:text-cyber-muted focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
           @keydown.enter.exact.prevent="handleSend"
         />
         <AppButton type="submit" :label="t('chat.conversationView.send')" :loading="sending" :disabled="!body.trim()" />

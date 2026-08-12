@@ -21,7 +21,7 @@ const { t } = useI18n()
         class="flex flex-col items-center py-16 text-center"
       >
         <Clapperboard class="h-8 w-8 text-cyber-muted" />
-        <p class="mt-4 font-mono text-xs text-cyber-muted">{{ t('stories.storiesPage.empty') }}</p>
+ <p class="mt-4 text-xs text-cyber-muted">{{ t('stories.storiesPage.empty') }}</p>
       </div>
     </div>
   </AppShell>

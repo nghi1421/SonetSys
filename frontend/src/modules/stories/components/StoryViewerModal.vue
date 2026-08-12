@@ -168,7 +168,7 @@ onBeforeUnmount(stopProgressTimer)
       </div>
 
       <div class="absolute inset-x-0 top-6 z-10 flex items-center justify-between px-4">
-        <span class="font-mono text-xs font-bold uppercase tracking-widest text-white drop-shadow">
+ <span class="text-xs font-bold text-white drop-shadow">
           {{ activeGroup.author.name }}
         </span>
         <div class="flex items-center gap-2">
@@ -249,13 +249,13 @@ onBeforeUnmount(stopProgressTimer)
         v-if="currentStory.caption || (isOwner && currentStory.views_count !== null)"
         class="absolute inset-x-0 bottom-0 z-10 flex items-center justify-between gap-3 bg-gradient-to-t from-black/70 to-transparent p-4"
       >
-        <p v-if="currentStory.caption" class="font-mono text-xs text-white drop-shadow">
+ <p v-if="currentStory.caption" class="text-xs text-white drop-shadow">
           {{ currentStory.caption }}
         </p>
         <button
           v-if="isOwner && currentStory.views_count !== null"
           type="button"
-          class="ml-auto flex items-center gap-1.5 rounded-full bg-black/40 px-3 py-1.5 font-mono text-xs uppercase tracking-widest text-white transition-all duration-300 hover:text-cyber-neon-cyan"
+ class="ml-auto flex items-center gap-1.5 rounded-full bg-black/40 px-3 py-1.5 text-xs text-white transition-all duration-300 hover:text-cyber-neon-cyan"
           @click="openViewers"
         >
           <Eye class="h-3.5 w-3.5" />

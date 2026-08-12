@@ -51,7 +51,7 @@ onBeforeUnmount(() => {
             v-model="inputQuery"
             type="text"
             :placeholder="t('search.searchView.placeholder')"
-            class="w-full bg-transparent font-mono text-xs text-cyber-text placeholder:text-cyber-muted focus:outline-none"
+ class="w-full bg-transparent text-xs text-cyber-text placeholder:text-cyber-muted focus:outline-none"
             @input="onSearchInput"
           />
         </div>
@@ -60,7 +60,7 @@ onBeforeUnmount(() => {
       <div v-if="!searchStore.searched && !searchStore.loading" class="flex flex-col items-center py-16 text-center">
         <Search class="h-8 w-8 text-cyber-muted" />
         <p class="mt-4 text-xs font-bold text-cyber-text">{{ t('search.searchView.promptTitle') }}</p>
-        <p class="mt-1 font-mono text-xs text-cyber-muted">{{ t('search.searchView.promptDescription') }}</p>
+ <p class="mt-1 text-xs text-cyber-muted">{{ t('search.searchView.promptDescription') }}</p>
       </div>
 
       <div v-else-if="searchStore.loading" class="space-y-4">
@@ -79,18 +79,18 @@ onBeforeUnmount(() => {
         v-else-if="searchStore.error"
         class="rounded-hud border border-cyber-neon-pink/40 bg-cyber-neon-pink/10 p-6 text-center"
       >
-        <p class="font-mono text-xs text-cyber-neon-pink">{{ t('search.searchView.error') }}</p>
+ <p class="text-xs text-cyber-neon-pink">{{ t('search.searchView.error') }}</p>
       </div>
 
       <div v-else-if="isEmpty" class="flex flex-col items-center py-16 text-center">
         <Inbox class="h-8 w-8 text-cyber-muted" />
         <p class="mt-4 text-xs font-bold text-cyber-text">{{ t('search.searchView.emptyTitle') }}</p>
-        <p class="mt-1 font-mono text-xs text-cyber-muted">{{ t('search.searchView.emptyDescription') }}</p>
+ <p class="mt-1 text-xs text-cyber-muted">{{ t('search.searchView.emptyDescription') }}</p>
       </div>
 
       <template v-else>
         <section v-if="searchStore.results.posts.length" class="space-y-2">
-          <h2 class="font-mono text-xs uppercase tracking-widest text-cyber-neon-cyan">
+ <h2 class="text-xs text-cyber-neon-cyan">
             {{ t('search.searchView.sections.posts') }}
           </h2>
           <router-link
@@ -99,13 +99,13 @@ onBeforeUnmount(() => {
             :to="{ name: 'post-detail', params: { id: post.id } }"
             class="block rounded-hud border border-cyber-border bg-cyber-glass p-3 backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
           >
-            <p class="font-mono text-xs uppercase tracking-widest text-cyber-muted">{{ post.author.name }}</p>
-            <p class="mt-1 line-clamp-2 font-mono text-xs leading-relaxed text-cyber-text/90">{{ post.body }}</p>
+ <p class="text-xs text-cyber-muted">{{ post.author.name }}</p>
+ <p class="mt-1 line-clamp-2 text-xs leading-relaxed text-cyber-text/90">{{ post.body }}</p>
           </router-link>
         </section>
 
         <section v-if="searchStore.results.users.length" class="space-y-2">
-          <h2 class="font-mono text-xs uppercase tracking-widest text-cyber-neon-indigo">
+ <h2 class="text-xs text-cyber-neon-indigo">
             {{ t('search.searchView.sections.people') }}
           </h2>
           <router-link
@@ -126,12 +126,12 @@ onBeforeUnmount(() => {
             >
               <User class="h-4 w-4" />
             </div>
-            <span class="font-mono text-xs text-cyber-text">{{ user.name }}</span>
+ <span class="text-xs text-cyber-text">{{ user.name }}</span>
           </router-link>
         </section>
 
         <section v-if="searchStore.results.groups.length" class="space-y-2">
-          <h2 class="font-mono text-xs uppercase tracking-widest text-cyber-neon-pink">
+ <h2 class="text-xs text-cyber-neon-pink">
             {{ t('search.searchView.sections.groups') }}
           </h2>
           <router-link
@@ -152,12 +152,12 @@ onBeforeUnmount(() => {
             >
               <Users class="h-4 w-4" />
             </div>
-            <span class="font-mono text-xs text-cyber-text">{{ group.name }}</span>
+ <span class="text-xs text-cyber-text">{{ group.name }}</span>
           </router-link>
         </section>
 
         <section v-if="searchStore.results.hashtags.length" class="space-y-2">
-          <h2 class="font-mono text-xs uppercase tracking-widest text-cyber-neon-cyan">
+ <h2 class="text-xs text-cyber-neon-cyan">
             {{ t('search.searchView.sections.hashtags') }}
           </h2>
           <div class="flex flex-wrap gap-2">
@@ -165,7 +165,7 @@ onBeforeUnmount(() => {
               v-for="tag in searchStore.results.hashtags"
               :key="`hashtag-${tag}`"
               :to="{ name: 'hashtag', params: { tag } }"
-              class="inline-flex items-center gap-1 rounded-full border border-cyber-border bg-cyber-glass px-3 py-1.5 font-mono text-xs text-cyber-neon-cyan backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
+ class="inline-flex items-center gap-1 rounded-full border border-cyber-border bg-cyber-glass px-3 py-1.5 text-xs text-cyber-neon-cyan backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
             >
               <Hash class="h-3 w-3" />
               {{ tag }}

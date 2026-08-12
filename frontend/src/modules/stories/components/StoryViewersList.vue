@@ -20,7 +20,7 @@ const { t } = useI18n()
     @close="emit('close')"
   >
     <div class="flex items-center justify-between">
-      <h2 class="font-mono text-xs font-bold uppercase tracking-widest text-cyber-text">
+ <h2 class="text-xs font-bold text-cyber-text">
         {{ t('stories.viewersList.title') }}
       </h2>
       <button
@@ -32,14 +32,14 @@ const { t } = useI18n()
       </button>
     </div>
 
-    <p v-if="viewers.length === 0" class="mt-4 font-mono text-xs text-cyber-muted">
+ <p v-if="viewers.length === 0" class="mt-4 text-xs text-cyber-muted">
       {{ t('stories.viewersList.empty') }}
     </p>
 
     <ul v-else class="mt-3 space-y-3">
       <li v-for="(entry, index) in viewers" :key="index" class="flex items-center justify-between">
-        <span class="font-mono text-xs text-cyber-text">{{ entry.viewer.name }}</span>
-        <span class="font-mono text-xs uppercase tracking-widest text-cyber-muted">
+ <span class="text-xs text-cyber-text">{{ entry.viewer.name }}</span>
+ <span class="text-xs text-cyber-muted">
           {{ useRelativeTime(entry.viewed_at) }}
         </span>
       </li>

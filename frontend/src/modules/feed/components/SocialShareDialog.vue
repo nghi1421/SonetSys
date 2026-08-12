@@ -39,7 +39,7 @@ function share(platform: SocialPlatform): void {
 
 <template>
   <AppModal :open="open" size="sm" @close="close">
-    <h2 class="font-mono text-xs font-bold uppercase tracking-widest text-cyber-text">
+ <h2 class="text-xs font-bold text-cyber-text">
       {{ t('feed.socialShareDialog.title') }}
     </h2>
 
@@ -48,7 +48,7 @@ function share(platform: SocialPlatform): void {
         v-for="platform in PLATFORMS"
         :key="platform.name"
         type="button"
-        class="inline-flex flex-col items-center gap-1.5 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
+ class="inline-flex flex-col items-center gap-1.5 text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
         @click="share(platform)"
       >
         <span
@@ -64,7 +64,7 @@ function share(platform: SocialPlatform): void {
     <div class="mt-4 flex justify-end">
       <button
         type="button"
-        class="rounded-full border border-cyber-border bg-cyber-glass px-4 py-1.5 font-mono text-xs uppercase text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
+ class="rounded-full border border-cyber-border bg-cyber-glass px-4 py-1.5 text-xs text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
         @click="close"
       >
         {{ t('common.cancel') }}

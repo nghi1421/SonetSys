@@ -31,8 +31,8 @@ async function onLogout(): Promise<void> {
           <Menu class="h-4 w-4" />
         </button>
         <div>
-          <h1 class="text-sm font-bold tracking-wide text-slate-900">{{ t('common.adminSiteName') }}</h1>
-          <p class="text-[11px] font-medium uppercase tracking-widest text-slate-400">{{ t('common.controlPanel') }}</p>
+ <h1 class="text-sm font-bold text-slate-900">{{ t('common.adminSiteName') }}</h1>
+ <p class="text-[11px] font-medium text-slate-400">{{ t('common.controlPanel') }}</p>
         </div>
       </div>
 

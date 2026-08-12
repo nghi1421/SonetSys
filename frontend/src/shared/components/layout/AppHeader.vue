@@ -32,7 +32,7 @@ function onDashboard(): void {
         </button>
         <div>
           <h1
-            class="bg-gradient-to-r from-cyber-neon-cyan via-cyber-neon-indigo to-cyber-neon-pink bg-clip-text text-sm font-bold uppercase tracking-widest text-transparent cursor-pointer"
+ class="bg-gradient-to-r from-cyber-neon-cyan via-cyber-neon-indigo to-cyber-neon-pink bg-clip-text text-sm font-bold text-transparent cursor-pointer"
             @click="onDashboard"
           >
             {{ t('common.siteName') }}

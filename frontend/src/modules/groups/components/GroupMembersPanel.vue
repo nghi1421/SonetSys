@@ -68,13 +68,13 @@ function canRemove(member: GroupMember): boolean {
     <AppAlert v-if="error">{{ error }}</AppAlert>
 
     <section v-if="isManager" class="rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md">
-      <h2 class="text-xs font-bold uppercase tracking-widest text-cyber-neon-pink">{{ t('groups.groupMembers.joinRequestsTitle') }}</h2>
+ <h2 class="text-xs font-bold text-cyber-neon-pink">{{ t('groups.groupMembers.joinRequestsTitle') }}</h2>
 
       <div v-if="groupStore.loadingRequests" class="mt-4 space-y-2">
         <div v-for="i in 2" :key="i" class="h-10 animate-pulse rounded-hud bg-cyber-surface/60" />
       </div>
 
-      <p v-else-if="groupStore.requests.length === 0" class="mt-3 font-mono text-xs text-cyber-muted">
+ <p v-else-if="groupStore.requests.length === 0" class="mt-3 text-xs text-cyber-muted">
         {{ t('groups.groupMembers.noPendingRequests') }}
       </p>
 
@@ -106,7 +106,7 @@ function canRemove(member: GroupMember): boolean {
     </section>
 
     <section class="rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md">
-      <h2 class="text-xs font-bold uppercase tracking-widest text-cyber-neon-cyan">
+ <h2 class="text-xs font-bold text-cyber-neon-cyan">
         {{ t('groups.groupMembers.membersTitle') }} · {{ group.members_count }}
       </h2>
 
@@ -116,14 +116,14 @@ function canRemove(member: GroupMember): boolean {
 
       <div v-else-if="groupStore.members.length === 0" class="mt-4 flex flex-col items-center py-8 text-center">
         <Users class="h-6 w-6 text-cyber-muted" />
-        <p class="mt-2 font-mono text-xs text-cyber-muted">{{ t('groups.groupMembers.noMembersYet') }}</p>
+ <p class="mt-2 text-xs text-cyber-muted">{{ t('groups.groupMembers.noMembersYet') }}</p>
       </div>
 
       <ul v-else class="mt-4 divide-y divide-cyber-border">
         <li v-for="member in groupStore.members" :key="member.id" class="flex items-center justify-between gap-3 py-3">
           <div class="min-w-0">
             <p class="truncate text-xs font-bold text-cyber-text">{{ member.user.name }}</p>
-            <p class="mt-0.5 font-mono text-xs uppercase tracking-widest text-cyber-muted">{{ member.role }}</p>
+ <p class="mt-0.5 text-xs text-cyber-muted">{{ member.role }}</p>
           </div>
 
           <div class="flex shrink-0 items-center gap-1">

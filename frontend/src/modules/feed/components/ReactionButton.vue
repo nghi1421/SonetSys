@@ -50,7 +50,7 @@ function pick(type: ReactionType): void {
     <button
       v-if="variant === 'pill'"
       type="button"
-      class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-xs transition-all duration-300"
+ class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs transition-all duration-300"
       :class="
         myReaction
           ? 'border-cyber-neon-pink/40 bg-cyber-neon-pink/10 text-cyber-neon-pink shadow-pink-glow'

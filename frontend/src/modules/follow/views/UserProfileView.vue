@@ -205,7 +205,7 @@ watch(userId, load)
             <input ref="coverInput" type="file" accept="image/*" class="hidden" @change="handleCoverChange" />
             <button
               type="button"
-              class="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-cyber-glass px-3 py-1.5 font-mono text-xs uppercase tracking-widest text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/60 focus:ring-offset-2 focus:ring-offset-cyber-bg disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
+ class="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-cyber-glass px-3 py-1.5 text-xs text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/60 focus:ring-offset-2 focus:ring-offset-cyber-bg disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
               :disabled="coverUploading"
               @click="pickCover"
             >
@@ -237,7 +237,7 @@ watch(userId, load)
                 />
                 <span
                   v-else
-                  class="flex h-20 w-20 items-center justify-center rounded-full border-4 border-cyber-bg bg-cyber-surface font-mono text-2xl font-bold text-cyber-text shadow-cyan-glow"
+ class="flex h-20 w-20 items-center justify-center rounded-full border-4 border-cyber-bg bg-cyber-surface text-2xl font-bold text-cyber-text shadow-cyan-glow"
                 >
                   {{ initialOf(followStore.profile.name) }}
                 </span>
@@ -279,7 +279,7 @@ watch(userId, load)
                   {{ followStore.profile.name }}
                   <Crown v-if="followStore.profile.is_premium" class="h-3.5 w-3.5 shrink-0 text-cyber-neon-indigo" />
                 </h1>
-                <p class="mt-1 font-mono text-xs uppercase tracking-widest text-cyber-muted">
+ <p class="mt-1 text-xs text-cyber-muted">
                   {{ t('follow.joined') }} {{ useRelativeTime(followStore.profile.created_at) }}
                 </p>
               </div>
@@ -315,7 +315,7 @@ watch(userId, load)
                 >
                   <button
                     type="button"
-                    class="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-xs text-cyber-neon-pink transition-colors duration-300 hover:shadow-pink-glow disabled:cursor-not-allowed disabled:opacity-40"
+ class="flex w-full items-center gap-2 px-3 py-2 text-left text-xs text-cyber-neon-pink transition-colors duration-300 hover:shadow-pink-glow disabled:cursor-not-allowed disabled:opacity-40"
                     :disabled="blockActionLoading"
                     @click="toggleBlock"
                   >
@@ -327,13 +327,13 @@ watch(userId, load)
             </div>
           </div>
 
-          <p v-if="avatarError" class="mt-3 font-mono text-xs text-cyber-neon-pink">{{ avatarError }}</p>
-          <p v-if="coverError" class="mt-3 font-mono text-xs text-cyber-neon-pink">{{ coverError }}</p>
+ <p v-if="avatarError" class="mt-3 text-xs text-cyber-neon-pink">{{ avatarError }}</p>
+ <p v-if="coverError" class="mt-3 text-xs text-cyber-neon-pink">{{ coverError }}</p>
 
           <div class="mt-4 flex gap-6">
             <button
               type="button"
-              class="font-mono text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-cyan"
+ class="text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-cyan"
               @click="openFollowers"
             >
               <span class="font-bold tabular-nums">{{ followStore.profile.followers_count }}</span>
@@ -341,7 +341,7 @@ watch(userId, load)
             </button>
             <button
               type="button"
-              class="font-mono text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-cyan"
+ class="text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-cyan"
               @click="openFollowing"
             >
               <span class="font-bold tabular-nums">{{ followStore.profile.following_count }}</span>

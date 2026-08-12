@@ -45,7 +45,7 @@ onMounted(() => {
           v-for="tab in tabs"
           :key="tab"
           type="button"
-          class="rounded-t-hud px-4 py-2 font-mono text-xs uppercase tracking-widest transition-all duration-300"
+ class="rounded-t-hud px-4 py-2 text-xs transition-all duration-300"
           :class="
             activeTab === tab
               ? 'border-b-2 border-cyber-neon-cyan text-cyber-neon-cyan'
@@ -73,7 +73,7 @@ onMounted(() => {
         <div v-else-if="feedStore.posts.length === 0" class="flex flex-col items-center py-16 text-center">
           <Inbox class="h-8 w-8 text-cyber-muted" />
           <p class="mt-4 text-xs font-bold text-cyber-text">{{ t('feed.feedView.emptyTitle') }}</p>
-          <p class="mt-1 font-mono text-xs text-cyber-muted">
+ <p class="mt-1 text-xs text-cyber-muted">
             {{ t('feed.feedView.emptyDescription') }}
           </p>
         </div>
@@ -114,7 +114,7 @@ onMounted(() => {
         <div v-else-if="feedStore.followingPosts.length === 0" class="flex flex-col items-center py-16 text-center">
           <Inbox class="h-8 w-8 text-cyber-muted" />
           <p class="mt-4 text-xs font-bold text-cyber-text">{{ t('feed.feedView.followingEmptyTitle') }}</p>
-          <p class="mt-1 font-mono text-xs text-cyber-muted">
+ <p class="mt-1 text-xs text-cyber-muted">
             {{ t('feed.feedView.followingEmptyDescription') }}
           </p>
         </div>

@@ -115,7 +115,7 @@ async function onConfirmDelete(): Promise<void> {
     </p>
 
     <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-      <h2 class="border-b border-slate-200 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-500">
+ <h2 class="border-b border-slate-200 px-4 py-3 text-xs font-bold text-slate-500">
         {{ t('reactions.admin.listTitle') }}
       </h2>
 
@@ -130,7 +130,7 @@ async function onConfirmDelete(): Promise<void> {
 
       <div v-else class="overflow-x-auto">
         <table class="w-full text-left text-sm">
-          <thead class="bg-slate-50 text-[11px] uppercase tracking-widest text-slate-500">
+ <thead class="bg-slate-50 text-[11px] text-slate-500">
             <tr>
               <th class="px-4 py-2 font-medium">{{ t('reactions.admin.iconHeader') }}</th>
               <th class="px-4 py-2 font-medium">{{ t('reactions.admin.keyHeader') }}</th>
@@ -189,7 +189,7 @@ async function onConfirmDelete(): Promise<void> {
                     </span>
                     <div class="min-w-0">
                       <p class="truncate text-sm font-medium text-slate-900">{{ reactionType.label }}</p>
-                      <p class="mt-0.5 text-[11px] uppercase tracking-widest text-slate-400">{{ reactionType.key }}</p>
+ <p class="mt-0.5 text-[11px] text-slate-400">{{ reactionType.key }}</p>
                     </div>
                   </div>
 
