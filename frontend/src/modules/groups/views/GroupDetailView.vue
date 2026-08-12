@@ -88,7 +88,7 @@ function createGroupPost(payload: Parameters<typeof feedStore.createGroupPost>[1
               <h1 class="text-sm font-bold text-cyber-text">{{ group.name }}</h1>
               <div class="mt-2 flex flex-wrap items-center gap-2">
                 <span
-                  class="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest"
+                  class="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-xs uppercase tracking-widest"
                   :class="
                     group.visibility === 'public'
                       ? 'border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 text-cyber-neon-cyan'
@@ -99,7 +99,7 @@ function createGroupPost(payload: Parameters<typeof feedStore.createGroupPost>[1
                   <Lock v-else class="h-2.5 w-2.5" />
                   {{ t(`groups.visibility.${group.visibility}`) }}
                 </span>
-                <span class="inline-flex items-center gap-1.5 font-mono text-[10px] tabular-nums text-cyber-muted">
+                <span class="inline-flex items-center gap-1.5 font-mono text-xs tabular-nums text-cyber-muted">
                   <Users class="h-3 w-3" />
                   {{ t('groups.groupDetail.membersCount', { count: group.members_count }) }}
                 </span>

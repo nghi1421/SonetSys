@@ -145,7 +145,7 @@ async function onSubmit(): Promise<void> {
         @click="pickPhoto"
       >
         <Image class="h-5 w-5" />
-        <span class="font-mono text-[10px] uppercase tracking-widest">{{
+        <span class="font-mono text-xs uppercase tracking-widest">{{
           t('stories.createModal.addPhoto')
         }}</span>
       </button>
@@ -155,7 +155,7 @@ async function onSubmit(): Promise<void> {
         @click="pickVideo"
       >
         <Video class="h-5 w-5" />
-        <span class="font-mono text-[10px] uppercase tracking-widest">{{
+        <span class="font-mono text-xs uppercase tracking-widest">{{
           t('stories.createModal.addVideo')
         }}</span>
       </button>

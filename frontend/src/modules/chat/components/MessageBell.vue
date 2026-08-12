@@ -28,7 +28,7 @@ function goToMessages(): void {
     <MessageCircle class="h-4 w-4" />
     <span
       v-if="chatStore.unreadCount > 0"
-      class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-cyber-neon-pink px-1 font-mono text-[9px] font-bold text-white shadow-pink-glow"
+      class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-cyber-neon-pink px-1 font-mono text-xs font-bold text-white shadow-pink-glow"
     >
       {{ chatStore.unreadCount > 9 ? '9+' : chatStore.unreadCount }}
     </span>

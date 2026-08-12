@@ -127,7 +127,7 @@ async function onConfirmDelete(): Promise<void> {
 
             <div class="p-2">
               <p class="truncate text-[11px] text-slate-700">{{ item.original_name }}</p>
-              <p class="mt-0.5 text-[10px] tabular-nums text-slate-400">{{ formatBytes(item.size) }}</p>
+              <p class="mt-0.5 text-xs tabular-nums text-slate-400">{{ formatBytes(item.size) }}</p>
             </div>
           </button>
 

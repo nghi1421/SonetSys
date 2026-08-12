@@ -118,7 +118,7 @@ async function onCancel(campaign: AdCampaign): Promise<void> {
           <div class="flex items-center gap-2 rounded-full border border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 px-4 py-2">
             <Coins class="h-4 w-4 text-cyber-neon-cyan" />
             <div class="text-right">
-              <p class="font-mono text-[9px] uppercase tracking-widest text-cyber-neon-cyan">
+              <p class="hidden font-mono text-xs uppercase tracking-widest text-cyber-neon-cyan sm:block">
                 {{ t('advertising.advertiseView.walletHint') }}
               </p>
               <p class="font-mono text-sm font-bold tabular-nums text-cyber-text">{{ walletStore.balance }}</p>
@@ -145,7 +145,7 @@ async function onCancel(campaign: AdCampaign): Promise<void> {
           <AppAlert v-if="formError" variant="error">{{ formError }}</AppAlert>
 
           <div>
-            <label class="block font-mono text-[10px] uppercase tracking-widest text-cyber-muted">
+            <label class="block font-mono text-xs uppercase tracking-widest text-cyber-muted">
               {{ t('advertising.advertiseView.form.postLabel') }}
             </label>
             <select
@@ -162,7 +162,7 @@ async function onCancel(campaign: AdCampaign): Promise<void> {
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block font-mono text-[10px] uppercase tracking-widest text-cyber-muted">
+              <label class="block font-mono text-xs uppercase tracking-widest text-cyber-muted">
                 {{ t('advertising.advertiseView.form.budgetLabel') }}
               </label>
               <input
@@ -176,7 +176,7 @@ async function onCancel(campaign: AdCampaign): Promise<void> {
               />
             </div>
             <div>
-              <label class="block font-mono text-[10px] uppercase tracking-widest text-cyber-muted">
+              <label class="block font-mono text-xs uppercase tracking-widest text-cyber-muted">
                 {{ t('advertising.advertiseView.form.daysLabel') }}
               </label>
               <input
@@ -235,13 +235,13 @@ async function onCancel(campaign: AdCampaign): Promise<void> {
               <div class="flex items-start justify-between gap-3">
                 <div class="min-w-0">
                   <p class="truncate font-mono text-xs text-cyber-text/90">{{ postExcerpt(campaign) }}</p>
-                  <p class="mt-1 font-mono text-[10px] uppercase tracking-widest text-cyber-muted">
+                  <p class="mt-1 font-mono text-xs uppercase tracking-widest text-cyber-muted">
                     {{ t('advertising.advertiseView.myCampaigns.budget') }}: {{ campaign.budget }} ·
                     {{ useRelativeTime(campaign.created_at) }}
                   </p>
                 </div>
                 <span
-                  class="inline-flex shrink-0 items-center rounded-full border px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest"
+                  class="inline-flex shrink-0 items-center rounded-full border px-2 py-0.5 font-mono text-xs uppercase tracking-widest"
                   :class="statusClass(campaign.status)"
                 >
                   {{ t(`advertising.advertiseView.statuses.${campaign.status}`) }}

@@ -20,7 +20,7 @@ const id = `field-${Math.random().toString(36).slice(2, 9)}`
 
 <template>
   <div class="space-y-1.5">
-    <label :for="id" class="block text-[9px] font-mono uppercase tracking-widest text-cyber-neon-cyan">
+    <label :for="id" class="block text-xs font-mono uppercase tracking-widest text-cyber-neon-cyan">
       {{ label }}
     </label>
     <input

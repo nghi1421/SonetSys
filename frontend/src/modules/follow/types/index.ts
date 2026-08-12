@@ -17,6 +17,7 @@ export interface UserProfile {
   is_followed_by: boolean
   is_blocked: boolean
   is_blocked_by: boolean
+  is_premium: boolean
 }
 
 export interface BlockedUser {

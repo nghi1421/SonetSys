@@ -64,7 +64,7 @@ onMounted(() => {
 
             <div class="min-w-0 flex-1">
               <p class="truncate text-xs font-bold text-cyber-text">{{ conversation.other_participant.name }}</p>
-              <p v-if="conversation.last_message_at" class="mt-0.5 font-mono text-[10px] uppercase tracking-widest text-cyber-muted">
+              <p v-if="conversation.last_message_at" class="mt-0.5 font-mono text-xs uppercase tracking-widest text-cyber-muted">
                 {{ useRelativeTime(conversation.last_message_at) }}
               </p>
             </div>

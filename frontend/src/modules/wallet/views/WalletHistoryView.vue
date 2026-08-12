@@ -54,7 +54,7 @@ function signedAmount(transaction: WalletTransaction): string {
           <div class="flex items-center gap-2 rounded-full border border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 px-4 py-2">
             <Coins class="h-4 w-4 text-cyber-neon-cyan" />
             <div class="text-right">
-              <p class="font-mono text-[9px] uppercase tracking-widest text-cyber-neon-cyan">
+              <p class="font-mono text-xs uppercase tracking-widest text-cyber-neon-cyan">
                 {{ t('wallet.historyView.currentBalance') }}
               </p>
               <p class="font-mono text-sm font-bold tabular-nums text-cyber-text">{{ walletStore.balance }}</p>
@@ -90,7 +90,7 @@ function signedAmount(transaction: WalletTransaction): string {
               <p class="font-mono text-xs font-bold uppercase text-cyber-text">
                 {{ t(`wallet.reasons.${transaction.reason}`) }}
               </p>
-              <p class="mt-0.5 font-mono text-[10px] uppercase tracking-widest text-cyber-muted">
+              <p class="mt-0.5 font-mono text-xs uppercase tracking-widest text-cyber-muted">
                 {{ t(`wallet.types.${transaction.type}`) }} · {{ useRelativeTime(transaction.created_at) }}
               </p>
             </div>
@@ -101,7 +101,7 @@ function signedAmount(transaction: WalletTransaction): string {
               >
                 {{ signedAmount(transaction) }}
               </p>
-              <p class="font-mono text-[10px] tabular-nums text-cyber-muted">{{ transaction.balance_after }}</p>
+              <p class="font-mono text-xs tabular-nums text-cyber-muted">{{ transaction.balance_after }}</p>
             </div>
           </li>
         </ul>

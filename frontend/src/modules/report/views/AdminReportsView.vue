@@ -116,7 +116,7 @@ function extractError(err: unknown, fallback: string): string {
               {{ report.reporter.name ?? '—' }}
             </td>
             <td class="px-4 py-3 text-slate-600">
-              <span class="inline-flex items-center rounded-full border border-slate-200 px-2 py-0.5 text-[10px] uppercase tracking-widest text-slate-500">
+              <span class="inline-flex items-center rounded-full border border-slate-200 px-2 py-0.5 text-xs uppercase tracking-widest text-slate-500">
                 {{ contentTypeLabel(report) }}
               </span>
               <div class="mt-1">

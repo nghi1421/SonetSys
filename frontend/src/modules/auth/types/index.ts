@@ -12,6 +12,7 @@ export interface User {
   role: Role
   avatar_url: string | null
   cover_url: string | null
+  is_premium: boolean
   last_login_at: string | null
   created_at: string
 }

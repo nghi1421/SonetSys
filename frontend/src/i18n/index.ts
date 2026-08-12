@@ -16,6 +16,7 @@ import search from './locales/en/search.json'
 import settings from './locales/en/settings.json'
 import stories from './locales/en/stories.json'
 import storage from './locales/en/storage.json'
+import subscription from './locales/en/subscription.json'
 import wallet from './locales/en/wallet.json'
 import widgets from './locales/en/widgets.json'
 
@@ -43,6 +44,7 @@ const en = {
   search,
   report,
   settings,
+  subscription,
   widgets,
 }
 

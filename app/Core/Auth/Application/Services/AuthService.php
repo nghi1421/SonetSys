@@ -13,6 +13,8 @@ use App\Core\Auth\Domain\Enums\RoleSlug;
 use App\Core\Auth\Domain\Enums\UserStatus;
 use App\Core\Auth\Domain\Models\Role;
 use App\Core\Auth\Domain\Models\User;
+use App\Modules\Subscription\Application\Services\SubscriptionService;
+use App\Modules\Subscription\Domain\Enums\SubscriptionPlan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -22,6 +24,7 @@ final class AuthService
 {
     public function __construct(
         private readonly UserRepositoryInterface $users,
+        private readonly SubscriptionService $subscriptions,
     ) {}
 
     /**
@@ -31,18 +34,22 @@ final class AuthService
     {
         $role = Role::query()->where('slug', RoleSlug::User->value)->firstOrFail();
 
-        $user = $this->users->create([
-            'role_id' => $role->id,
-            'name' => $data->name,
-            'email' => $data->email,
-            'password' => Hash::make($data->password),
-            'status' => UserStatus::Active,
-        ]);
+        return DB::transaction(function () use ($data, $role): array {
+            $user = $this->users->create([
+                'role_id' => $role->id,
+                'name' => $data->name,
+                'email' => $data->email,
+                'password' => Hash::make($data->password),
+                'status' => UserStatus::Active,
+            ]);
 
-        return [
-            'user' => $user,
-            'token' => $user->createToken('api')->plainTextToken,
-        ];
+            $this->subscriptions->subscribe((int) $user->id, SubscriptionPlan::Free);
+
+            return [
+                'user' => $user,
+                'token' => $user->createToken('api')->plainTextToken,
+            ];
+        });
     }
 
     /**

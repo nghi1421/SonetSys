@@ -255,7 +255,7 @@ onBeforeUnmount(stopProgressTimer)
         <button
           v-if="isOwner && currentStory.views_count !== null"
           type="button"
-          class="ml-auto flex items-center gap-1.5 rounded-full bg-black/40 px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-white transition-all duration-300 hover:text-cyber-neon-cyan"
+          class="ml-auto flex items-center gap-1.5 rounded-full bg-black/40 px-3 py-1.5 font-mono text-xs uppercase tracking-widest text-white transition-all duration-300 hover:text-cyber-neon-cyan"
           @click="openViewers"
         >
           <Eye class="h-3.5 w-3.5" />

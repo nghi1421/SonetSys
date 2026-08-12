@@ -4,6 +4,7 @@ import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import {
   Clapperboard,
+  Crown,
   FileText,
   Home,
   LayoutDashboard,
@@ -43,6 +44,7 @@ function iconFor(item: MenuItem) {
   if (item.is_home) return Home
   if (item.slug === 'group') return Users
   if (item.slug === 'advertise') return Megaphone
+  if (item.slug === 'subscription') return Crown
   return FileText
 }
 
@@ -50,6 +52,7 @@ function targetFor(item: MenuItem) {
   if (item.is_home) return { name: 'dashboard' }
   if (item.slug === 'group') return { name: 'groups-list' }
   if (item.slug === 'advertise') return { name: 'advertise' }
+  if (item.slug === 'subscription') return { name: 'subscription' }
   return { name: 'menu-page', params: { slug: item.slug } }
 }
 
@@ -89,7 +92,10 @@ async function onLogout(): Promise<void> {
         <UserRound class="h-4 w-4 text-cyber-neon-cyan" />
       </span>
       <span class="min-w-0">
-        <span class="block truncate font-mono text-xs font-bold text-cyber-text">{{ authStore.user.name }}</span>
+        <span class="flex items-center gap-1 truncate font-mono text-xs font-bold text-cyber-text">
+          {{ authStore.user.name }}
+          <Crown v-if="authStore.user.is_premium" class="h-3 w-3 shrink-0 text-cyber-neon-indigo" />
+        </span>
         <WalletBalancePill/>
       </span>
     </RouterLink>

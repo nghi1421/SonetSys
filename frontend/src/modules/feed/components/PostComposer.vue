@@ -333,7 +333,7 @@ async function handleSubmit(): Promise<void> {
         class="flex w-fit items-center gap-1.5 rounded-full border border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 px-3 py-1"
       >
         <MapPin class="h-3 w-3 text-cyber-neon-cyan" />
-        <span class="font-mono text-[10px] text-cyber-neon-cyan">{{ selectedLocation.name }}</span>
+        <span class="font-mono text-xs text-cyber-neon-cyan">{{ selectedLocation.name }}</span>
         <button
           type="button"
           class="text-cyber-neon-cyan transition-colors duration-300 hover:text-cyber-neon-pink"
@@ -460,12 +460,12 @@ async function handleSubmit(): Promise<void> {
                     </button>
                   </li>
                 </ul>
-                <p v-else-if="checkInSearching" class="mt-2 font-mono text-[10px] text-cyber-muted">
+                <p v-else-if="checkInSearching" class="mt-2 font-mono text-xs text-cyber-muted">
                   {{ t('common.loading') }}
                 </p>
                 <p
                   v-else-if="checkInQuery.trim().length >= 2"
-                  class="mt-2 font-mono text-[10px] text-cyber-muted"
+                  class="mt-2 font-mono text-xs text-cyber-muted"
                 >
                   {{ t('feed.postComposer.checkInNoResults') }}
                 </p>
@@ -521,13 +521,13 @@ async function handleSubmit(): Promise<void> {
                 </ul>
                 <p
                   v-else-if="mention.searching.value"
-                  class="mt-2 font-mono text-[10px] text-cyber-muted"
+                  class="mt-2 font-mono text-xs text-cyber-muted"
                 >
                   {{ t('common.loading') }}
                 </p>
                 <p
                   v-else-if="mention.query.value.trim().length >= 2"
-                  class="mt-2 font-mono text-[10px] text-cyber-muted"
+                  class="mt-2 font-mono text-xs text-cyber-muted"
                 >
                   {{ t('feed.postComposer.mentionNoResults') }}
                 </p>

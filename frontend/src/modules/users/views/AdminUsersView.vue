@@ -123,7 +123,7 @@ function statusBadgeClass(status: string): string {
           <tr v-for="user in userStore.users" :key="user.id" class="transition-colors duration-150 hover:bg-slate-50">
             <td class="px-4 py-3 font-medium text-slate-900">
               {{ user.name }}
-              <span v-if="isSelf(user)" class="ml-1 text-[10px] font-normal uppercase text-slate-400">{{ t('admin.users.you') }}</span>
+              <span v-if="isSelf(user)" class="ml-1 text-xs font-normal uppercase text-slate-400">{{ t('admin.users.you') }}</span>
             </td>
             <td class="px-4 py-3 text-slate-500">{{ user.email }}</td>
             <td class="px-4 py-3">

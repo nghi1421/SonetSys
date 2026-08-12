@@ -61,7 +61,7 @@ async function onSubmit(): Promise<void> {
       />
 
       <div class="space-y-1.5">
-        <label class="block text-[9px] font-mono uppercase tracking-widest text-cyber-neon-cyan">
+        <label class="block text-xs font-mono uppercase tracking-widest text-cyber-neon-cyan">
           {{ t('groups.createGroupModal.visibilityLabel') }}
         </label>
         <div class="grid grid-cols-2 gap-2">
@@ -76,7 +76,7 @@ async function onSubmit(): Promise<void> {
             @click="visibility = 'public'"
           >
             {{ t('groups.visibility.public') }}
-            <span class="mt-0.5 block font-mono text-[9px] normal-case text-cyber-muted">{{
+            <span class="mt-0.5 block font-mono text-xs normal-case text-cyber-muted">{{
               t('groups.visibility.publicHint')
             }}</span>
           </button>
@@ -91,7 +91,7 @@ async function onSubmit(): Promise<void> {
             @click="visibility = 'private'"
           >
             {{ t('groups.visibility.private') }}
-            <span class="mt-0.5 block font-mono text-[9px] normal-case text-cyber-muted">{{
+            <span class="mt-0.5 block font-mono text-xs normal-case text-cyber-muted">{{
               t('groups.visibility.privateHint')
             }}</span>
           </button>

@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Ban, Camera, EllipsisVertical, Inbox, X } from '@lucide/vue'
+import { Ban, Camera, Crown, EllipsisVertical, Inbox, X } from '@lucide/vue'
 import AppShell from '@/shared/components/layout/AppShell.vue'
 import AppAlert from '@/shared/components/ui/AppAlert.vue'
 import AppButton from '@/shared/components/ui/AppButton.vue'
@@ -205,7 +205,7 @@ watch(userId, load)
             <input ref="coverInput" type="file" accept="image/*" class="hidden" @change="handleCoverChange" />
             <button
               type="button"
-              class="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-cyber-glass px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/60 focus:ring-offset-2 focus:ring-offset-cyber-bg disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
+              class="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-cyber-glass px-3 py-1.5 font-mono text-xs uppercase tracking-widest text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/60 focus:ring-offset-2 focus:ring-offset-cyber-bg disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
               :disabled="coverUploading"
               @click="pickCover"
             >
@@ -275,8 +275,11 @@ watch(userId, load)
                 </template>
               </div>
               <div>
-                <h1 class="text-sm font-bold text-cyber-text">{{ followStore.profile.name }}</h1>
-                <p class="mt-1 font-mono text-[10px] uppercase tracking-widest text-cyber-muted">
+                <h1 class="flex items-center gap-1.5 text-sm font-bold text-cyber-text">
+                  {{ followStore.profile.name }}
+                  <Crown v-if="followStore.profile.is_premium" class="h-3.5 w-3.5 shrink-0 text-cyber-neon-indigo" />
+                </h1>
+                <p class="mt-1 font-mono text-xs uppercase tracking-widest text-cyber-muted">
                   {{ t('follow.joined') }} {{ useRelativeTime(followStore.profile.created_at) }}
                 </p>
               </div>

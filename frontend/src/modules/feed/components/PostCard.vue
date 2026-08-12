@@ -112,12 +112,12 @@ async function saveEdit(): Promise<void> {
         <AppUsername :user="post.author" />
 
         <div class="mt-1 flex items-center gap-2">
-          <span class="font-mono text-[9px] text-cyber-muted">
+          <span class="font-mono text-xs text-cyber-muted">
             {{ useRelativeTime(post.created_at) }}
           </span>
           <span
             v-if="post.is_sponsored"
-            class="inline-flex items-center gap-1 rounded-full border border-cyber-neon-indigo/30 bg-cyber-neon-indigo/10 px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest text-cyber-neon-indigo"
+            class="inline-flex items-center gap-1 rounded-full border border-cyber-neon-indigo/30 bg-cyber-neon-indigo/10 px-2 py-0.5 font-mono text-xs uppercase tracking-widest text-cyber-neon-indigo"
           >
             <Megaphone class="h-2.5 w-2.5" />
             {{ t('feed.postCard.sponsored') }}
@@ -125,7 +125,7 @@ async function saveEdit(): Promise<void> {
           <span
             v-if="post.location"
             :title="t('feed.postCard.location')"
-            class="inline-flex items-center gap-1 rounded-full border border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 px-2 py-0.5 font-mono text-[9px] text-cyber-neon-cyan"
+            class="inline-flex items-center gap-1 rounded-full border border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 px-2 py-0.5 font-mono text-xs text-cyber-neon-cyan"
           >
             <MapPin class="h-2.5 w-2.5" />
             {{ post.location.name }}
@@ -231,7 +231,7 @@ async function saveEdit(): Promise<void> {
 
       <button
         type="button"
-        class="inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-cyber-glass px-2.5 py-1 font-mono text-[10px] text-cyber-muted transition-all duration-300 hover:border-cyber-neon-cyan/40 hover:text-cyber-neon-cyan"
+        class="inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-cyber-glass px-2.5 py-1 font-mono text-xs text-cyber-muted transition-all duration-300 hover:border-cyber-neon-cyan/40 hover:text-cyber-neon-cyan"
         @click="onToggleComments"
       >
         <MessageCircle class="h-3 w-3" />

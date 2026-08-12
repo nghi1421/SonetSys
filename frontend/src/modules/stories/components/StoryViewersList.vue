@@ -39,7 +39,7 @@ const { t } = useI18n()
     <ul v-else class="mt-3 space-y-3">
       <li v-for="(entry, index) in viewers" :key="index" class="flex items-center justify-between">
         <span class="font-mono text-xs text-cyber-text">{{ entry.viewer.name }}</span>
-        <span class="font-mono text-[10px] uppercase tracking-widest text-cyber-muted">
+        <span class="font-mono text-xs uppercase tracking-widest text-cyber-muted">
           {{ useRelativeTime(entry.viewed_at) }}
         </span>
       </li>

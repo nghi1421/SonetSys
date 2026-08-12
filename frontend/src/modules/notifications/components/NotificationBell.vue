@@ -43,7 +43,7 @@ async function onItemClick(notification: AppNotification): Promise<void> {
       <Bell class="h-4 w-4" :class="notificationStore.justReceived && 'animate-pulse'" />
       <span
         v-if="notificationStore.unreadCount > 0"
-        class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-cyber-neon-pink px-1 font-mono text-[9px] font-bold text-white shadow-pink-glow"
+        class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-cyber-neon-pink px-1 font-mono text-xs font-bold text-white shadow-pink-glow"
       >
         {{ notificationStore.unreadCount > 9 ? '9+' : notificationStore.unreadCount }}
       </span>
@@ -57,11 +57,11 @@ async function onItemClick(notification: AppNotification): Promise<void> {
       @click.stop
     >
       <div class="flex items-center justify-between border-b border-cyber-border px-4 py-2.5">
-        <p class="font-mono text-[9px] uppercase tracking-widest text-cyber-neon-cyan">{{ t('notifications.bell.title') }}</p>
+        <p class="font-mono text-xs uppercase tracking-widest text-cyber-neon-cyan">{{ t('notifications.bell.title') }}</p>
         <button
           v-if="notificationStore.unreadCount > 0"
           type="button"
-          class="font-mono text-[10px] uppercase text-cyber-neon-indigo transition-colors duration-300 hover:text-cyber-neon-cyan"
+          class="font-mono text-xs uppercase text-cyber-neon-indigo transition-colors duration-300 hover:text-cyber-neon-cyan"
           @click="notificationStore.markAllAsRead"
         >
           {{ t('notifications.bell.markAllRead') }}
@@ -84,7 +84,7 @@ async function onItemClick(notification: AppNotification): Promise<void> {
           @click="onItemClick(item)"
         >
           <p class="font-mono text-xs text-cyber-text/90">{{ describeNotification(item, t) }}</p>
-          <p class="mt-0.5 font-mono text-[9px] uppercase tracking-widest text-cyber-muted">
+          <p class="mt-0.5 font-mono text-xs uppercase tracking-widest text-cyber-muted">
             {{ item.created_at ? useRelativeTime(item.created_at) : '' }}
           </p>
         </li>
