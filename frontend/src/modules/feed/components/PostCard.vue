@@ -114,7 +114,7 @@ async function saveEdit(): Promise<void> {
           <span v-if="post.location" class="flex min-w-0 items-center gap-1 text-xs text-cyber-muted">
             <span>{{ t('feed.postCard.isIn') }}</span>
             <MapPin class="h-2.5 w-2.5 shrink-0 text-cyber-neon-cyan" />
-            <span :title="post.location.name" class="min-w-0 max-w-[140px] truncate font-semibold text-cyber-text sm:max-w-[240px]">
+            <span class="font-semibold text-cyber-text">
               {{ post.location.name }}
             </span>
           </span>
