@@ -14,6 +14,7 @@ use Illuminate\Support\Collection;
 final readonly class UserService
 {
     private const SEARCH_LIMIT = 10;
+    private const RECENT_LIMIT = 5;
 
     public function __construct(
         private UserRepositoryInterface $users,
@@ -40,5 +41,13 @@ final readonly class UserService
     public function search(string $query): Collection
     {
         return $this->users->search($query, self::SEARCH_LIMIT);
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function recent(): Collection
+    {
+        return $this->users->recent(self::RECENT_LIMIT);
     }
 }

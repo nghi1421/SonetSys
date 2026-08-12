@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->group(function (): void {
     Route::get('groups', [GroupController::class, 'index']);
     Route::post('groups', [GroupController::class, 'store']);
+    Route::get('groups/popular', [GroupController::class, 'popular']);
     Route::get('groups/{group:slug}', [GroupController::class, 'show']);
     Route::put('groups/{group}', [GroupController::class, 'update']);
     Route::delete('groups/{group}', [GroupController::class, 'destroy']);

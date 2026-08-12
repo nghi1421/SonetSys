@@ -24,4 +24,9 @@ interface UserRepositoryInterface
      * @return Collection<int, User>
      */
     public function search(string $query, int $limit): Collection;
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function recent(int $limit): Collection;
 }

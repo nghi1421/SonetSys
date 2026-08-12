@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Core\Auth;
 
+use App\Core\Auth\Domain\Enums\UserStatus;
 use App\Core\Auth\Domain\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
@@ -53,5 +54,43 @@ final class UserSearchTest extends TestCase
 
         $response->assertOk();
         $response->assertJsonCount(0, 'data');
+    }
+
+    public function test_recent_returns_the_newest_active_users_first(): void
+    {
+        Sanctum::actingAs(User::factory()->create());
+
+        $older = User::factory()->create(['name' => 'Older User', 'created_at' => now()->subDays(2)]);
+        $newer = User::factory()->create(['name' => 'Newer User', 'created_at' => now()->subDay()]);
+
+        $response = $this->getJson('/api/v1/users/recent');
+
+        $response->assertOk();
+        $ids = collect($response->json('data'))->pluck('id')->all();
+
+        $this->assertTrue(array_search($newer->id, $ids, true) < array_search($older->id, $ids, true));
+    }
+
+    public function test_recent_is_capped_at_five(): void
+    {
+        Sanctum::actingAs(User::factory()->create());
+        User::factory()->count(8)->create();
+
+        $response = $this->getJson('/api/v1/users/recent');
+
+        $response->assertOk();
+        $this->assertCount(5, $response->json('data'));
+    }
+
+    public function test_recent_excludes_non_active_users(): void
+    {
+        Sanctum::actingAs(User::factory()->create());
+        $banned = User::factory()->create(['status' => UserStatus::Banned, 'name' => 'Banned User']);
+
+        $response = $this->getJson('/api/v1/users/recent');
+
+        $response->assertOk();
+        $ids = collect($response->json('data'))->pluck('id')->all();
+        $this->assertNotContains($banned->id, $ids);
     }
 }

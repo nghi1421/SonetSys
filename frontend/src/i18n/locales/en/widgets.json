@@ -1,0 +1,13 @@
+{
+  "newMembers": {
+    "title": "New Members",
+    "empty": "No new members yet.",
+    "error": "Could not load new members."
+  },
+  "popularGroups": {
+    "title": "Popular Groups",
+    "empty": "No groups yet.",
+    "error": "Could not load popular groups.",
+    "join": "Join"
+  }
+}

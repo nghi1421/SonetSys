@@ -12,8 +12,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 /**
- * Public (auth:sanctum-only, no permission gate) keyword search used by the
- * Mention picker — deliberately separate from the admin-gated
+ * Public (auth:sanctum-only, no permission gate) user-listing actions —
+ * keyword search (used by the Mention picker) and the newest-members
+ * widget — deliberately separate from the admin-gated
  * UserController::index() listing.
  */
 final class UserSearchController extends Controller
@@ -34,6 +35,18 @@ final class UserSearchController extends Controller
             'id' => $user->id,
             'name' => $user->name,
             'avatar_url' => $user->avatar_url,
+        ])->values());
+    }
+
+    public function recent(): JsonResponse
+    {
+        $users = $this->users->recent();
+
+        return ApiResponse::success($users->map(fn (User $user) => [
+            'id' => $user->id,
+            'name' => $user->name,
+            'avatar_url' => $user->avatar_url,
+            'created_at' => $user->created_at->toIso8601String(),
         ])->values());
     }
 }
