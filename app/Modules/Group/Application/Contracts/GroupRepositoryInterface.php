@@ -20,6 +20,11 @@ interface GroupRepositoryInterface
      */
     public function list(): Collection;
 
+    /**
+     * @return Collection<int, Group>
+     */
+    public function popular(int $limit): Collection;
+
     public function update(Group $group, array $attributes): Group;
 
     public function delete(Group $group): void;

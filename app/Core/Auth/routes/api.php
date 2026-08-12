@@ -27,6 +27,7 @@ Route::prefix('auth')->group(function (): void {
 Route::middleware('auth:sanctum')->group(function (): void {
     Route::get('users', [UserController::class, 'index']);
     Route::get('users/search', [UserSearchController::class, 'search'])->middleware('throttle:20,1');
+    Route::get('users/recent', [UserSearchController::class, 'recent']);
     Route::put('users/{user}', [UserController::class, 'update']);
     Route::post('profile', [ProfileController::class, 'update']);
 });

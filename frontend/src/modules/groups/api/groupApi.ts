@@ -8,6 +8,11 @@ export const groupApi = {
     return data
   },
 
+  async popular() {
+    const { data } = await http.get<ApiResponse<Group[]>>('/groups/popular')
+    return data.data ?? []
+  },
+
   async show(slug: string) {
     const { data } = await http.get<ApiResponse<Group>>(`/groups/${slug}`)
     return data

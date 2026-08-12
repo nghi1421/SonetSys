@@ -31,6 +31,16 @@ final class GroupCache
         );
     }
 
+    public function rememberPopular(int $limit, Closure $callback): mixed
+    {
+        return TaggableCache::remember(
+            [$this->tag()],
+            $this->tag().":popular:{$limit}",
+            self::TTL_SECONDS,
+            $callback,
+        );
+    }
+
     public function forgetList(): void
     {
         TaggableCache::forget([$this->tag()]);
