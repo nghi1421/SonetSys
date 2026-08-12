@@ -108,8 +108,17 @@ async function saveEdit(): Promise<void> {
     class="relative rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow has-[.popover-panel]:z-20"
   >
     <header class="flex items-start justify-between">
-      <div>
-        <AppUsername :user="post.author" />
+      <div class="min-w-0">
+        <div class="flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+          <AppUsername :user="post.author" />
+          <span v-if="post.location" class="flex min-w-0 items-center gap-1 text-xs text-cyber-muted">
+            <span>{{ t('feed.postCard.isIn') }}</span>
+            <MapPin class="h-2.5 w-2.5 shrink-0 text-cyber-neon-cyan" />
+            <span :title="post.location.name" class="min-w-0 max-w-[140px] truncate font-semibold text-cyber-text sm:max-w-[240px]">
+              {{ post.location.name }}
+            </span>
+          </span>
+        </div>
 
         <div class="mt-1 flex items-center gap-2">
  <span class="text-xs text-cyber-muted">
@@ -121,14 +130,6 @@ async function saveEdit(): Promise<void> {
           >
             <Megaphone class="h-2.5 w-2.5" />
             {{ t('feed.postCard.sponsored') }}
-          </span>
-          <span
-            v-if="post.location"
-            :title="post.location.name"
-            class="inline-flex max-w-[120px] items-center gap-1 rounded-full border border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 px-2 py-0.5 text-xs text-cyber-neon-cyan sm:max-w-[220px]"
-          >
-            <MapPin class="h-2.5 w-2.5 shrink-0" />
-            <span class="min-w-0 truncate">{{ post.location.name }}</span>
           </span>
         </div>
       </div>

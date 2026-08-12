@@ -22,7 +22,7 @@
     "confirmDeleteTitle": "Delete post?",
     "confirmDeleteMessage": "This can't be undone.",
     "sponsored": "Sponsored",
-    "location": "Checked in"
+    "isIn": "is in"
   },
   "postComposer": {
     "title": "Create post",
