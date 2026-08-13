@@ -39,7 +39,7 @@ function share(platform: SocialPlatform): void {
 
 <template>
   <AppModal :open="open" size="sm" @close="close">
- <h2 class="text-xs font-bold text-cyber-text">
+    <h2 class="text-xs font-bold text-cyber-text">
       {{ t('feed.socialShareDialog.title') }}
     </h2>
 

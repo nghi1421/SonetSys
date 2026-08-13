@@ -6,6 +6,7 @@ import { useAuthStore } from '@/modules/auth/store/authStore'
 import MessageBell from '@/modules/chat/components/MessageBell.vue'
 import NotificationBell from '@/modules/notifications/components/NotificationBell.vue'
 import AppLocaleSwitcher from '@/shared/components/locale/AppLocaleSwitcher.vue'
+import AppLogo from '@/shared/components/ui/AppLogo.vue'
 import AppThemeSwitcher from '@/shared/components/theme/AppThemeSwitcher.vue'
 import { useRouter } from 'vue-router'
 
@@ -39,11 +40,9 @@ function submitHeaderSearch(): void {
         >
           <Menu class="h-4 w-4" />
         </button>
-        <div>
-          <h1
- class="bg-gradient-to-r from-cyber-neon-cyan via-cyber-neon-indigo to-cyber-neon-pink bg-clip-text text-sm font-bold text-transparent cursor-pointer"
-            @click="onDashboard"
-          >
+        <div class="flex cursor-pointer items-center gap-2" @click="onDashboard">
+          <AppLogo :size="26" />
+          <h1 class="text-sm font-bold text-cyber-text">
             {{ t('common.siteName') }}
           </h1>
         </div>
