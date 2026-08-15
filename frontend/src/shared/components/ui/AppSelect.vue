@@ -20,14 +20,14 @@ const id = `field-${Math.random().toString(36).slice(2, 9)}`
     <label
       v-if="label"
       :for="id"
-      class="block text-xs font-mono uppercase tracking-widest text-cyber-neon-cyan"
+ class="block text-xs text-cyber-neon-cyan"
     >
       {{ label }}
     </label>
     <select
       :id="id"
       :value="modelValue"
-      class="block w-full rounded-hud border bg-cyber-glass px-3 py-2 font-mono text-xs text-cyber-text backdrop-blur-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-cyber-bg disabled:cursor-not-allowed disabled:opacity-40"
+ class="block w-full rounded-hud border bg-cyber-glass px-3 py-2 text-xs text-cyber-text backdrop-blur-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-cyber-bg disabled:cursor-not-allowed disabled:opacity-40"
       :class="
         error
           ? 'border-cyber-neon-pink/50 focus:ring-cyber-neon-pink/60'
@@ -37,6 +37,6 @@ const id = `field-${Math.random().toString(36).slice(2, 9)}`
     >
       <slot />
     </select>
-    <p v-if="error" class="font-mono text-xs text-cyber-neon-pink">{{ error }}</p>
+ <p v-if="error" class="text-xs text-cyber-neon-pink">{{ error }}</p>
   </div>
 </template>

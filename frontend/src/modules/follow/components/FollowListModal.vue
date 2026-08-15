@@ -24,7 +24,7 @@ function initialOf(name: string): string {
     @close="emit('close')"
   >
     <div class="flex items-center justify-between">
-      <h2 class="font-mono text-xs font-bold uppercase tracking-widest text-cyber-text">
+ <h2 class="text-xs font-bold text-cyber-text">
         {{ mode === 'followers' ? t('follow.followersTitle') : t('follow.followingTitle') }}
       </h2>
       <button
@@ -36,7 +36,7 @@ function initialOf(name: string): string {
       </button>
     </div>
 
-    <p v-if="users.length === 0" class="mt-4 font-mono text-xs text-cyber-muted">
+ <p v-if="users.length === 0" class="mt-4 text-xs text-cyber-muted">
       {{ mode === 'followers' ? t('follow.noFollowers') : t('follow.noFollowing') }}
     </p>
 
@@ -55,11 +55,11 @@ function initialOf(name: string): string {
           />
           <span
             v-else
-            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-cyber-border bg-cyber-surface font-mono text-xs font-bold text-cyber-text"
+ class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-cyber-border bg-cyber-surface text-xs font-bold text-cyber-text"
           >
             {{ initialOf(user.name) }}
           </span>
-          <span class="truncate font-mono text-xs text-cyber-text">{{ user.name }}</span>
+ <span class="truncate text-xs text-cyber-text">{{ user.name }}</span>
         </router-link>
         <FollowButton :user-id="user.id" :is-following="user.is_following" />
       </li>

@@ -260,7 +260,7 @@ async function handleSubmit(): Promise<void> {
       <UserRound class="h-4 w-4 text-cyber-neon-cyan" />
     </span>
     <span
-      class="flex-1 rounded-full border border-cyber-border bg-cyber-surface/60 px-4 py-2 font-mono text-xs text-cyber-muted"
+ class="flex-1 rounded-full border border-cyber-border bg-cyber-surface/60 px-4 py-2 text-xs text-cyber-muted"
     >
       {{ t('feed.postComposer.placeholder') }}
     </span>
@@ -268,7 +268,7 @@ async function handleSubmit(): Promise<void> {
 
   <AppModal :open="open" size="lg" panel-class="p-6" @close="closeComposer">
     <form class="relative space-y-4 has-[.popover-panel]:z-20" @submit.prevent="handleSubmit">
-      <h2 class="font-mono text-xs font-bold uppercase tracking-widest text-cyber-text">
+ <h2 class="text-xs font-bold text-cyber-text">
         {{ t('feed.postComposer.title') }}
       </h2>
 
@@ -276,7 +276,7 @@ async function handleSubmit(): Promise<void> {
         v-model="body"
         rows="6"
         :placeholder="t('feed.postComposer.placeholder')"
-        class="block w-full resize-none rounded-hud border border-cyber-border bg-cyber-surface/60 px-4 py-3 font-mono text-xs text-cyber-text backdrop-blur-md transition-all duration-300 placeholder:text-cyber-muted focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
+ class="block w-full resize-none rounded-hud border border-cyber-border bg-cyber-surface/60 px-4 py-3 text-xs text-cyber-text backdrop-blur-md transition-all duration-300 placeholder:text-cyber-muted focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
       />
 
       <AppSelect
@@ -333,7 +333,7 @@ async function handleSubmit(): Promise<void> {
         class="flex w-fit items-center gap-1.5 rounded-full border border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 px-3 py-1"
       >
         <MapPin class="h-3 w-3 text-cyber-neon-cyan" />
-        <span class="font-mono text-xs text-cyber-neon-cyan">{{ selectedLocation.name }}</span>
+ <span class="text-xs text-cyber-neon-cyan">{{ selectedLocation.name }}</span>
         <button
           type="button"
           class="text-cyber-neon-cyan transition-colors duration-300 hover:text-cyber-neon-pink"
@@ -344,7 +344,7 @@ async function handleSubmit(): Promise<void> {
         </button>
       </div>
 
-      <p v-if="error" class="font-mono text-xs text-cyber-neon-pink">{{ error }}</p>
+ <p v-if="error" class="text-xs text-cyber-neon-pink">{{ error }}</p>
 
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-1">
@@ -445,7 +445,7 @@ async function handleSubmit(): Promise<void> {
                   v-model="checkInQuery"
                   type="text"
                   :placeholder="t('feed.postComposer.checkInSearchPlaceholder')"
-                  class="block w-full rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-1.5 font-mono text-xs text-cyber-text backdrop-blur-md transition-all duration-300 placeholder:text-cyber-muted focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
+ class="block w-full rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-1.5 text-xs text-cyber-text backdrop-blur-md transition-all duration-300 placeholder:text-cyber-muted focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
                   @input="onCheckInSearchInput"
                 />
 
@@ -453,19 +453,19 @@ async function handleSubmit(): Promise<void> {
                   <li v-for="result in checkInResults" :key="`${result.lat}-${result.lng}`">
                     <button
                       type="button"
-                      class="block w-full rounded-hud px-2 py-1.5 text-left font-mono text-xs text-cyber-text transition-all duration-300 hover:bg-cyber-surface/60 hover:text-cyber-neon-cyan"
+ class="block w-full rounded-hud px-2 py-1.5 text-left text-xs text-cyber-text transition-all duration-300 hover:bg-cyber-surface/60 hover:text-cyber-neon-cyan"
                       @click="selectLocation(result)"
                     >
                       {{ result.name }}
                     </button>
                   </li>
                 </ul>
-                <p v-else-if="checkInSearching" class="mt-2 font-mono text-xs text-cyber-muted">
+ <p v-else-if="checkInSearching" class="mt-2 text-xs text-cyber-muted">
                   {{ t('common.loading') }}
                 </p>
                 <p
                   v-else-if="checkInQuery.trim().length >= 2"
-                  class="mt-2 font-mono text-xs text-cyber-muted"
+ class="mt-2 text-xs text-cyber-muted"
                 >
                   {{ t('feed.postComposer.checkInNoResults') }}
                 </p>
@@ -501,7 +501,7 @@ async function handleSubmit(): Promise<void> {
                   v-model="mention.query.value"
                   type="text"
                   :placeholder="t('feed.postComposer.mentionSearchPlaceholder')"
-                  class="block w-full rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-1.5 font-mono text-xs text-cyber-text backdrop-blur-md transition-all duration-300 placeholder:text-cyber-muted focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
+ class="block w-full rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-1.5 text-xs text-cyber-text backdrop-blur-md transition-all duration-300 placeholder:text-cyber-muted focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
                   @input="mention.onSearchInput()"
                 />
 
@@ -512,7 +512,7 @@ async function handleSubmit(): Promise<void> {
                   <li v-for="candidate in mention.results.value" :key="candidate.id">
                     <button
                       type="button"
-                      class="block w-full rounded-hud px-2 py-1.5 text-left font-mono text-xs text-cyber-text transition-all duration-300 hover:bg-cyber-surface/60 hover:text-cyber-neon-cyan"
+ class="block w-full rounded-hud px-2 py-1.5 text-left text-xs text-cyber-text transition-all duration-300 hover:bg-cyber-surface/60 hover:text-cyber-neon-cyan"
                       @click="selectMention(candidate)"
                     >
                       {{ candidate.name }}
@@ -521,13 +521,13 @@ async function handleSubmit(): Promise<void> {
                 </ul>
                 <p
                   v-else-if="mention.searching.value"
-                  class="mt-2 font-mono text-xs text-cyber-muted"
+ class="mt-2 text-xs text-cyber-muted"
                 >
                   {{ t('common.loading') }}
                 </p>
                 <p
                   v-else-if="mention.query.value.trim().length >= 2"
-                  class="mt-2 font-mono text-xs text-cyber-muted"
+ class="mt-2 text-xs text-cyber-muted"
                 >
                   {{ t('feed.postComposer.mentionNoResults') }}
                 </p>
@@ -539,7 +539,7 @@ async function handleSubmit(): Promise<void> {
         <div class="flex items-center gap-3">
           <button
             type="button"
-            class="rounded-full border border-cyber-border bg-cyber-glass px-4 py-1.5 font-mono text-xs uppercase text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
+ class="rounded-full border border-cyber-border bg-cyber-glass px-4 py-1.5 text-xs text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
             @click="closeComposer"
           >
             {{ t('common.cancel') }}

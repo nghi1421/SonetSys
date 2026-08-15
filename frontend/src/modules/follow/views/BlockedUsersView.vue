@@ -54,11 +54,11 @@ onMounted(() => {
             />
             <span
               v-else
-              class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-cyber-border bg-cyber-surface font-mono text-sm font-bold text-cyber-text"
+ class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-cyber-border bg-cyber-surface text-sm font-bold text-cyber-text"
             >
               {{ initialOf(user.name) }}
             </span>
-            <span class="truncate font-mono text-xs text-cyber-text">{{ user.name }}</span>
+ <span class="truncate text-xs text-cyber-text">{{ user.name }}</span>
           </router-link>
           <AppButton
             :label="t('follow.unblock')"

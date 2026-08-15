@@ -143,7 +143,7 @@ async function onConfirmDelete(): Promise<void> {
           <button
             v-if="canDelete"
             type="button"
-            class="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-xs text-cyber-neon-pink transition-colors duration-300 hover:shadow-pink-glow"
+ class="flex w-full items-center gap-2 px-3 py-2 text-left text-xs text-cyber-neon-pink transition-colors duration-300 hover:shadow-pink-glow"
             @click="onDeleteClick"
           >
             <Trash2 class="h-3.5 w-3.5" /> {{ t('common.delete') }}
@@ -151,7 +151,7 @@ async function onConfirmDelete(): Promise<void> {
           <button
             v-if="!isOwner"
             type="button"
-            class="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-pink"
+ class="flex w-full items-center gap-2 px-3 py-2 text-left text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-pink"
             @click="onReportClick"
           >
             <Flag class="h-3.5 w-3.5" /> {{ t('report.action') }}
@@ -165,11 +165,11 @@ async function onConfirmDelete(): Promise<void> {
         <router-link
           v-if="reel.author.id"
           :to="`/users/${reel.author.id}`"
-          class="font-mono text-xs font-bold uppercase tracking-widest text-white drop-shadow transition-colors duration-300 hover:text-cyber-neon-cyan"
+ class="text-xs font-bold text-white drop-shadow transition-colors duration-300 hover:text-cyber-neon-cyan"
         >
           {{ reel.author.name }}
         </router-link>
-        <p v-if="reel.body" class="mt-1 font-mono text-xs text-white/90 drop-shadow">
+ <p v-if="reel.body" class="mt-1 text-xs text-white/90 drop-shadow">
           <LinkifiedText :text="reel.body" :hashtags="reel.hashtags" :mentions="reel.mentions" />
         </p>
       </div>
@@ -185,7 +185,7 @@ async function onConfirmDelete(): Promise<void> {
 
         <button
           type="button"
-          class="inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-black/40 px-2.5 py-1 font-mono text-xs text-white backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/40 hover:text-cyber-neon-cyan"
+ class="inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-black/40 px-2.5 py-1 text-xs text-white backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/40 hover:text-cyber-neon-cyan"
           @click="onToggleComments"
         >
           <MessageCircle class="h-3 w-3" />
@@ -201,12 +201,12 @@ async function onConfirmDelete(): Promise<void> {
       class="absolute inset-x-0 bottom-0 z-20 max-h-[70dvh] overflow-y-auto rounded-t-hud border-t border-cyber-border bg-cyber-surface p-4"
     >
       <div class="flex items-center justify-between">
-        <p class="font-mono text-xs font-bold uppercase tracking-widest text-cyber-text">
+ <p class="text-xs font-bold text-cyber-text">
           {{ t('reels.card.comments') }}
         </p>
         <button
           type="button"
-          class="font-mono text-xs uppercase text-cyber-muted hover:text-cyber-neon-cyan"
+ class="text-xs text-cyber-muted hover:text-cyber-neon-cyan"
           @click="showComments = false"
         >
           {{ t('common.close') }}

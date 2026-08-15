@@ -92,7 +92,7 @@ async function onLogout(): Promise<void> {
         <UserRound class="h-4 w-4 text-cyber-neon-cyan" />
       </span>
       <span class="min-w-0">
-        <span class="flex items-center gap-1 truncate font-mono text-xs font-bold text-cyber-text">
+ <span class="flex items-center gap-1 truncate text-xs font-bold text-cyber-text">
           {{ authStore.user.name }}
           <Crown v-if="authStore.user.is_premium" class="h-3 w-3 shrink-0 text-cyber-neon-indigo" />
         </span>
@@ -114,7 +114,7 @@ async function onLogout(): Promise<void> {
         :key="item.id"
         :to="targetFor(item)"
         :title="item.label"
-        class="flex items-center gap-2.5 rounded-hud px-3 py-2 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
+ class="flex items-center gap-2.5 rounded-hud px-3 py-2 text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
         active-class="text-cyber-neon-cyan bg-cyber-glass border border-cyber-border shadow-cyan-glow"
       >
         <component :is="iconFor(item)" class="h-4 w-4 shrink-0" />
@@ -124,7 +124,7 @@ async function onLogout(): Promise<void> {
       <RouterLink
         :to="{ name: 'stories' }"
         :title="t('common.stories')"
-        class="flex items-center gap-2.5 rounded-hud px-3 py-2 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
+ class="flex items-center gap-2.5 rounded-hud px-3 py-2 text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
         active-class="text-cyber-neon-cyan bg-cyber-glass border border-cyber-border shadow-cyan-glow"
       >
         <Clapperboard class="h-4 w-4 shrink-0" />
@@ -134,7 +134,7 @@ async function onLogout(): Promise<void> {
       <RouterLink
         :to="{ name: 'reels' }"
         :title="t('common.reels')"
-        class="flex items-center gap-2.5 rounded-hud px-3 py-2 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
+ class="flex items-center gap-2.5 rounded-hud px-3 py-2 text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
         active-class="text-cyber-neon-cyan bg-cyber-glass border border-cyber-border shadow-cyan-glow"
       >
         <Video class="h-4 w-4 shrink-0" />
@@ -144,7 +144,7 @@ async function onLogout(): Promise<void> {
       <RouterLink
         :to="{ name: 'blocked-users' }"
         :title="t('common.blockedUsers')"
-        class="flex items-center gap-2.5 rounded-hud px-3 py-2 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
+ class="flex items-center gap-2.5 rounded-hud px-3 py-2 text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
         active-class="text-cyber-neon-cyan bg-cyber-glass border border-cyber-border shadow-cyan-glow"
       >
         <ShieldOff class="h-4 w-4 shrink-0" />
@@ -157,7 +157,7 @@ async function onLogout(): Promise<void> {
         v-if="isAdmin"
         :to="{ name: 'admin-dashboard' }"
         :title="t('common.adminPanel')"
-        class="flex items-center gap-2.5 rounded-hud px-3 py-2 font-mono text-xs font-bold uppercase text-cyber-neon-indigo transition-all duration-300 hover:text-cyber-neon-cyan"
+ class="flex items-center gap-2.5 rounded-hud px-3 py-2 text-xs font-bold text-cyber-neon-indigo transition-all duration-300 hover:text-cyber-neon-cyan"
       >
         <LayoutDashboard class="h-4 w-4 shrink-0" />
         <span>{{ t('common.adminPanel') }}</span>
@@ -165,7 +165,7 @@ async function onLogout(): Promise<void> {
 
       <button
         type="button"
-        class="flex w-full items-center gap-2.5 rounded-hud px-3 py-2 font-mono text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-pink"
+ class="flex w-full items-center gap-2.5 rounded-hud px-3 py-2 text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-pink"
         @click="onLogout"
       >
         <LogOut class="h-4 w-4 shrink-0" />

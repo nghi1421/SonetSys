@@ -49,7 +49,7 @@ async function onCopyLink(): Promise<void> {
   <div class="relative">
     <button
       type="button"
-      class="inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-cyber-glass px-2.5 py-1 font-mono text-xs text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-indigo/40 hover:text-cyber-neon-indigo"
+ class="inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-cyber-glass px-2.5 py-1 text-xs text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-indigo/40 hover:text-cyber-neon-indigo"
       @click="toggle"
     >
       <Share2 class="h-3 w-3" />
@@ -65,21 +65,21 @@ async function onCopyLink(): Promise<void> {
     >
       <button
         type="button"
-        class="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-cyan"
+ class="flex w-full items-center gap-2 px-3 py-2 text-left text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-cyan"
         @click="openRepostDialog"
       >
         <Repeat2 class="h-4 w-4" /> {{ t('feed.shareMenu.shareToProfile') }}
       </button>
       <button
         type="button"
-        class="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-cyan"
+ class="flex w-full items-center gap-2 px-3 py-2 text-left text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-cyan"
         @click="openSocialDialog"
       >
         <Globe class="h-4 w-4" /> {{ t('feed.shareMenu.shareToSocial') }}
       </button>
       <button
         type="button"
-        class="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-cyan"
+ class="flex w-full items-center gap-2 px-3 py-2 text-left text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-cyan"
         @click="onCopyLink"
       >
         <Copy class="h-4 w-4" />

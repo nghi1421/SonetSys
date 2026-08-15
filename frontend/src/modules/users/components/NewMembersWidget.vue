@@ -15,7 +15,7 @@ onMounted(() => {
 
 <template>
   <section class="rounded-hud border border-cyber-border bg-cyber-glass p-4 backdrop-blur-md">
-    <h2 class="font-mono text-xs font-bold uppercase tracking-widest text-cyber-text">
+ <h2 class="text-xs font-bold text-cyber-text">
       {{ t('widgets.newMembers.title') }}
     </h2>
 
@@ -26,11 +26,11 @@ onMounted(() => {
       </div>
     </div>
 
-    <p v-else-if="userStore.recentError" class="mt-3 font-mono text-xs text-cyber-neon-pink">
+ <p v-else-if="userStore.recentError" class="mt-3 text-xs text-cyber-neon-pink">
       {{ t('widgets.newMembers.error') }}
     </p>
 
-    <p v-else-if="userStore.recentUsers.length === 0" class="mt-3 font-mono text-xs text-cyber-muted">
+ <p v-else-if="userStore.recentUsers.length === 0" class="mt-3 text-xs text-cyber-muted">
       {{ t('widgets.newMembers.empty') }}
     </p>
 
@@ -51,11 +51,11 @@ onMounted(() => {
           </span>
           <span class="min-w-0">
             <span
-              class="block truncate font-mono text-xs text-cyber-text transition-colors duration-300 group-hover:text-cyber-neon-cyan"
+ class="block truncate text-xs text-cyber-text transition-colors duration-300 group-hover:text-cyber-neon-cyan"
             >
               {{ user.name }}
             </span>
-            <span class="block font-mono text-xs text-cyber-muted">{{ useRelativeTime(user.created_at) }}</span>
+ <span class="block text-xs text-cyber-muted">{{ useRelativeTime(user.created_at) }}</span>
           </span>
         </router-link>
       </li>

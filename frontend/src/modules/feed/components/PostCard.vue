@@ -108,27 +108,28 @@ async function saveEdit(): Promise<void> {
     class="relative rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow has-[.popover-panel]:z-20"
   >
     <header class="flex items-start justify-between">
-      <div>
-        <AppUsername :user="post.author" />
+      <div class="min-w-0">
+        <div class="flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+          <AppUsername :user="post.author" />
+          <span v-if="post.location" class="flex min-w-0 items-center gap-1 text-xs text-cyber-muted">
+            <span>{{ t('feed.postCard.isIn') }}</span>
+            <MapPin class="h-2.5 w-2.5 shrink-0 text-cyber-neon-cyan" />
+            <span class="font-semibold text-cyber-text">
+              {{ post.location.name }}
+            </span>
+          </span>
+        </div>
 
         <div class="mt-1 flex items-center gap-2">
-          <span class="font-mono text-xs text-cyber-muted">
+ <span class="text-xs text-cyber-muted">
             {{ useRelativeTime(post.created_at) }}
           </span>
           <span
             v-if="post.is_sponsored"
-            class="inline-flex items-center gap-1 rounded-full border border-cyber-neon-indigo/30 bg-cyber-neon-indigo/10 px-2 py-0.5 font-mono text-xs uppercase tracking-widest text-cyber-neon-indigo"
+ class="inline-flex items-center gap-1 rounded-full border border-cyber-neon-indigo/30 bg-cyber-neon-indigo/10 px-2 py-0.5 text-xs text-cyber-neon-indigo"
           >
             <Megaphone class="h-2.5 w-2.5" />
             {{ t('feed.postCard.sponsored') }}
-          </span>
-          <span
-            v-if="post.location"
-            :title="t('feed.postCard.location')"
-            class="inline-flex items-center gap-1 rounded-full border border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 px-2 py-0.5 font-mono text-xs text-cyber-neon-cyan"
-          >
-            <MapPin class="h-2.5 w-2.5" />
-            {{ post.location.name }}
           </span>
         </div>
       </div>
@@ -152,7 +153,7 @@ async function saveEdit(): Promise<void> {
           <button
             v-if="isOwner && !editing"
             type="button"
-            class="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-cyan"
+ class="flex w-full items-center gap-2 px-3 py-2 text-left text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-cyan"
             @click="startEditing"
           >
             <Pencil class="h-3.5 w-3.5" /> {{ t('common.edit') }}
@@ -160,7 +161,7 @@ async function saveEdit(): Promise<void> {
           <button
             v-if="canDelete"
             type="button"
-            class="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-xs text-cyber-neon-pink transition-colors duration-300 hover:shadow-pink-glow"
+ class="flex w-full items-center gap-2 px-3 py-2 text-left text-xs text-cyber-neon-pink transition-colors duration-300 hover:shadow-pink-glow"
             @click="onDeleteClick"
           >
             <Trash2 class="h-3.5 w-3.5" /> {{ t('common.delete') }}
@@ -168,7 +169,7 @@ async function saveEdit(): Promise<void> {
           <button
             v-if="!isOwner"
             type="button"
-            class="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-pink"
+ class="flex w-full items-center gap-2 px-3 py-2 text-left text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-pink"
             @click="onReportClick"
           >
             <Flag class="h-3.5 w-3.5" /> {{ t('report.action') }}
@@ -181,12 +182,12 @@ async function saveEdit(): Promise<void> {
       <textarea
         v-model="editBody"
         rows="3"
-        class="block w-full resize-none rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-2 font-mono text-xs text-cyber-text backdrop-blur-md focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
+ class="block w-full resize-none rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-2 text-xs text-cyber-text backdrop-blur-md focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
       />
       <div class="flex justify-end gap-3">
         <button
           type="button"
-          class="rounded-full border border-cyber-border bg-cyber-glass px-3 py-1.5 font-mono text-xs uppercase text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
+ class="rounded-full border border-cyber-border bg-cyber-glass px-3 py-1.5 text-xs text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
           @click="editing = false"
         >
           {{ t('common.cancel') }}
@@ -197,7 +198,7 @@ async function saveEdit(): Promise<void> {
     <template v-else>
       <p
         v-if="post.body"
-        class="mt-3 whitespace-pre-wrap border-l border-cyber-neon-indigo pl-2 font-mono text-xs leading-relaxed text-cyber-text/90"
+ class="mt-3 whitespace-pre-wrap border-l border-cyber-neon-indigo pl-2 text-xs leading-relaxed text-cyber-text/90"
         :class="clickable && 'cursor-pointer'"
         @click="onOpenDetail"
       >
@@ -231,7 +232,7 @@ async function saveEdit(): Promise<void> {
 
       <button
         type="button"
-        class="inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-cyber-glass px-2.5 py-1 font-mono text-xs text-cyber-muted transition-all duration-300 hover:border-cyber-neon-cyan/40 hover:text-cyber-neon-cyan"
+ class="inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-cyber-glass px-2.5 py-1 text-xs text-cyber-muted transition-all duration-300 hover:border-cyber-neon-cyan/40 hover:text-cyber-neon-cyan"
         @click="onToggleComments"
       >
         <MessageCircle class="h-3 w-3" />

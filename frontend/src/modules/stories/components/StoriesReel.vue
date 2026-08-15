@@ -45,7 +45,7 @@ onMounted(() => {
       >
         <Plus class="h-5 w-5" />
       </span>
-      <span class="truncate font-mono text-xs uppercase tracking-widest text-cyber-muted">
+ <span class="truncate text-xs text-cyber-muted">
         {{ t('stories.reel.addStory') }}
       </span>
     </button>
@@ -66,12 +66,12 @@ onMounted(() => {
         "
       >
         <span
-          class="flex h-full w-full items-center justify-center rounded-full border border-cyber-border bg-cyber-surface font-mono text-sm font-bold text-cyber-text"
+ class="flex h-full w-full items-center justify-center rounded-full border border-cyber-border bg-cyber-surface text-sm font-bold text-cyber-text"
         >
           {{ initialOf(group.author.name) }}
         </span>
       </span>
-      <span class="truncate font-mono text-xs uppercase tracking-widest text-cyber-muted">
+ <span class="truncate text-xs text-cyber-muted">
         {{ isMine(index) ? t('stories.reel.yourStory') : group.author.name }}
       </span>
     </button>

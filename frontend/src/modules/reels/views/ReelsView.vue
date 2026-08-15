@@ -57,7 +57,7 @@ function goBack(): void {
 
     <div
       v-if="reelStore.loading"
-      class="flex h-full items-center justify-center font-mono text-xs text-cyber-muted"
+ class="flex h-full items-center justify-center text-xs text-cyber-muted"
     >
       {{ t('common.loading') }}
     </div>
@@ -67,7 +67,7 @@ function goBack(): void {
       class="flex h-full flex-col items-center justify-center gap-3 px-6 text-center"
     >
       <Clapperboard class="h-8 w-8 text-cyber-muted" />
-      <p class="font-mono text-xs text-cyber-muted">{{ t('reels.reelsPage.empty') }}</p>
+ <p class="text-xs text-cyber-muted">{{ t('reels.reelsPage.empty') }}</p>
     </div>
 
     <div v-else class="h-full snap-y snap-mandatory overflow-y-scroll">

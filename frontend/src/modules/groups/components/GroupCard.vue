@@ -36,7 +36,7 @@ const membershipDotClass = computed(() => {
       <h3 class="text-xs font-bold text-cyber-text">{{ group.name }}</h3>
 
       <span
-        class="inline-flex shrink-0 items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-xs uppercase tracking-widest"
+ class="inline-flex shrink-0 items-center gap-1 rounded-full border px-2 py-0.5 text-xs"
         :class="
           group.visibility === 'public'
             ? 'border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 text-cyber-neon-cyan'
@@ -49,7 +49,7 @@ const membershipDotClass = computed(() => {
       </span>
     </div>
 
-    <p v-if="group.description" class="line-clamp-2 font-mono text-xs leading-relaxed text-cyber-muted">
+ <p v-if="group.description" class="line-clamp-2 text-xs leading-relaxed text-cyber-muted">
       {{ group.description }}
     </p>
 
@@ -61,7 +61,7 @@ const membershipDotClass = computed(() => {
 
       <span
         v-if="membershipLabel"
-        class="inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-cyber-surface px-2 py-0.5 font-mono text-xs uppercase tracking-widest text-cyber-text"
+ class="inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-cyber-surface px-2 py-0.5 text-xs text-cyber-text"
       >
         <span class="h-1.5 w-1.5 rounded-full" :class="membershipDotClass" />
         {{ membershipLabel }}

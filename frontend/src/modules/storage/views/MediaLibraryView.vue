@@ -79,7 +79,7 @@ async function onConfirmDelete(): Promise<void> {
         v-for="filter in filters"
         :key="filter.value"
         type="button"
-        class="rounded-t-lg px-4 py-2 text-xs font-medium uppercase tracking-widest transition-colors duration-200"
+ class="rounded-t-lg px-4 py-2 text-xs font-medium transition-colors duration-200"
         :class="
           activeType === filter.value
             ? 'border-b-2 border-blue-600 text-blue-700'

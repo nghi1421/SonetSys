@@ -1,6 +1,7 @@
 {
   "headerIcon": {
-    "ariaLabel": "Search"
+    "ariaLabel": "Search",
+    "placeholder": "Search Sonetsys"
   },
   "searchView": {
     "placeholder": "Search posts, people, groups, and hashtags…",
@@ -14,6 +15,11 @@
       "people": "People",
       "groups": "Groups",
       "hashtags": "Hashtags"
+    },
+    "tabEmpty": {
+      "posts": "No posts matched your search.",
+      "groups": "No groups matched your search.",
+      "people": "No people matched your search."
     }
   }
 }

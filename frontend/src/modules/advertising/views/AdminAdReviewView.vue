@@ -99,7 +99,7 @@ function extractError(err: unknown, fallback: string): string {
 
     <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
       <table class="w-full text-left text-sm">
-        <thead class="border-b border-slate-200 bg-slate-50 text-[11px] uppercase tracking-widest text-slate-500">
+ <thead class="border-b border-slate-200 bg-slate-50 text-[11px] text-slate-500">
           <tr>
             <th class="px-4 py-3 font-medium">{{ t('admin.ads.advertiserHeader') }}</th>
             <th class="px-4 py-3 font-medium">{{ t('admin.ads.postHeader') }}</th>

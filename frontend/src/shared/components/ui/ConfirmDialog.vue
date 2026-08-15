@@ -16,21 +16,21 @@ const { t } = useI18n()
 
 <template>
   <AppModal :open="open" size="sm" @close="emit('cancel')">
-    <h2 class="font-mono text-xs font-bold uppercase tracking-widest text-cyber-text">
+ <h2 class="text-xs font-bold text-cyber-text">
       {{ title }}
     </h2>
-    <p class="mt-2 font-mono text-xs leading-relaxed text-cyber-muted">{{ message }}</p>
+ <p class="mt-2 text-xs leading-relaxed text-cyber-muted">{{ message }}</p>
     <div class="mt-4 flex justify-end gap-3">
       <button
         type="button"
-        class="rounded-full border border-cyber-border bg-cyber-glass px-4 py-1.5 font-mono text-xs uppercase text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
+ class="rounded-full border border-cyber-border bg-cyber-glass px-4 py-1.5 text-xs text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
         @click="emit('cancel')"
       >
         {{ t('common.cancel') }}
       </button>
       <button
         type="button"
-        class="rounded-full border border-cyber-neon-pink/30 bg-cyber-neon-pink/10 px-4 py-1.5 font-mono text-xs font-bold uppercase text-cyber-neon-pink transition-all duration-300 hover:shadow-pink-glow"
+ class="rounded-full border border-cyber-neon-pink/30 bg-cyber-neon-pink/10 px-4 py-1.5 text-xs font-bold text-cyber-neon-pink transition-all duration-300 hover:shadow-pink-glow"
         @click="emit('confirm')"
       >
         {{ t('common.delete') }}

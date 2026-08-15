@@ -85,7 +85,7 @@ function extractError(err: unknown, fallback: string): string {
 
     <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
       <table class="w-full text-left text-sm">
-        <thead class="border-b border-slate-200 bg-slate-50 text-[11px] uppercase tracking-widest text-slate-500">
+ <thead class="border-b border-slate-200 bg-slate-50 text-[11px] text-slate-500">
           <tr>
             <th class="px-4 py-3 font-medium">{{ t('admin.reports.reporterHeader') }}</th>
             <th class="px-4 py-3 font-medium">{{ t('admin.reports.contentHeader') }}</th>
@@ -116,7 +116,7 @@ function extractError(err: unknown, fallback: string): string {
               {{ report.reporter.name ?? '—' }}
             </td>
             <td class="px-4 py-3 text-slate-600">
-              <span class="inline-flex items-center rounded-full border border-slate-200 px-2 py-0.5 text-xs uppercase tracking-widest text-slate-500">
+ <span class="inline-flex items-center rounded-full border border-slate-200 px-2 py-0.5 text-xs text-slate-500">
                 {{ contentTypeLabel(report) }}
               </span>
               <div class="mt-1">

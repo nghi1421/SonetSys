@@ -43,7 +43,7 @@ watch(
     <div class="mx-auto max-w-2xl">
       <div
         v-if="error"
-        class="rounded-hud border border-cyber-neon-pink/30 bg-cyber-neon-pink/10 p-5 font-mono text-xs text-cyber-neon-pink"
+ class="rounded-hud border border-cyber-neon-pink/30 bg-cyber-neon-pink/10 p-5 text-xs text-cyber-neon-pink"
       >
         <TriangleAlert class="mb-2 h-5 w-5" />
         {{ t('menu.page.loadError') }}
@@ -54,7 +54,7 @@ watch(
 
         <div v-if="item.static_page" class="mt-4">
           <h2 class="text-xs font-bold text-cyber-text">{{ item.static_page.title }}</h2>
-          <p class="mt-2 whitespace-pre-wrap font-mono text-xs leading-relaxed text-cyber-text/90">
+ <p class="mt-2 whitespace-pre-wrap text-xs leading-relaxed text-cyber-text/90">
             {{ item.static_page.content }}
           </p>
         </div>
@@ -62,7 +62,7 @@ watch(
         <div v-else class="mt-8 flex flex-col items-center py-10 text-center">
           <FileQuestion class="h-8 w-8 text-cyber-muted" />
           <p class="mt-4 text-xs font-bold text-cyber-text">{{ t('menu.page.emptyTitle') }}</p>
-          <p class="mt-1 font-mono text-xs text-cyber-muted">{{ t('menu.page.emptyDescription') }}</p>
+ <p class="mt-1 text-xs text-cyber-muted">{{ t('menu.page.emptyDescription') }}</p>
         </div>
       </div>
     </div>
