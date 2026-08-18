@@ -70,7 +70,7 @@ async function onLogout(): Promise<void> {
   />
 
   <aside
-    class="fixed inset-y-0 left-0 top-16 z-20 w-56 -translate-x-full overflow-y-auto border-r border-cyber-border bg-cyber-glass py-6 pr-2 pl-4 backdrop-blur-md transition-transform duration-300 sm:sticky sm:top-16 sm:z-auto sm:w-56 sm:max-h-[calc(100vh-4rem)] sm:translate-x-0 sm:self-start sm:px-4"
+    class="fixed inset-y-0 left-0 top-16 z-20 w-[350px] -translate-x-full overflow-y-auto border-r border-cyber-border bg-cyber-glass py-6 pr-2 pl-4 backdrop-blur-md transition-transform duration-300 sm:sticky sm:top-16 sm:z-auto sm:h-[calc(100vh-4rem)] sm:w-[350px] sm:translate-x-0 sm:px-4"
     :class="props.open && 'translate-x-0'"
   >
     <RouterLink
@@ -92,9 +92,9 @@ async function onLogout(): Promise<void> {
         <UserRound class="h-4 w-4 text-cyber-neon-cyan" />
       </span>
       <span class="min-w-0">
- <span class="flex items-center gap-1 truncate text-xs font-bold text-cyber-text">
+ <span class="flex items-center gap-1 truncate text-sm font-bold text-cyber-text">
           {{ authStore.user.name }}
-          <Crown v-if="authStore.user.is_premium" class="h-3 w-3 shrink-0 text-cyber-neon-indigo" />
+          <Crown v-if="authStore.user.is_premium" class="h-3.5 w-3.5 shrink-0 text-cyber-neon-indigo" />
         </span>
         <WalletBalancePill/>
       </span>
@@ -114,40 +114,40 @@ async function onLogout(): Promise<void> {
         :key="item.id"
         :to="targetFor(item)"
         :title="item.label"
- class="flex items-center gap-2.5 rounded-hud px-3 py-2 text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
+ class="flex items-center gap-2.5 rounded-hud px-3 py-2 text-sm text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
         active-class="text-cyber-neon-cyan bg-cyber-glass border border-cyber-border shadow-cyan-glow"
       >
-        <component :is="iconFor(item)" class="h-4 w-4 shrink-0" />
+        <component :is="iconFor(item)" class="h-5 w-5 shrink-0" />
         <span>{{ item.label }}</span>
       </RouterLink>
 
       <RouterLink
         :to="{ name: 'stories' }"
         :title="t('common.stories')"
- class="flex items-center gap-2.5 rounded-hud px-3 py-2 text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
+ class="flex items-center gap-2.5 rounded-hud px-3 py-2 text-sm text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
         active-class="text-cyber-neon-cyan bg-cyber-glass border border-cyber-border shadow-cyan-glow"
       >
-        <Clapperboard class="h-4 w-4 shrink-0" />
+        <Clapperboard class="h-5 w-5 shrink-0" />
         <span>{{ t('common.stories') }}</span>
       </RouterLink>
 
       <RouterLink
         :to="{ name: 'reels' }"
         :title="t('common.reels')"
- class="flex items-center gap-2.5 rounded-hud px-3 py-2 text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
+ class="flex items-center gap-2.5 rounded-hud px-3 py-2 text-sm text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
         active-class="text-cyber-neon-cyan bg-cyber-glass border border-cyber-border shadow-cyan-glow"
       >
-        <Video class="h-4 w-4 shrink-0" />
+        <Video class="h-5 w-5 shrink-0" />
         <span>{{ t('common.reels') }}</span>
       </RouterLink>
 
       <RouterLink
         :to="{ name: 'blocked-users' }"
         :title="t('common.blockedUsers')"
- class="flex items-center gap-2.5 rounded-hud px-3 py-2 text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
+ class="flex items-center gap-2.5 rounded-hud px-3 py-2 text-sm text-cyber-muted transition-all duration-300 hover:text-cyber-neon-cyan"
         active-class="text-cyber-neon-cyan bg-cyber-glass border border-cyber-border shadow-cyan-glow"
       >
-        <ShieldOff class="h-4 w-4 shrink-0" />
+        <ShieldOff class="h-5 w-5 shrink-0" />
         <span>{{ t('common.blockedUsers') }}</span>
       </RouterLink>
     </nav>
@@ -157,18 +157,18 @@ async function onLogout(): Promise<void> {
         v-if="isAdmin"
         :to="{ name: 'admin-dashboard' }"
         :title="t('common.adminPanel')"
- class="flex items-center gap-2.5 rounded-hud px-3 py-2 text-xs font-bold text-cyber-neon-indigo transition-all duration-300 hover:text-cyber-neon-cyan"
+ class="flex items-center gap-2.5 rounded-hud px-3 py-2 text-sm font-bold text-cyber-neon-indigo transition-all duration-300 hover:text-cyber-neon-cyan"
       >
-        <LayoutDashboard class="h-4 w-4 shrink-0" />
+        <LayoutDashboard class="h-5 w-5 shrink-0" />
         <span>{{ t('common.adminPanel') }}</span>
       </RouterLink>
 
       <button
         type="button"
- class="flex w-full items-center gap-2.5 rounded-hud px-3 py-2 text-xs text-cyber-muted transition-all duration-300 hover:text-cyber-neon-pink"
+ class="flex w-full items-center gap-2.5 rounded-hud px-3 py-2 text-sm text-cyber-muted transition-all duration-300 hover:text-cyber-neon-pink"
         @click="onLogout"
       >
-        <LogOut class="h-4 w-4 shrink-0" />
+        <LogOut class="h-5 w-5 shrink-0" />
         <span>{{ t('common.logOut') }}</span>
       </button>
     </div>

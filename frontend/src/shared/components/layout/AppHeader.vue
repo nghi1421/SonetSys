@@ -30,7 +30,7 @@ function submitHeaderSearch(): void {
 
 <template>
   <header class="sticky top-0 z-20 border-b border-cyber-border bg-cyber-glass backdrop-blur-md">
-    <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
+    <div class="flex h-16 items-center justify-between px-4 sm:px-6">
       <div class="flex items-center gap-3">
         <button
           type="button"

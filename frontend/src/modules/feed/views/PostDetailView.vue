@@ -23,7 +23,7 @@ function load(): void {
 
 <template>
   <AppShell>
-    <div class="mx-auto max-w-2xl space-y-4">
+    <div class="mx-auto max-w-3xl space-y-4">
       <div
         v-if="feedStore.loading"
         class="h-40 animate-pulse rounded-hud border border-cyber-border bg-cyber-surface/60"

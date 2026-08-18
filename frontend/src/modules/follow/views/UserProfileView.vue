@@ -169,7 +169,7 @@ watch(userId, load)
 
 <template>
   <AppShell>
-    <div class="mx-auto max-w-2xl space-y-4">
+    <div class="mx-auto max-w-3xl space-y-4">
       <div
         v-if="followStore.profileLoading"
         class="h-32 animate-pulse rounded-hud border border-cyber-border bg-cyber-surface/60 backdrop-blur-md"

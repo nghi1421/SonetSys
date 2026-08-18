@@ -87,7 +87,7 @@ onBeforeUnmount(() => {
 
 <template>
   <AppShell>
-    <div class="mx-auto flex h-[calc(100vh-7rem)] max-w-2xl flex-col">
+    <div class="mx-auto flex h-[calc(100vh-7rem)] max-w-3xl flex-col">
       <div class="flex items-center gap-3 border-b border-cyber-border pb-4">
         <router-link
           :to="{ name: 'messages' }"
