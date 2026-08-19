@@ -16,8 +16,8 @@ import ConfirmDialog from '@/shared/components/ui/ConfirmDialog.vue'
 import ReportDialog from '@/shared/components/ui/ReportDialog.vue'
 import { useRelativeTime } from '@/shared/composables/useRelativeTime'
 import CommentThread from './CommentThread.vue'
-import LinkifiedText from './LinkifiedText.vue'
 import LocationMapPreview from './LocationMapPreview.vue'
+import MarkdownContent from './MarkdownContent.vue'
 import PostMedia from './PostMedia.vue'
 import ReactionButton from './ReactionButton.vue'
 import ShareMenu from './ShareMenu.vue'
@@ -196,14 +196,14 @@ async function saveEdit(): Promise<void> {
       </div>
     </div>
     <template v-else>
-      <p
+      <div
         v-if="post.body"
- class="mt-3 whitespace-pre-wrap border-l border-cyber-neon-indigo pl-2 text-xs leading-relaxed text-cyber-text/90"
+        class="mt-3 border-l border-cyber-neon-indigo pl-2 text-cyber-text/90"
         :class="clickable && 'cursor-pointer'"
         @click="onOpenDetail"
       >
-        <LinkifiedText :text="post.body" :hashtags="post.hashtags" :mentions="post.mentions" />
-      </p>
+        <MarkdownContent :text="post.body" :hashtags="post.hashtags" :mentions="post.mentions" />
+      </div>
       <PostMedia
         v-if="post.media_type"
         :post="post"

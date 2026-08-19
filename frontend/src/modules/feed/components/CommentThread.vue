@@ -9,7 +9,7 @@ import ConfirmDialog from '@/shared/components/ui/ConfirmDialog.vue'
 import ReportDialog from '@/shared/components/ui/ReportDialog.vue'
 import { useRelativeTime } from '@/shared/composables/useRelativeTime'
 import { useMentionPicker } from '../composables/useMentionPicker'
-import LinkifiedText from './LinkifiedText.vue'
+import MarkdownContent from './MarkdownContent.vue'
 import MentionPicker from './MentionPicker.vue'
 import ReactionButton from './ReactionButton.vue'
 import { useFeedStore } from '../store/feedStore'
@@ -106,15 +106,13 @@ async function onConfirmDelete(): Promise<void> {
       >
         <div class="flex-1">
           <AppUsername :user="comment.author" />
-          <p
- class="mt-1 border-l border-cyber-neon-indigo pl-2 text-xs leading-relaxed text-cyber-text/90"
-          >
-            <LinkifiedText
+          <div class="mt-1 border-l border-cyber-neon-indigo pl-2 text-cyber-text/90">
+            <MarkdownContent
               :text="comment.body"
               :hashtags="comment.hashtags"
               :mentions="comment.mentions"
             />
-          </p>
+          </div>
           <div
  class="mt-2 flex items-center gap-3 text-xs text-cyber-muted"
           >
@@ -161,15 +159,13 @@ async function onConfirmDelete(): Promise<void> {
       >
         <div class="flex-1">
           <AppUsername :user="reply.author" />
-          <p
- class="mt-1 border-l border-cyber-neon-indigo pl-2 text-xs leading-relaxed text-cyber-text/90"
-          >
-            <LinkifiedText
+          <div class="mt-1 border-l border-cyber-neon-indigo pl-2 text-cyber-text/90">
+            <MarkdownContent
               :text="reply.body"
               :hashtags="reply.hashtags"
               :mentions="reply.mentions"
             />
-          </p>
+          </div>
           <div
  class="mt-2 flex items-center gap-3 text-xs text-cyber-muted"
           >

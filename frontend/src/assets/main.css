@@ -57,6 +57,14 @@ body {
   font-weight: 500;
 }
 
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 #app {
   @apply min-h-screen;
 }

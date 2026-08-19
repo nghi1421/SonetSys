@@ -1,79 +1,90 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Plus } from '@lucide/vue'
+import { ChevronLeft, ChevronRight } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import { useStoryStore } from '../store/storyStore'
+import { hasUnviewed, isMine } from '../utils/storyGroups'
+import CreateStoryCard from './CreateStoryCard.vue'
 import CreateStoryModal from './CreateStoryModal.vue'
+import StoryPreviewCard from './StoryPreviewCard.vue'
 import StoryViewerModal from './StoryViewerModal.vue'
+
+const SCROLL_STEP_PX = 300
 
 const storyStore = useStoryStore()
 const authStore = useAuthStore()
 const { t } = useI18n()
 
 const showCreateModal = ref(false)
+const scrollerRef = ref<HTMLElement | null>(null)
+const canScrollLeft = ref(false)
+const canScrollRight = ref(false)
 
 const groups = computed(() => storyStore.storyGroups)
 
-function initialOf(name: string | null): string {
-  return (name ?? '?').trim().charAt(0).toUpperCase()
+function updateScrollState(): void {
+  const el = scrollerRef.value
+  if (!el) return
+  canScrollLeft.value = el.scrollLeft > 0
+  // -1px tolerance for sub-pixel rounding on some browsers/zoom levels.
+  canScrollRight.value = el.scrollLeft + el.clientWidth < el.scrollWidth - 1
 }
 
-function hasUnviewed(groupIndex: number): boolean {
-  return groups.value[groupIndex]?.stories.some((story) => !story.viewed_by_me) ?? false
+function scrollByStep(direction: 1 | -1): void {
+  scrollerRef.value?.scrollBy({ left: direction * SCROLL_STEP_PX, behavior: 'smooth' })
 }
 
-function isMine(groupIndex: number): boolean {
-  return groups.value[groupIndex]?.author.id === authStore.user?.id
-}
+watch(groups, () => {
+  nextTick(updateScrollState)
+})
 
-onMounted(() => {
-  storyStore.fetchActiveStories()
+onMounted(async () => {
+  await storyStore.fetchActiveStories()
+  await nextTick()
+  updateScrollState()
 })
 </script>
 
 <template>
-  <div class="flex gap-3 overflow-x-auto pb-1">
+  <div class="relative">
     <button
+      v-if="canScrollLeft"
       type="button"
-      class="flex w-16 shrink-0 flex-col items-center gap-1.5"
-      :aria-label="t('stories.reel.addStory')"
-      @click="showCreateModal = true"
+      class="absolute left-1 top-1/2 z-10 -translate-y-1/2 rounded-full border border-cyber-border bg-cyber-glass p-1.5 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow"
+      :aria-label="t('common.previous')"
+      @click="scrollByStep(-1)"
     >
-      <span
-        class="flex h-14 w-14 items-center justify-center rounded-full border border-dashed border-cyber-border bg-cyber-glass text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow"
-      >
-        <Plus class="h-5 w-5" />
-      </span>
- <span class="truncate text-xs text-cyber-muted">
-        {{ t('stories.reel.addStory') }}
-      </span>
+      <ChevronLeft class="h-4 w-4" />
     </button>
 
-    <button
-      v-for="(group, index) in groups"
-      :key="group.author.id ?? index"
-      type="button"
-      class="flex w-16 shrink-0 flex-col items-center gap-1.5"
-      @click="storyStore.openViewer(index)"
+    <div
+      ref="scrollerRef"
+      class="scrollbar-hide flex gap-3 overflow-x-auto pb-1"
+      @scroll="updateScrollState"
     >
-      <span
-        class="flex h-14 w-14 items-center justify-center rounded-full p-0.5 transition-all duration-300"
-        :class="
-          hasUnviewed(index)
-            ? 'bg-gradient-to-br from-cyber-neon-cyan via-cyber-neon-indigo to-cyber-neon-pink shadow-cyan-glow'
-            : 'bg-cyber-border'
-        "
-      >
-        <span
- class="flex h-full w-full items-center justify-center rounded-full border border-cyber-border bg-cyber-surface text-sm font-bold text-cyber-text"
-        >
-          {{ initialOf(group.author.name) }}
-        </span>
-      </span>
- <span class="truncate text-xs text-cyber-muted">
-        {{ isMine(index) ? t('stories.reel.yourStory') : group.author.name }}
-      </span>
+      <div class="w-24 shrink-0">
+        <CreateStoryCard @open="showCreateModal = true" />
+      </div>
+
+      <div v-for="(group, index) in groups" :key="group.author.id ?? index" class="w-24 shrink-0">
+        <StoryPreviewCard
+          :group="group"
+          :has-unviewed="hasUnviewed(group)"
+          :is-mine="isMine(group, authStore.user?.id)"
+          @open="storyStore.openViewer(index)"
+        />
+      </div>
+    </div>
+
+    <button
+      v-if="canScrollRight"
+      type="button"
+      class="absolute right-1 top-1/2 z-10 -translate-y-1/2 rounded-full border border-cyber-border bg-cyber-glass p-1.5 text-cyber-muted backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow"
+      :aria-label="t('common.next')"
+      @click="scrollByStep(1)"
+    >
+      <ChevronRight class="h-4 w-4" />
     </button>
 
     <CreateStoryModal v-model:open="showCreateModal" />

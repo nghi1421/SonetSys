@@ -101,6 +101,40 @@ final class HashtagTest extends TestCase
         $response->assertJsonPath('data.hashtags', []);
     }
 
+    public function test_a_hashtag_looking_token_inside_inline_code_is_not_extracted(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $response = $this->postJson('/api/v1/posts', [
+            'body' => 'Add `#include <stdio.h>` at the top, then run #cbuild',
+        ]);
+
+        $response->assertCreated();
+        $response->assertJsonPath('data.hashtags', ['cbuild']);
+        $this->assertDatabaseMissing('hashtags', ['tag' => 'include']);
+    }
+
+    public function test_a_hashtag_looking_token_inside_a_fenced_code_block_is_not_extracted(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $body = <<<'MARKDOWN'
+            Check this out #devlog
+
+            ```
+            #include <stdio.h>
+            ```
+            MARKDOWN;
+
+        $response = $this->postJson('/api/v1/posts', ['body' => $body]);
+
+        $response->assertCreated();
+        $response->assertJsonPath('data.hashtags', ['devlog']);
+        $this->assertDatabaseMissing('hashtags', ['tag' => 'include']);
+    }
+
     public function test_a_comment_with_a_hashtag_attaches_it(): void
     {
         $author = User::factory()->create();
