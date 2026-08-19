@@ -42,14 +42,16 @@ final class UserFactory extends Factory
     public function admin(): static
     {
         return $this->state(fn (array $attributes) => [
-            'role_id' => Role::factory()->admin()->create()->id,
+            'role_id' => Role::query()->where('slug', RoleSlug::Admin->value)->value('id')
+                ?? Role::factory()->admin()->create()->id,
         ]);
     }
 
     public function moderator(): static
     {
         return $this->state(fn (array $attributes) => [
-            'role_id' => Role::factory()->moderator()->create()->id,
+            'role_id' => Role::query()->where('slug', RoleSlug::Moderator->value)->value('id')
+                ?? Role::factory()->moderator()->create()->id,
         ]);
     }
 }
