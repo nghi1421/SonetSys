@@ -20,7 +20,7 @@ onMounted(() => {
 
 <template>
   <AppShell>
-    <div class="mx-auto max-w-2xl space-y-4">
+    <div class="mx-auto max-w-3xl space-y-4">
       <h1 class="text-sm font-bold text-cyber-text">{{ t('chat.messagesListView.title') }}</h1>
 
       <div v-if="chatStore.conversationsLoading" class="space-y-3">

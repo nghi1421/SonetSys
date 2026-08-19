@@ -27,7 +27,7 @@ watch(tag, load)
 
 <template>
   <AppShell>
-    <div class="mx-auto max-w-2xl space-y-4">
+    <div class="mx-auto max-w-3xl space-y-4">
       <header class="flex items-center gap-2 rounded-hud border border-cyber-border bg-cyber-glass p-4 backdrop-blur-md">
         <Hash class="h-5 w-5 text-cyber-neon-cyan" />
  <h1 class="text-sm font-bold text-cyber-text">#{{ tag }}</h1>

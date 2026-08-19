@@ -76,7 +76,7 @@ function createGroupPost(payload: Parameters<typeof feedStore.createGroupPost>[1
 
 <template>
   <AppShell>
-    <div class="mx-auto max-w-2xl space-y-4">
+    <div class="mx-auto max-w-3xl space-y-4">
       <div v-if="groupStore.loadingCurrent" class="h-40 animate-pulse rounded-hud border border-cyber-border bg-cyber-surface/60" />
 
       <AppAlert v-else-if="!group">{{ t('groups.groupDetail.notFound') }}</AppAlert>

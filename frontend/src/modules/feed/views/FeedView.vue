@@ -35,7 +35,7 @@ onMounted(() => {
 
 <template>
   <AppShell>
-    <div class="mx-auto max-w-2xl space-y-4">
+    <div class="mx-auto max-w-3xl space-y-4">
       <StoriesReel />
 
       <PostComposer :on-submit="feedStore.createPost" />

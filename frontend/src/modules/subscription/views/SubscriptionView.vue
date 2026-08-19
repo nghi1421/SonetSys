@@ -79,7 +79,7 @@ function extractError(err: unknown, fallback: string): string {
 
 <template>
   <AppShell>
-    <div class="mx-auto max-w-2xl space-y-4">
+    <div class="mx-auto max-w-3xl space-y-4">
       <header class="rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md">
         <div class="flex items-center justify-between">
           <div>

@@ -73,7 +73,7 @@ onBeforeUnmount(() => {
 
 <template>
   <AppShell>
-    <div class="mx-auto max-w-2xl space-y-4">
+    <div class="mx-auto max-w-3xl space-y-4">
       <header class="rounded-hud border border-cyber-border bg-cyber-glass p-4 backdrop-blur-md">
         <div class="flex items-center gap-2 rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-2">
           <Search class="h-4 w-4 shrink-0 text-cyber-neon-cyan" />

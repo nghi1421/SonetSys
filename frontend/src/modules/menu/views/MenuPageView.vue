@@ -40,7 +40,7 @@ watch(
 
 <template>
   <AppShell>
-    <div class="mx-auto max-w-2xl">
+    <div class="mx-auto max-w-3xl">
       <div
         v-if="error"
  class="rounded-hud border border-cyber-neon-pink/30 bg-cyber-neon-pink/10 p-5 text-xs text-cyber-neon-pink"
