@@ -206,6 +206,42 @@ final class DemoContent
     /**
      * @return list<string>
      */
+    public static function reelCaptions(): array
+    {
+        return [
+            'Quick behind-the-scenes from today. 🎬',
+            'Standup recap in 15 seconds.',
+            'This is what shipping day looks like.',
+            'Conference floor is buzzing this year.',
+            'Whiteboard session that turned into the actual architecture.',
+            'Office setup tour, finally finished it.',
+            'Demo day nerves, but we pulled it off.',
+            'Coffee, laptop, deploy. Repeat.',
+            'Onsite recap — good to see the team in person.',
+            'Rubber duck debugging, live footage.',
+        ];
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function storyCaptions(): array
+    {
+        return [
+            'On-site today.',
+            'Good morning ☕',
+            'Team offsite.',
+            'Late one tonight.',
+            'Conference badge collection growing.',
+            'New desk setup.',
+            'Deploy went smooth 🎉',
+            'Whiteboarding session.',
+        ];
+    }
+
+    /**
+     * @return list<string>
+     */
     public static function shareCaptions(): array
     {
         return [

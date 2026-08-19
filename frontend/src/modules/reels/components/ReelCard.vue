@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { EllipsisVertical, Flag, MessageCircle, Trash2, Volume2, VolumeX } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import CommentThread from '@/modules/feed/components/CommentThread.vue'
-import LinkifiedText from '@/modules/feed/components/LinkifiedText.vue'
+import MarkdownContent from '@/modules/feed/components/MarkdownContent.vue'
 import ReactionButton from '@/modules/feed/components/ReactionButton.vue'
 import ShareMenu from '@/modules/feed/components/ShareMenu.vue'
 import { useFeedStore } from '@/modules/feed/store/feedStore'
@@ -169,9 +169,9 @@ async function onConfirmDelete(): Promise<void> {
         >
           {{ reel.author.name }}
         </router-link>
- <p v-if="reel.body" class="mt-1 text-xs text-white/90 drop-shadow">
-          <LinkifiedText :text="reel.body" :hashtags="reel.hashtags" :mentions="reel.mentions" />
-        </p>
+        <div v-if="reel.body" class="mt-1 text-white/90 drop-shadow">
+          <MarkdownContent :text="reel.body" :hashtags="reel.hashtags" :mentions="reel.mentions" />
+        </div>
       </div>
 
       <div class="flex shrink-0 flex-col items-center gap-3">

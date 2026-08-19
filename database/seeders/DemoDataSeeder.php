@@ -9,8 +9,10 @@ use Database\Seeders\Support\DemoChatStep;
 use Database\Seeders\Support\DemoFeedStep;
 use Database\Seeders\Support\DemoFinanceStep;
 use Database\Seeders\Support\DemoGroupStep;
+use Database\Seeders\Support\DemoReelStep;
 use Database\Seeders\Support\DemoReportStep;
 use Database\Seeders\Support\DemoSocialGraphStep;
+use Database\Seeders\Support\DemoStoryStep;
 use Database\Seeders\Support\DemoUserStep;
 use Illuminate\Database\Seeder;
 
@@ -44,8 +46,14 @@ final class DemoDataSeeder extends Seeder
         $this->command?->info('Seeding groups and memberships...');
         $groups = app(DemoGroupStep::class)->run($users);
 
-        $this->command?->info('Seeding posts, comments, and reactions...');
+        $this->command?->info('Downloading demo images/videos and seeding posts, comments, and reactions...');
         app(DemoFeedStep::class)->run($users, $groups);
+
+        $this->command?->info('Seeding reels...');
+        app(DemoReelStep::class)->run($users);
+
+        $this->command?->info('Seeding stories...');
+        app(DemoStoryStep::class)->run($users);
 
         $this->command?->info('Seeding ad campaigns...');
         app(DemoAdvertisingStep::class)->run();

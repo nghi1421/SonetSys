@@ -5,10 +5,7 @@ declare(strict_types=1);
 namespace Database\Seeders\Support;
 
 use App\Core\Auth\Domain\Models\User;
-use App\Modules\Feed\Application\DTOs\CreateCommentData;
 use App\Modules\Feed\Application\DTOs\CreatePostData;
-use App\Modules\Feed\Application\Services\CommentService;
-use App\Modules\Feed\Application\Services\InteractionService;
 use App\Modules\Feed\Application\Services\PostService;
 use App\Modules\Feed\Domain\Enums\MediaType;
 use App\Modules\Feed\Domain\Enums\PostVisibility;
@@ -20,8 +17,6 @@ use Illuminate\Support\Collection;
 
 final class DemoFeedStep
 {
-    private const REACTION_KEYS = ['like', 'love', 'haha', 'wow', 'sad', 'angry'];
-
     private const MIN_STANDALONE_POSTS = 2;
 
     private const MAX_STANDALONE_POSTS = 5;
@@ -32,10 +27,16 @@ final class DemoFeedStep
 
     private const SHARE_COUNT = 14;
 
+    /** @var list<string> */
+    private array $imagePool = [];
+
+    /** @var list<string> */
+    private array $videoPool = [];
+
     public function __construct(
         private readonly PostService $posts,
-        private readonly CommentService $comments,
-        private readonly InteractionService $interactions,
+        private readonly DemoPostEngagement $engagement,
+        private readonly DemoMediaLibrary $media,
     ) {}
 
     /**
@@ -44,15 +45,18 @@ final class DemoFeedStep
      */
     public function run(Collection $users, Collection $groups): void
     {
+        $this->imagePool = $this->media->feedImages();
+        $this->videoPool = $this->media->videos();
+
         $standalone = $this->createStandalonePosts($users);
         $this->createGroupPosts($groups, $users);
         $this->createShares($users, $standalone);
 
-        $allPosts = Post::query()->whereNull('shared_post_id')->get();
+        $allPosts = Post::query()->whereNull('shared_post_id')->where('is_reel', false)->get();
 
         foreach ($allPosts as $post) {
-            $this->addComments($post, $users);
-            $this->addReactions($post, $users);
+            $this->engagement->addComments($post, $users);
+            $this->engagement->addReactions($post, $users);
         }
     }
 
@@ -107,17 +111,48 @@ final class DemoFeedStep
     private function createOnePost(User $author, Collection $candidatePool, ?int $groupId): Post
     {
         $mentioned = $this->pickMentions($author, $candidatePool);
-        $useSticker = $groupId === null && fake()->boolean(8);
+        $attachment = $this->pickAttachment($groupId);
 
         return $this->posts->create(new CreatePostData(
-            body: $useSticker ? $this->stickerCaption() : $this->renderBody(),
+            body: $attachment === 'sticker' ? $this->stickerCaption() : $this->renderBody(),
             visibility: $groupId !== null ? PostVisibility::Public : $this->randomVisibility(),
             authorId: $author->id,
             groupId: $groupId,
-            mediaType: $useSticker ? MediaType::Sticker : null,
-            stickerKey: $useSticker ? fake()->randomElement(StickerKey::cases())->value : null,
+            media: match ($attachment) {
+                'image' => $this->media->asUploadedFile(fake()->randomElement($this->imagePool)),
+                'video' => $this->media->asUploadedFile(fake()->randomElement($this->videoPool)),
+                default => null,
+            },
+            mediaType: match ($attachment) {
+                'sticker' => MediaType::Sticker,
+                'image' => MediaType::Image,
+                'video' => MediaType::Video,
+                default => null,
+            },
+            stickerKey: $attachment === 'sticker' ? fake()->randomElement(StickerKey::cases())->value : null,
             mentionedUserIds: $mentioned,
         ));
+    }
+
+    /**
+     * @return 'sticker'|'image'|'video'|null
+     */
+    private function pickAttachment(?int $groupId): ?string
+    {
+        // Stickers only make sense outside a group's more work-focused feed.
+        if ($groupId === null && fake()->boolean(8)) {
+            return 'sticker';
+        }
+
+        if ($this->imagePool !== [] && fake()->boolean(28)) {
+            return 'image';
+        }
+
+        if ($this->videoPool !== [] && fake()->boolean(7)) {
+            return 'video';
+        }
+
+        return null;
     }
 
     /**
@@ -144,51 +179,6 @@ final class DemoFeedStep
                 authorId: $sharer->id,
                 sharedPostId: $original->id,
             ));
-        }
-    }
-
-    /**
-     * @param  Collection<int, User>  $users
-     */
-    private function addComments(Post $post, Collection $users): void
-    {
-        $commenters = $users
-            ->reject(fn (User $u) => $u->id === $post->author_id)
-            ->shuffle()
-            ->take(fake()->numberBetween(0, 6));
-
-        $topLevelIds = [];
-
-        foreach ($commenters as $commenter) {
-            $parentId = $topLevelIds !== [] && fake()->boolean(25)
-                ? fake()->randomElement($topLevelIds)
-                : null;
-
-            $comment = $this->comments->create(new CreateCommentData(
-                body: fake()->randomElement(DemoContent::commentTemplates()),
-                postId: $post->id,
-                parentId: $parentId,
-                authorId: $commenter->id,
-            ));
-
-            if ($parentId === null) {
-                $topLevelIds[] = $comment->id;
-            }
-        }
-    }
-
-    /**
-     * @param  Collection<int, User>  $users
-     */
-    private function addReactions(Post $post, Collection $users): void
-    {
-        $reactors = $users
-            ->reject(fn (User $u) => $u->id === $post->author_id)
-            ->shuffle()
-            ->take(fake()->numberBetween(0, (int) round($users->count() * 0.4)));
-
-        foreach ($reactors as $reactor) {
-            $this->interactions->react('post', $post->id, $reactor->id, fake()->randomElement(self::REACTION_KEYS));
         }
     }
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ChevronLeft, ChevronRight, Eye, Trash2, X } from '@lucide/vue'
+import { ChevronLeft, ChevronRight, Eye, Pause, Trash2, X } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog.vue'
 import { useStoryStore } from '../store/storyStore'
@@ -9,6 +9,7 @@ import StoryViewersList from './StoryViewersList.vue'
 
 const IMAGE_DURATION_MS = 5000
 const PROGRESS_TICK_MS = 50
+const HOLD_TO_PAUSE_MS = 250
 
 const storyStore = useStoryStore()
 const authStore = useAuthStore()
@@ -18,7 +19,10 @@ const videoRef = ref<HTMLVideoElement | null>(null)
 const progress = ref(0)
 const showViewers = ref(false)
 const confirmingDelete = ref(false)
+const isPaused = ref(false)
 let progressTimer: ReturnType<typeof setInterval> | null = null
+let holdTimer: ReturnType<typeof setTimeout> | null = null
+let heldLongEnoughToPause = false
 
 const isOpen = computed(() => storyStore.activeViewerGroupIndex !== null)
 const activeGroup = computed(() =>
@@ -84,9 +88,9 @@ function prev(): void {
   }
 }
 
-function startImageProgress(): void {
+function startImageProgress(resetProgress = true): void {
   stopProgressTimer()
-  progress.value = 0
+  if (resetProgress) progress.value = 0
   progressTimer = setInterval(() => {
     progress.value += (PROGRESS_TICK_MS / IMAGE_DURATION_MS) * 100
     if (progress.value >= 100) {
@@ -102,9 +106,72 @@ function onVideoTimeUpdate(): void {
   progress.value = (video.currentTime / video.duration) * 100
 }
 
+function pauseStory(): void {
+  if (isPaused.value) return
+  isPaused.value = true
+  stopProgressTimer()
+  videoRef.value?.pause()
+}
+
+function resumeStory(): void {
+  if (!isPaused.value) return
+  isPaused.value = false
+  if (currentStory.value?.media_type === 'image') {
+    startImageProgress(false)
+  } else {
+    videoRef.value?.play()
+  }
+}
+
+function clearHoldTimer(): void {
+  if (holdTimer) {
+    clearTimeout(holdTimer)
+    holdTimer = null
+  }
+}
+
+// A quick tap navigates prev/next as before; holding down (past
+// HOLD_TO_PAUSE_MS) pauses the story instead — releasing resumes it rather
+// than navigating, matching the press-and-hold pattern from Instagram/
+// Facebook Stories. Without this there was no way to stop an auto-advancing
+// story at all.
+function onZonePointerDown(): void {
+  heldLongEnoughToPause = false
+  clearHoldTimer()
+  holdTimer = setTimeout(() => {
+    heldLongEnoughToPause = true
+    pauseStory()
+  }, HOLD_TO_PAUSE_MS)
+}
+
+function onZonePointerUp(direction: 'prev' | 'next'): void {
+  clearHoldTimer()
+  if (heldLongEnoughToPause) {
+    resumeStory()
+    heldLongEnoughToPause = false
+    return
+  }
+  if (direction === 'prev') {
+    prev()
+  } else {
+    next()
+  }
+}
+
+function onZonePointerCancel(): void {
+  clearHoldTimer()
+  if (heldLongEnoughToPause) {
+    resumeStory()
+    heldLongEnoughToPause = false
+  }
+}
+
 watch(currentStory, async (story) => {
   stopProgressTimer()
+  clearHoldTimer()
   progress.value = 0
+  isPaused.value = false
+  heldLongEnoughToPause = false
   showViewers.value = false
 
   if (!story) return
@@ -141,7 +208,10 @@ async function onConfirmDelete(): Promise<void> {
   }
 }
 
-onBeforeUnmount(stopProgressTimer)
+onBeforeUnmount(() => {
+  stopProgressTimer()
+  clearHoldTimer()
+})
 </script>
 
 <template>
@@ -168,7 +238,7 @@ onBeforeUnmount(stopProgressTimer)
       </div>
 
       <div class="absolute inset-x-0 top-6 z-10 flex items-center justify-between px-4">
- <span class="text-xs font-bold text-white drop-shadow">
+        <span class="text-xs font-bold text-white drop-shadow">
           {{ activeGroup.author.name }}
         </span>
         <div class="flex items-center gap-2">
@@ -214,22 +284,35 @@ onBeforeUnmount(stopProgressTimer)
           />
         </div>
 
+        <div
+          v-if="isPaused"
+          class="pointer-events-none absolute inset-0 flex items-center justify-center"
+        >
+          <span class="rounded-full bg-black/50 p-4">
+            <Pause class="h-8 w-8 text-white" />
+          </span>
+        </div>
+
         <button
           type="button"
           class="absolute inset-y-0 left-0 w-1/3"
           :aria-label="t('common.previous')"
-          @click="prev"
+          @pointerdown="onZonePointerDown"
+          @pointerup="onZonePointerUp('prev')"
+          @pointercancel="onZonePointerCancel"
         />
         <button
           type="button"
           class="absolute inset-y-0 right-0 w-1/3"
           :aria-label="t('common.next')"
-          @click="next"
+          @pointerdown="onZonePointerDown"
+          @pointerup="onZonePointerUp('next')"
+          @pointercancel="onZonePointerCancel"
         />
 
         <button
           type="button"
-          class="absolute left-4 top-1/2 z-10 hidden -translate-y-1/2 rounded-full bg-black/40 p-2 text-white backdrop-blur-md transition-all duration-300 hover:bg-black/60 hover:text-cyber-neon-cyan sm:flex"
+          class="absolute left-4 top-1/2 z-10 flex -translate-y-1/2 rounded-full bg-black/40 p-2 text-white backdrop-blur-md transition-all duration-300 hover:bg-black/60 hover:text-cyber-neon-cyan"
           :aria-label="t('common.previous')"
           @click="prev"
         >
@@ -237,7 +320,7 @@ onBeforeUnmount(stopProgressTimer)
         </button>
         <button
           type="button"
-          class="absolute right-4 top-1/2 z-10 hidden -translate-y-1/2 rounded-full bg-black/40 p-2 text-white backdrop-blur-md transition-all duration-300 hover:bg-black/60 hover:text-cyber-neon-cyan sm:flex"
+          class="absolute right-4 top-1/2 z-10 flex -translate-y-1/2 rounded-full bg-black/40 p-2 text-white backdrop-blur-md transition-all duration-300 hover:bg-black/60 hover:text-cyber-neon-cyan"
           :aria-label="t('common.next')"
           @click="next"
         >
@@ -249,13 +332,13 @@ onBeforeUnmount(stopProgressTimer)
         v-if="currentStory.caption || (isOwner && currentStory.views_count !== null)"
         class="absolute inset-x-0 bottom-0 z-10 flex items-center justify-between gap-3 bg-gradient-to-t from-black/70 to-transparent p-4"
       >
- <p v-if="currentStory.caption" class="text-xs text-white drop-shadow">
+        <p v-if="currentStory.caption" class="text-xs text-white drop-shadow">
           {{ currentStory.caption }}
         </p>
         <button
           v-if="isOwner && currentStory.views_count !== null"
           type="button"
- class="ml-auto flex items-center gap-1.5 rounded-full bg-black/40 px-3 py-1.5 text-xs text-white transition-all duration-300 hover:text-cyber-neon-cyan"
+          class="ml-auto flex items-center gap-1.5 rounded-full bg-black/40 px-3 py-1.5 text-xs text-white transition-all duration-300 hover:text-cyber-neon-cyan"
           @click="openViewers"
         >
           <Eye class="h-3.5 w-3.5" />
@@ -263,7 +346,11 @@ onBeforeUnmount(stopProgressTimer)
         </button>
       </div>
 
-      <StoryViewersList :open="showViewers" :viewers="currentViewers" @close="showViewers = false" />
+      <StoryViewersList
+        :open="showViewers"
+        :viewers="currentViewers"
+        @close="showViewers = false"
+      />
 
       <ConfirmDialog
         :open="confirmingDelete"
