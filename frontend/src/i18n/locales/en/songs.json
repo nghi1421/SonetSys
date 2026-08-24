@@ -1,0 +1,13 @@
+{
+  "picker": {
+    "title": "Add music",
+    "searchLabel": "Search songs",
+    "searchError": "Could not load songs. Please try again.",
+    "empty": "No songs found.",
+    "preview": "Preview",
+    "pause": "Pause",
+    "trimTitle": "Choose a starting point",
+    "startsAt": "Starts at",
+    "confirm": "Add to post"
+  }
+}
