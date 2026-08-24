@@ -43,6 +43,16 @@ final class DemoMediaLibrary
         'https://download.samplelib.com/mp4/sample-15s.mp4',
     ];
 
+    private const SONG_URLS = [
+        'https://download.samplelib.com/mp3/sample-3s.mp3',
+        'https://download.samplelib.com/mp3/sample-6s.mp3',
+        'https://download.samplelib.com/mp3/sample-9s.mp3',
+        'https://download.samplelib.com/mp3/sample-12s.mp3',
+        'https://download.samplelib.com/mp3/sample-15s.mp3',
+        'https://download.samplelib.com/mp3/sample-30s.mp3',
+        'https://download.samplelib.com/mp3/sample-45s.mp3',
+    ];
+
     /**
      * @return list<string> absolute local file paths
      */
@@ -78,6 +88,19 @@ final class DemoMediaLibrary
             self::VIDEO_URLS,
             fn (string $url) => $url,
             $this->cacheDir('videos'),
+            fn (string $url) => basename(parse_url($url, PHP_URL_PATH) ?: $url),
+        );
+    }
+
+    /**
+     * @return list<string> absolute local file paths
+     */
+    public function songs(): array
+    {
+        return $this->downloadPool(
+            self::SONG_URLS,
+            fn (string $url) => $url,
+            $this->cacheDir('songs'),
             fn (string $url) => basename(parse_url($url, PHP_URL_PATH) ?: $url),
         );
     }
