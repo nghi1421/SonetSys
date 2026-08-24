@@ -9,4 +9,5 @@ enum MediaType: string
     case Image = 'image';
     case Video = 'video';
     case File = 'file';
+    case Audio = 'audio';
 }

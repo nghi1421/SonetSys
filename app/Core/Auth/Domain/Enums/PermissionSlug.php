@@ -31,6 +31,8 @@ enum PermissionSlug: string
 
     case SubscriptionManage = 'subscription.manage';
 
+    case SongsManage = 'songs.manage';
+
     public function group(): string
     {
         return match ($this) {
@@ -47,6 +49,7 @@ enum PermissionSlug: string
             self::ReportsReview => 'reports',
             self::ReactionsManage => 'reactions',
             self::SubscriptionManage => 'subscription',
+            self::SongsManage => 'songs',
         };
     }
 
@@ -67,6 +70,7 @@ enum PermissionSlug: string
             self::ReportsReview,
             self::ReactionsManage,
             self::SubscriptionManage,
+            self::SongsManage,
         ];
     }
 
