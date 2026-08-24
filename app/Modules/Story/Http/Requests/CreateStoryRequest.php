@@ -30,6 +30,8 @@ final class CreateStoryRequest extends FormRequest
             'media' => ['required', 'file', 'max:'.$this->settings->maxUploadKb(), 'mimes:jpg,jpeg,png,gif,webp,mp4,mov,webm'],
             'media_type' => ['required', Rule::in([MediaType::Image->value, MediaType::Video->value])],
             'caption' => ['sometimes', 'nullable', 'string', 'max:200'],
+            'song_id' => ['sometimes', 'nullable', 'integer', Rule::exists('songs', 'id')],
+            'song_start_sec' => ['sometimes', 'nullable', 'integer', 'min:0'],
         ];
     }
 
@@ -56,6 +58,8 @@ final class CreateStoryRequest extends FormRequest
             media: $this->file('media'),
             mediaType: MediaType::from((string) $this->validated('media_type')),
             caption: $this->filled('caption') ? (string) $this->validated('caption') : null,
+            songId: $this->filled('song_id') ? (int) $this->validated('song_id') : null,
+            songStartSec: (int) ($this->validated('song_start_sec') ?? 0),
         );
     }
 }

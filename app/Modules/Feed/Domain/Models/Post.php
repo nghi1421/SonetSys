@@ -7,6 +7,7 @@ namespace App\Modules\Feed\Domain\Models;
 use App\Core\Auth\Domain\Models\User;
 use App\Modules\Feed\Domain\Enums\MediaType;
 use App\Modules\Feed\Domain\Enums\PostVisibility;
+use App\Modules\Song\Domain\Models\Song;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -33,6 +34,8 @@ final class Post extends Model
         'location_name',
         'location_lat',
         'location_lng',
+        'song_id',
+        'song_start_sec',
         'published_at',
     ];
 
@@ -45,6 +48,7 @@ final class Post extends Model
             'is_reel' => 'boolean',
             'location_lat' => 'float',
             'location_lng' => 'float',
+            'song_start_sec' => 'integer',
             'published_at' => 'datetime',
         ];
     }
@@ -77,5 +81,10 @@ final class Post extends Model
     public function mentions(): MorphToMany
     {
         return $this->morphToMany(User::class, 'mentionable', 'mentions', 'mentionable_id', 'user_id');
+    }
+
+    public function song(): BelongsTo
+    {
+        return $this->belongsTo(Song::class);
     }
 }

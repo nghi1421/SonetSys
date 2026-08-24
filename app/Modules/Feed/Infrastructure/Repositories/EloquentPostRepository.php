@@ -225,7 +225,7 @@ final class EloquentPostRepository implements PostRepositoryInterface
             ->orderByDesc('published_at')
             ->orderByDesc('id')
             ->limit($limit)
-            ->with(['author', 'hashtags', 'mentions'])
+            ->with(['author', 'hashtags', 'mentions', 'song'])
             ->get();
     }
 

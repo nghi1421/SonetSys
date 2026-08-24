@@ -38,6 +38,6 @@ final class ReelController extends Controller
     {
         $post = $this->posts->create($request->toDto());
 
-        return ApiResponse::success(PostResource::make($post->load(['author', 'hashtags', 'mentions'])), status: 201);
+        return ApiResponse::success(PostResource::make($post->load(['author', 'hashtags', 'mentions', 'song'])), status: 201);
     }
 }
