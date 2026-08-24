@@ -38,7 +38,8 @@
     "reports": "Reports",
     "settings": "System Settings",
     "reactions": "Reactions",
-    "subscriptions": "Subscriptions"
+    "subscriptions": "Subscriptions",
+    "songs": "Songs"
   },
   "mediaPreview": {
     "closePreview": "Close preview",

@@ -207,6 +207,12 @@ const router = createRouter({
           component: () => import('@/modules/reactions/views/AdminReactionsView.vue'),
           meta: { requiresAdmin: true },
         },
+        {
+          path: 'songs',
+          name: 'admin-songs',
+          component: () => import('@/modules/songs/views/AdminSongsView.vue'),
+          meta: { requiresAdmin: true },
+        },
       ],
     },
   ],
