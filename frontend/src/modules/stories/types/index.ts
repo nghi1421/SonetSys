@@ -1,3 +1,5 @@
+import type { Song } from '@/modules/songs/types'
+
 export interface StoryAuthor {
   id: number | null
   name: string | null
@@ -15,6 +17,8 @@ export interface Story {
   expires_at: string
   viewed_by_me: boolean
   views_count: number | null
+  song: Song | null
+  song_start_sec: number | null
 }
 
 export interface StoryGroup {
@@ -31,4 +35,6 @@ export interface CreateStoryPayload {
   media: File
   media_type: StoryMediaType
   caption?: string
+  song_id?: number
+  song_start_sec?: number
 }

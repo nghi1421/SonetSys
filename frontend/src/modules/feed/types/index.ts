@@ -1,3 +1,5 @@
+import type { Song } from '@/modules/songs/types'
+
 export interface User {
   id: number | null
   name: string | null
@@ -48,6 +50,8 @@ export interface Post {
   location: PostLocation | null
   published_at: string | null
   created_at: string
+  song?: Song | null
+  song_start_sec?: number | null
 }
 
 export interface Comment {

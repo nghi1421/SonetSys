@@ -6,4 +6,6 @@ export interface CreateReelPayload {
   media: File
   body?: string
   mentioned_user_ids?: number[]
+  song_id?: number
+  song_start_sec?: number
 }

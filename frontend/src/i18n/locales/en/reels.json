@@ -12,6 +12,9 @@
     "addVideo": "Add video",
     "captionPlaceholder": "Add a caption (optional)…",
     "removeMedia": "Remove media",
+    "addMusic": "Add music",
+    "changeMusic": "Change music",
+    "removeMusic": "Remove music",
     "submit": "Post reel",
     "publishError": "Could not publish your reel. Please try again.",
     "mediaRequired": "Choose a video to share."
