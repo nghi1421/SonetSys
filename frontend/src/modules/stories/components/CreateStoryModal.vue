@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Image, Video, X } from '@lucide/vue'
+import { Image, Music, Video, X } from '@lucide/vue'
 import AppButton from '@/shared/components/ui/AppButton.vue'
 import AppModal from '@/shared/components/ui/AppModal.vue'
 import AppTextarea from '@/shared/components/ui/AppTextarea.vue'
+import SongPickerModal from '@/modules/songs/components/SongPickerModal.vue'
+import type { Song } from '@/modules/songs/types'
 import { useStoryStore } from '../store/storyStore'
 import type { StoryMediaType } from '../types'
 
@@ -20,6 +22,9 @@ const mediaType = ref<StoryMediaType | null>(null)
 const mediaPreviewUrl = ref<string | null>(null)
 const submitting = ref(false)
 const error = ref<string | null>(null)
+const songPickerOpen = ref(false)
+const selectedSong = ref<Song | null>(null)
+const selectedSongStartSec = ref(0)
 
 const photoInput = ref<HTMLInputElement | null>(null)
 const videoInput = ref<HTMLInputElement | null>(null)
@@ -33,10 +38,22 @@ function clearMedia(): void {
   mediaPreviewUrl.value = null
 }
 
+function clearSong(): void {
+  selectedSong.value = null
+  selectedSongStartSec.value = 0
+}
+
+function onSongConfirm(payload: { song: Song; startSec: number }): void {
+  selectedSong.value = payload.song
+  selectedSongStartSec.value = payload.startSec
+  songPickerOpen.value = false
+}
+
 function reset(): void {
   caption.value = ''
   error.value = null
   clearMedia()
+  clearSong()
 }
 
 watch(
@@ -96,6 +113,8 @@ async function onSubmit(): Promise<void> {
       media: mediaFile.value,
       media_type: mediaType.value,
       caption: caption.value.trim() || undefined,
+      song_id: selectedSong.value?.id,
+      song_start_sec: selectedSong.value ? selectedSongStartSec.value : undefined,
     })
     close()
   } catch {
@@ -169,6 +188,33 @@ async function onSubmit(): Promise<void> {
       :placeholder="t('stories.createModal.captionPlaceholder')"
     />
 
+    <div class="mt-3 flex items-center gap-2">
+      <button
+        type="button"
+        class="inline-flex items-center gap-1.5 rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-1.5 text-xs text-cyber-muted transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:text-cyber-neon-cyan hover:shadow-cyan-glow"
+        @click="songPickerOpen = true"
+      >
+        <Music class="h-3.5 w-3.5" />
+        {{ selectedSong ? t('stories.createModal.changeMusic') : t('stories.createModal.addMusic') }}
+      </button>
+      <div
+        v-if="selectedSong"
+        class="flex min-w-0 flex-1 items-center justify-between gap-2 rounded-hud border border-cyber-border bg-cyber-glass px-3 py-1.5"
+      >
+        <span class="min-w-0 truncate text-xs text-cyber-text">
+          {{ selectedSong.title }}<template v-if="selectedSong.artist"> · {{ selectedSong.artist }}</template>
+        </span>
+        <button
+          type="button"
+          class="shrink-0 text-cyber-muted transition-colors duration-300 hover:text-cyber-neon-pink"
+          :aria-label="t('stories.createModal.removeMusic')"
+          @click="clearSong"
+        >
+          <X class="h-3.5 w-3.5" />
+        </button>
+      </div>
+    </div>
+
  <p v-if="error" class="mt-2 text-xs text-cyber-neon-pink">{{ error }}</p>
 
     <div class="mt-4 flex justify-end gap-3">
@@ -187,4 +233,10 @@ async function onSubmit(): Promise<void> {
       />
     </div>
   </AppModal>
+
+  <SongPickerModal
+    :open="songPickerOpen"
+    @close="songPickerOpen = false"
+    @confirm="onSongConfirm"
+  />
 </template>

@@ -7,6 +7,8 @@ function toRequestBody(payload: CreateStoryPayload): FormData {
   form.append('media', payload.media)
   form.append('media_type', payload.media_type)
   if (payload.caption) form.append('caption', payload.caption)
+  if (payload.song_id) form.append('song_id', String(payload.song_id))
+  if (payload.song_start_sec) form.append('song_start_sec', String(payload.song_start_sec))
   return form
 }
 

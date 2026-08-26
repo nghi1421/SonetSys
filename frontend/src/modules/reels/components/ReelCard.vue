@@ -11,6 +11,7 @@ import { useFeedStore } from '@/modules/feed/store/feedStore'
 import type { ReactionType } from '@/modules/feed/types'
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog.vue'
 import ReportDialog from '@/shared/components/ui/ReportDialog.vue'
+import SongBadge from '@/modules/songs/components/SongBadge.vue'
 import { useReelStore } from '../store/reelStore'
 import type { Reel } from '../types'
 
@@ -23,18 +24,22 @@ const { t } = useI18n()
 
 const cardRef = ref<HTMLElement | null>(null)
 const videoRef = ref<HTMLVideoElement | null>(null)
+const audioRef = ref<HTMLAudioElement | null>(null)
 const muted = ref(true)
 const showComments = ref(false)
 const showActionsMenu = ref(false)
 const showReportDialog = ref(false)
 const confirmingDelete = ref(false)
 let observer: IntersectionObserver | null = null
+let songStarted = false
 
 const isOwner = computed(() => authStore.user?.id === props.reel.author.id)
 const canModerate = computed(
   () => authStore.user?.role.slug === 'admin' || authStore.user?.role.slug === 'moderator',
 )
 const canDelete = computed(() => isOwner.value || canModerate.value)
+const hasSong = computed(() => Boolean(props.reel.song))
+const videoMuted = computed(() => hasSong.value || muted.value)
 
 // commentsByPost is only populated once fetchComments runs for this reel —
 // falls back to the server-provided count until then, so the badge never
@@ -48,8 +53,17 @@ onMounted(() => {
       if (!video || !entry) return
       if (entry.isIntersecting) {
         video.play().catch(() => {})
+        const audio = audioRef.value
+        if (audio && props.reel.song) {
+          if (!songStarted) {
+            audio.currentTime = props.reel.song_start_sec ?? 0
+            songStarted = true
+          }
+          audio.play().catch(() => {})
+        }
       } else {
         video.pause()
+        audioRef.value?.pause()
       }
     },
     { threshold: 0.6 },
@@ -59,6 +73,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   observer?.disconnect()
+  audioRef.value?.pause()
 })
 
 function toggleMute(): void {
@@ -107,9 +122,10 @@ async function onConfirmDelete(): Promise<void> {
         class="max-h-full max-w-full object-contain"
         loop
         playsinline
-        :muted="muted"
+        :muted="videoMuted"
         @click="toggleMute"
       />
+      <audio v-if="reel.song" ref="audioRef" :src="reel.song.audio_url" :muted="muted" loop />
     </div>
 
     <div class="absolute right-4 top-4 z-10 flex items-center gap-2">
@@ -172,6 +188,7 @@ async function onConfirmDelete(): Promise<void> {
         <div v-if="reel.body" class="mt-1 text-white/90 drop-shadow">
           <MarkdownContent :text="reel.body" :hashtags="reel.hashtags" :mentions="reel.mentions" />
         </div>
+        <SongBadge v-if="reel.song" :song="reel.song" class="mt-2" />
       </div>
 
       <div class="flex shrink-0 flex-col items-center gap-3">

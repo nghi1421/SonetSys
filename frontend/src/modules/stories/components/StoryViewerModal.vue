@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { ChevronLeft, ChevronRight, Eye, Pause, Trash2, X } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog.vue'
+import SongBadge from '@/modules/songs/components/SongBadge.vue'
 import { useStoryStore } from '../store/storyStore'
 import StoryViewersList from './StoryViewersList.vue'
 
@@ -16,6 +17,7 @@ const authStore = useAuthStore()
 const { t } = useI18n()
 
 const videoRef = ref<HTMLVideoElement | null>(null)
+const audioRef = ref<HTMLAudioElement | null>(null)
 const progress = ref(0)
 const showViewers = ref(false)
 const confirmingDelete = ref(false)
@@ -51,6 +53,7 @@ function stopProgressTimer(): void {
 
 function close(): void {
   stopProgressTimer()
+  audioRef.value?.pause()
   showViewers.value = false
   confirmingDelete.value = false
   storyStore.closeViewer()
@@ -111,6 +114,7 @@ function pauseStory(): void {
   isPaused.value = true
   stopProgressTimer()
   videoRef.value?.pause()
+  audioRef.value?.pause()
 }
 
 function resumeStory(): void {
@@ -120,6 +124,9 @@ function resumeStory(): void {
     startImageProgress(false)
   } else {
     videoRef.value?.play()
+  }
+  if (currentStory.value?.song) {
+    audioRef.value?.play().catch(() => {})
   }
 }
 
@@ -173,6 +180,7 @@ watch(currentStory, async (story) => {
   isPaused.value = false
   heldLongEnoughToPause = false
   showViewers.value = false
+  audioRef.value?.pause()
 
   if (!story) return
 
@@ -185,6 +193,15 @@ watch(currentStory, async (story) => {
   } else {
     await nextTick()
     videoRef.value?.play()
+  }
+
+  if (story.song) {
+    await nextTick()
+    const audio = audioRef.value
+    if (audio) {
+      audio.currentTime = story.song_start_sec ?? 0
+      audio.play().catch(() => {})
+    }
   }
 })
 
@@ -211,6 +228,7 @@ async function onConfirmDelete(): Promise<void> {
 onBeforeUnmount(() => {
   stopProgressTimer()
   clearHoldTimer()
+  audioRef.value?.pause()
 })
 </script>
 
@@ -279,9 +297,11 @@ onBeforeUnmount(() => {
             class="max-h-full max-w-full object-contain"
             playsinline
             autoplay
+            :muted="Boolean(currentStory.song)"
             @timeupdate="onVideoTimeUpdate"
             @ended="next"
           />
+          <audio v-if="currentStory.song" ref="audioRef" :src="currentStory.song.audio_url" />
         </div>
 
         <div
@@ -329,12 +349,15 @@ onBeforeUnmount(() => {
       </div>
 
       <div
-        v-if="currentStory.caption || (isOwner && currentStory.views_count !== null)"
+        v-if="currentStory.caption || currentStory.song || (isOwner && currentStory.views_count !== null)"
         class="absolute inset-x-0 bottom-0 z-10 flex items-center justify-between gap-3 bg-gradient-to-t from-black/70 to-transparent p-4"
       >
-        <p v-if="currentStory.caption" class="text-xs text-white drop-shadow">
-          {{ currentStory.caption }}
-        </p>
+        <div class="min-w-0 flex-1 space-y-1.5">
+          <p v-if="currentStory.caption" class="text-xs text-white drop-shadow">
+            {{ currentStory.caption }}
+          </p>
+          <SongBadge v-if="currentStory.song" :song="currentStory.song" />
+        </div>
         <button
           v-if="isOwner && currentStory.views_count !== null"
           type="button"

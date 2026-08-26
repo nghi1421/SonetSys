@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Video } from '@lucide/vue'
+import { Music, Video } from '@lucide/vue'
 import type { StoryGroup } from '../types'
 
 const props = defineProps<{ group: StoryGroup; hasUnviewed: boolean; isMine: boolean }>()
@@ -44,6 +44,13 @@ function initialOf(name: string | null): string {
       class="absolute right-2 top-2 rounded-full bg-black/50 p-1.5 text-white"
     >
       <Video class="h-3 w-3" />
+    </span>
+
+    <span
+      v-if="firstStory.song"
+      class="absolute bottom-8 right-2 rounded-full bg-black/50 p-1.5 text-white"
+    >
+      <Music class="h-3 w-3" />
     </span>
 
     <span class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />

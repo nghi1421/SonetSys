@@ -20,6 +20,9 @@
     "addVideo": "Add video",
     "captionPlaceholder": "Add a caption (optional)…",
     "removeMedia": "Remove media",
+    "addMusic": "Add music",
+    "changeMusic": "Change music",
+    "removeMusic": "Remove music",
     "submit": "Share story",
     "publishError": "Could not publish your story. Please try again.",
     "mediaRequired": "Choose a photo or video to share."

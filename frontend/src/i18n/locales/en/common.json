@@ -9,6 +9,7 @@
   "loading": "Loading…",
   "previous": "Previous",
   "next": "Next",
+  "back": "Back",
   "logOut": "Log out",
   "backToApp": "Back to app",
   "never": "Never",
@@ -37,7 +38,8 @@
     "reports": "Reports",
     "settings": "System Settings",
     "reactions": "Reactions",
-    "subscriptions": "Subscriptions"
+    "subscriptions": "Subscriptions",
+    "songs": "Songs"
   },
   "mediaPreview": {
     "closePreview": "Close preview",

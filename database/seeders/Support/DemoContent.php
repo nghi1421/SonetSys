@@ -278,4 +278,38 @@ final class DemoContent
             'Good catch, I missed that in the review.',
         ];
     }
+
+    /**
+     * @return list<string>
+     */
+    public static function songTitles(): array
+    {
+        return [
+            'Midnight Drive',
+            'Sunset Boulevard',
+            'Coastal Breeze',
+            'City Lights',
+            'Golden Hour',
+            'Late Night Focus',
+            'Open Road',
+            'Neon Skyline',
+        ];
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function songArtists(): array
+    {
+        return [
+            'Nova Ridge',
+            'The Quiet Signal',
+            'Echo Parade',
+            'Auren',
+            'Static Bloom',
+            'Kite & Co.',
+            'Palm Season',
+            'Faint Static',
+        ];
+    }
 }

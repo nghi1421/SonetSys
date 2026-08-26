@@ -1,0 +1,33 @@
+{
+  "picker": {
+    "title": "Add music",
+    "searchLabel": "Search songs",
+    "searchError": "Could not load songs. Please try again.",
+    "empty": "No songs found.",
+    "preview": "Preview",
+    "pause": "Pause",
+    "trimTitle": "Choose a starting point",
+    "startsAt": "Starts at",
+    "confirm": "Add to post"
+  },
+  "admin": {
+    "title": "Songs",
+    "subtitle": "Manage the music catalog available for reels and stories.",
+    "genericError": "Something went wrong. Please try again.",
+    "listTitle": "Song Catalog",
+    "songHeader": "Song",
+    "durationHeader": "Duration",
+    "actionsHeader": "Actions",
+    "emptyDescription": "No songs yet. Add one below.",
+    "unknownArtist": "Unknown artist",
+    "titlePlaceholder": "Song title…",
+    "artistPlaceholder": "Artist (optional)…",
+    "audioLabel": "Audio file",
+    "coverLabel": "Cover image (optional)",
+    "replaceAudioLabel": "Replace audio file (optional)",
+    "replaceCoverLabel": "Replace cover image (optional)",
+    "addButton": "Add Song",
+    "confirmDeleteTitle": "Delete song?",
+    "confirmDeleteMessage": "\"{title}\" will be removed from the catalog and unattached from any posts using it."
+  }
+}
