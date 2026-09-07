@@ -9,6 +9,7 @@ use App\Modules\Advertising\Domain\Enums\AdCampaignStatus;
 use App\Modules\Advertising\Domain\Models\AdCampaign;
 use App\Modules\Feed\Domain\Enums\PostVisibility;
 use App\Modules\Feed\Domain\Models\Post;
+use App\Modules\Subscription\Application\Services\SubscriptionService;
 use App\Modules\Wallet\Application\Services\WalletService;
 use App\Modules\Wallet\Domain\Enums\WalletTransactionReason;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -24,6 +25,7 @@ final class AdCampaignService
     public function __construct(
         private readonly AdCampaignRepositoryInterface $campaigns,
         private readonly WalletService $wallet,
+        private readonly SubscriptionService $subscriptions,
     ) {}
 
     public function submit(int $advertiserId, int $postId, int $budget, int $days): AdCampaign
@@ -60,6 +62,23 @@ final class AdCampaignService
                 "Boost campaign for post #{$postId}",
                 $advertiserId,
             );
+
+            $feePercent = (int) config('advertising.platform_fee_percent', 0);
+
+            if ($feePercent > 0) {
+                $waiverPercent = $this->subscriptions->boostFeeWaiverPercentFor($advertiserId);
+                $fee = (int) ceil($budget * $feePercent / 100 * (1 - $waiverPercent / 100));
+
+                if ($fee > 0) {
+                    $this->wallet->debit(
+                        $advertiserId,
+                        $fee,
+                        WalletTransactionReason::AdPlatformFee,
+                        "Platform fee for boost campaign for post #{$postId}",
+                        $advertiserId,
+                    );
+                }
+            }
 
             return $this->campaigns->create([
                 'post_id' => $postId,

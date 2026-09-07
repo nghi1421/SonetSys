@@ -44,17 +44,17 @@ function signedAmount(transaction: WalletTransaction): string {
 
 <template>
   <AppShell>
-    <div class="mx-auto max-w-2xl space-y-4">
+    <div class="mx-auto max-w-3xl space-y-4">
       <header class="rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md">
         <div class="flex items-center justify-between">
           <div>
-            <h1 class="text-sm font-bold tracking-wider text-cyber-text">// {{ t('wallet.historyView.title') }}</h1>
-            <p class="mt-1 font-mono text-xs text-cyber-muted">{{ t('wallet.historyView.subtitle') }}</p>
+            <h1 class="text-sm font-bold text-cyber-text">{{ t('wallet.historyView.title') }}</h1>
+ <p class="mt-1 text-xs text-cyber-muted">{{ t('wallet.historyView.subtitle') }}</p>
           </div>
           <div class="flex items-center gap-2 rounded-full border border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 px-4 py-2">
             <Coins class="h-4 w-4 text-cyber-neon-cyan" />
             <div class="text-right">
-              <p class="font-mono text-[9px] uppercase tracking-widest text-cyber-neon-cyan">
+ <p class="text-xs text-cyber-neon-cyan">
                 {{ t('wallet.historyView.currentBalance') }}
               </p>
               <p class="font-mono text-sm font-bold tabular-nums text-cyber-text">{{ walletStore.balance }}</p>
@@ -76,7 +76,7 @@ function signedAmount(transaction: WalletTransaction): string {
       <div v-else-if="!loadError && walletStore.transactions.length === 0" class="flex flex-col items-center py-16 text-center">
         <Receipt class="h-8 w-8 text-cyber-muted" />
         <p class="mt-4 text-xs font-bold text-cyber-text">{{ t('wallet.historyView.emptyTitle') }}</p>
-        <p class="mt-1 font-mono text-xs text-cyber-muted">{{ t('wallet.historyView.emptyDescription') }}</p>
+ <p class="mt-1 text-xs text-cyber-muted">{{ t('wallet.historyView.emptyDescription') }}</p>
       </div>
 
       <div v-else-if="!loadError" class="overflow-hidden rounded-hud border border-cyber-border bg-cyber-glass backdrop-blur-md">
@@ -87,10 +87,10 @@ function signedAmount(transaction: WalletTransaction): string {
             class="flex items-center justify-between gap-3 px-4 py-3 transition-all duration-300 hover:shadow-cyan-glow"
           >
             <div class="min-w-0">
-              <p class="font-mono text-xs font-bold uppercase tracking-wider text-cyber-text">
+ <p class="text-xs font-bold text-cyber-text">
                 {{ t(`wallet.reasons.${transaction.reason}`) }}
               </p>
-              <p class="mt-0.5 font-mono text-[10px] uppercase tracking-widest text-cyber-muted">
+ <p class="mt-0.5 text-xs text-cyber-muted">
                 {{ t(`wallet.types.${transaction.type}`) }} · {{ useRelativeTime(transaction.created_at) }}
               </p>
             </div>
@@ -101,7 +101,7 @@ function signedAmount(transaction: WalletTransaction): string {
               >
                 {{ signedAmount(transaction) }}
               </p>
-              <p class="font-mono text-[10px] tabular-nums text-cyber-muted">{{ transaction.balance_after }}</p>
+              <p class="font-mono text-xs tabular-nums text-cyber-muted">{{ transaction.balance_after }}</p>
             </div>
           </li>
         </ul>

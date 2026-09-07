@@ -20,8 +20,8 @@ onMounted(() => {
 
 <template>
   <AppShell>
-    <div class="mx-auto max-w-2xl space-y-4">
-      <h1 class="text-sm font-bold tracking-wider text-cyber-text">// {{ t('chat.messagesListView.title') }}</h1>
+    <div class="mx-auto max-w-3xl space-y-4">
+      <h1 class="text-sm font-bold text-cyber-text">{{ t('chat.messagesListView.title') }}</h1>
 
       <div v-if="chatStore.conversationsLoading" class="space-y-3">
         <div
@@ -40,7 +40,7 @@ onMounted(() => {
       <div v-else-if="chatStore.conversations.length === 0" class="flex flex-col items-center py-16 text-center">
         <MessageCircle class="h-8 w-8 text-cyber-muted" />
         <p class="mt-4 text-xs font-bold text-cyber-text">{{ t('chat.messagesListView.emptyTitle') }}</p>
-        <p class="mt-1 font-mono text-xs text-cyber-muted">{{ t('chat.messagesListView.emptyDescription') }}</p>
+ <p class="mt-1 text-xs text-cyber-muted">{{ t('chat.messagesListView.emptyDescription') }}</p>
       </div>
 
       <ul v-else class="space-y-3">
@@ -57,14 +57,14 @@ onMounted(() => {
             />
             <span
               v-else
-              class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-cyber-border bg-cyber-surface font-mono text-sm font-bold text-cyber-text"
+ class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-cyber-border bg-cyber-surface text-sm font-bold text-cyber-text"
             >
               {{ initialOf(conversation.other_participant.name) }}
             </span>
 
             <div class="min-w-0 flex-1">
               <p class="truncate text-xs font-bold text-cyber-text">{{ conversation.other_participant.name }}</p>
-              <p v-if="conversation.last_message_at" class="mt-0.5 font-mono text-[10px] uppercase tracking-widest text-cyber-muted">
+ <p v-if="conversation.last_message_at" class="mt-0.5 text-xs text-cyber-muted">
                 {{ useRelativeTime(conversation.last_message_at) }}
               </p>
             </div>

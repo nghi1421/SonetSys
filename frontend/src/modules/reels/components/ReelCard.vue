@@ -4,13 +4,14 @@ import { useI18n } from 'vue-i18n'
 import { EllipsisVertical, Flag, MessageCircle, Trash2, Volume2, VolumeX } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 import CommentThread from '@/modules/feed/components/CommentThread.vue'
-import LinkifiedText from '@/modules/feed/components/LinkifiedText.vue'
+import MarkdownContent from '@/modules/feed/components/MarkdownContent.vue'
 import ReactionButton from '@/modules/feed/components/ReactionButton.vue'
 import ShareMenu from '@/modules/feed/components/ShareMenu.vue'
 import { useFeedStore } from '@/modules/feed/store/feedStore'
 import type { ReactionType } from '@/modules/feed/types'
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog.vue'
 import ReportDialog from '@/shared/components/ui/ReportDialog.vue'
+import SongBadge from '@/modules/songs/components/SongBadge.vue'
 import { useReelStore } from '../store/reelStore'
 import type { Reel } from '../types'
 
@@ -23,18 +24,22 @@ const { t } = useI18n()
 
 const cardRef = ref<HTMLElement | null>(null)
 const videoRef = ref<HTMLVideoElement | null>(null)
+const audioRef = ref<HTMLAudioElement | null>(null)
 const muted = ref(true)
 const showComments = ref(false)
 const showActionsMenu = ref(false)
 const showReportDialog = ref(false)
 const confirmingDelete = ref(false)
 let observer: IntersectionObserver | null = null
+let songStarted = false
 
 const isOwner = computed(() => authStore.user?.id === props.reel.author.id)
 const canModerate = computed(
   () => authStore.user?.role.slug === 'admin' || authStore.user?.role.slug === 'moderator',
 )
 const canDelete = computed(() => isOwner.value || canModerate.value)
+const hasSong = computed(() => Boolean(props.reel.song))
+const videoMuted = computed(() => hasSong.value || muted.value)
 
 // commentsByPost is only populated once fetchComments runs for this reel —
 // falls back to the server-provided count until then, so the badge never
@@ -48,8 +53,17 @@ onMounted(() => {
       if (!video || !entry) return
       if (entry.isIntersecting) {
         video.play().catch(() => {})
+        const audio = audioRef.value
+        if (audio && props.reel.song) {
+          if (!songStarted) {
+            audio.currentTime = props.reel.song_start_sec ?? 0
+            songStarted = true
+          }
+          audio.play().catch(() => {})
+        }
       } else {
         video.pause()
+        audioRef.value?.pause()
       }
     },
     { threshold: 0.6 },
@@ -59,6 +73,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   observer?.disconnect()
+  audioRef.value?.pause()
 })
 
 function toggleMute(): void {
@@ -107,9 +122,10 @@ async function onConfirmDelete(): Promise<void> {
         class="max-h-full max-w-full object-contain"
         loop
         playsinline
-        :muted="muted"
+        :muted="videoMuted"
         @click="toggleMute"
       />
+      <audio v-if="reel.song" ref="audioRef" :src="reel.song.audio_url" :muted="muted" loop />
     </div>
 
     <div class="absolute right-4 top-4 z-10 flex items-center gap-2">
@@ -143,7 +159,7 @@ async function onConfirmDelete(): Promise<void> {
           <button
             v-if="canDelete"
             type="button"
-            class="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-xs text-cyber-neon-pink transition-colors duration-300 hover:shadow-pink-glow"
+ class="flex w-full items-center gap-2 px-3 py-2 text-left text-xs text-cyber-neon-pink transition-colors duration-300 hover:shadow-pink-glow"
             @click="onDeleteClick"
           >
             <Trash2 class="h-3.5 w-3.5" /> {{ t('common.delete') }}
@@ -151,7 +167,7 @@ async function onConfirmDelete(): Promise<void> {
           <button
             v-if="!isOwner"
             type="button"
-            class="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-pink"
+ class="flex w-full items-center gap-2 px-3 py-2 text-left text-xs text-cyber-text transition-colors duration-300 hover:text-cyber-neon-pink"
             @click="onReportClick"
           >
             <Flag class="h-3.5 w-3.5" /> {{ t('report.action') }}
@@ -165,13 +181,14 @@ async function onConfirmDelete(): Promise<void> {
         <router-link
           v-if="reel.author.id"
           :to="`/users/${reel.author.id}`"
-          class="font-mono text-xs font-bold uppercase tracking-widest text-white drop-shadow transition-colors duration-300 hover:text-cyber-neon-cyan"
+ class="text-xs font-bold text-white drop-shadow transition-colors duration-300 hover:text-cyber-neon-cyan"
         >
-          // {{ reel.author.name }}
+          {{ reel.author.name }}
         </router-link>
-        <p v-if="reel.body" class="mt-1 font-mono text-xs text-white/90 drop-shadow">
-          <LinkifiedText :text="reel.body" :hashtags="reel.hashtags" :mentions="reel.mentions" />
-        </p>
+        <div v-if="reel.body" class="mt-1 text-white/90 drop-shadow">
+          <MarkdownContent :text="reel.body" :hashtags="reel.hashtags" :mentions="reel.mentions" />
+        </div>
+        <SongBadge v-if="reel.song" :song="reel.song" class="mt-2" />
       </div>
 
       <div class="flex shrink-0 flex-col items-center gap-3">
@@ -185,7 +202,7 @@ async function onConfirmDelete(): Promise<void> {
 
         <button
           type="button"
-          class="inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-black/40 px-2.5 py-1 font-mono text-[10px] text-white backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/40 hover:text-cyber-neon-cyan"
+ class="inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-black/40 px-2.5 py-1 text-xs text-white backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/40 hover:text-cyber-neon-cyan"
           @click="onToggleComments"
         >
           <MessageCircle class="h-3 w-3" />
@@ -201,12 +218,12 @@ async function onConfirmDelete(): Promise<void> {
       class="absolute inset-x-0 bottom-0 z-20 max-h-[70dvh] overflow-y-auto rounded-t-hud border-t border-cyber-border bg-cyber-surface p-4"
     >
       <div class="flex items-center justify-between">
-        <p class="font-mono text-xs font-bold uppercase tracking-widest text-cyber-text">
+ <p class="text-xs font-bold text-cyber-text">
           {{ t('reels.card.comments') }}
         </p>
         <button
           type="button"
-          class="font-mono text-[10px] uppercase tracking-wider text-cyber-muted hover:text-cyber-neon-cyan"
+ class="text-xs text-cyber-muted hover:text-cyber-neon-cyan"
           @click="showComments = false"
         >
           {{ t('common.close') }}

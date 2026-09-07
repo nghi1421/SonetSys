@@ -2,7 +2,7 @@
 import { computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Cloud, FileText, Flag, Image, LayoutDashboard, Megaphone, Settings, Smile, Users, Wallet } from '@lucide/vue'
+import { Cloud, Crown, FileText, Flag, Image, LayoutDashboard, Megaphone, Music, Settings, Smile, Users, Wallet } from '@lucide/vue'
 import { useAuthStore } from '@/modules/auth/store/authStore'
 
 const props = defineProps<{ open: boolean }>()
@@ -26,9 +26,11 @@ const navItems = computed(() => {
     { to: { name: 'admin-users' }, label: t('common.nav.users'), icon: Users, adminOnly: true },
     { to: { name: 'admin-wallets' }, label: t('common.nav.wallets'), icon: Wallet, adminOnly: true },
     { to: { name: 'admin-ads' }, label: t('common.nav.ads'), icon: Megaphone, adminOnly: true },
+    { to: { name: 'admin-subscriptions' }, label: t('common.nav.subscriptions'), icon: Crown, adminOnly: true },
     { to: { name: 'admin-reports' }, label: t('common.nav.reports'), icon: Flag, adminOnly: false },
     { to: { name: 'admin-settings' }, label: t('common.nav.settings'), icon: Settings, adminOnly: true },
     { to: { name: 'admin-reactions' }, label: t('common.nav.reactions'), icon: Smile, adminOnly: true },
+    { to: { name: 'admin-songs' }, label: t('common.nav.songs'), icon: Music, adminOnly: true },
   ]
 
   return isModerator.value ? items.filter((item) => !item.adminOnly) : items

@@ -68,18 +68,18 @@ async function onSubmit(): Promise<void> {
 
 <template>
   <AppModal :open="open" size="sm" @close="close">
-    <h2 class="font-mono text-xs font-bold uppercase tracking-widest text-cyber-text">
+ <h2 class="text-xs font-bold text-cyber-text">
       {{ t('report.dialog.title') }}
     </h2>
 
     <template v-if="submitted">
-      <p class="mt-3 font-mono text-xs leading-relaxed text-cyber-neon-cyan">
+ <p class="mt-3 text-xs leading-relaxed text-cyber-neon-cyan">
         {{ t('report.dialog.success') }}
       </p>
       <div class="mt-4 flex justify-end">
         <button
           type="button"
-          class="rounded-full border border-cyber-border bg-cyber-glass px-4 py-1.5 font-mono text-xs uppercase tracking-wider text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
+ class="rounded-full border border-cyber-border bg-cyber-glass px-4 py-1.5 text-xs text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
           @click="close"
         >
           {{ t('common.close') }}
@@ -104,12 +104,12 @@ async function onSubmit(): Promise<void> {
         />
       </div>
 
-      <p v-if="error" class="mt-2 font-mono text-xs text-cyber-neon-pink">{{ error }}</p>
+ <p v-if="error" class="mt-2 text-xs text-cyber-neon-pink">{{ error }}</p>
 
       <div class="mt-4 flex justify-end gap-3">
         <button
           type="button"
-          class="rounded-full border border-cyber-border bg-cyber-glass px-4 py-1.5 font-mono text-xs uppercase tracking-wider text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
+ class="rounded-full border border-cyber-border bg-cyber-glass px-4 py-1.5 text-xs text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
           @click="close"
         >
           {{ t('common.cancel') }}

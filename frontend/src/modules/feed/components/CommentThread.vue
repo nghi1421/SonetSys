@@ -9,7 +9,7 @@ import ConfirmDialog from '@/shared/components/ui/ConfirmDialog.vue'
 import ReportDialog from '@/shared/components/ui/ReportDialog.vue'
 import { useRelativeTime } from '@/shared/composables/useRelativeTime'
 import { useMentionPicker } from '../composables/useMentionPicker'
-import LinkifiedText from './LinkifiedText.vue'
+import MarkdownContent from './MarkdownContent.vue'
 import MentionPicker from './MentionPicker.vue'
 import ReactionButton from './ReactionButton.vue'
 import { useFeedStore } from '../store/feedStore'
@@ -106,17 +106,15 @@ async function onConfirmDelete(): Promise<void> {
       >
         <div class="flex-1">
           <AppUsername :user="comment.author" />
-          <p
-            class="mt-1 border-l border-cyber-neon-indigo pl-2 font-mono text-xs leading-relaxed text-cyber-text/90"
-          >
-            <LinkifiedText
+          <div class="mt-1 border-l border-cyber-neon-indigo pl-2 text-cyber-text/90">
+            <MarkdownContent
               :text="comment.body"
               :hashtags="comment.hashtags"
               :mentions="comment.mentions"
             />
-          </p>
+          </div>
           <div
-            class="mt-2 flex items-center gap-3 font-mono text-[9px] text-cyber-muted"
+ class="mt-2 flex items-center gap-3 text-xs text-cyber-muted"
           >
             <span>{{ useRelativeTime(comment.created_at) }}</span>
             <ReactionButton
@@ -161,17 +159,15 @@ async function onConfirmDelete(): Promise<void> {
       >
         <div class="flex-1">
           <AppUsername :user="reply.author" />
-          <p
-            class="mt-1 border-l border-cyber-neon-indigo pl-2 font-mono text-xs leading-relaxed text-cyber-text/90"
-          >
-            <LinkifiedText
+          <div class="mt-1 border-l border-cyber-neon-indigo pl-2 text-cyber-text/90">
+            <MarkdownContent
               :text="reply.body"
               :hashtags="reply.hashtags"
               :mentions="reply.mentions"
             />
-          </p>
+          </div>
           <div
-            class="mt-2 flex items-center gap-3 font-mono text-[9px] text-cyber-muted"
+ class="mt-2 flex items-center gap-3 text-xs text-cyber-muted"
           >
             <span>{{ useRelativeTime(reply.created_at) }}</span>
             <ReactionButton
@@ -211,7 +207,7 @@ async function onConfirmDelete(): Promise<void> {
           v-model="newComment"
           type="text"
           :placeholder="t('feed.commentThread.replyPlaceholder')"
-          class="flex-1 rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-1.5 font-mono text-xs text-cyber-text backdrop-blur-md focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
+ class="flex-1 rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-1.5 text-xs text-cyber-text backdrop-blur-md focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
         />
 
         <MentionPicker
@@ -227,7 +223,7 @@ async function onConfirmDelete(): Promise<void> {
         />
         <button
           type="button"
-          class="font-mono text-xs text-cyber-muted transition-colors duration-300 hover:text-cyber-text"
+ class="text-xs text-cyber-muted transition-colors duration-300 hover:text-cyber-text"
           @click="replyingTo = null"
         >
           {{ t('common.cancel') }}
@@ -244,7 +240,7 @@ async function onConfirmDelete(): Promise<void> {
         v-model="newComment"
         type="text"
         :placeholder="t('feed.commentThread.commentPlaceholder')"
-        class="flex-1 rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-1.5 font-mono text-xs text-cyber-text backdrop-blur-md focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
+ class="flex-1 rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-1.5 text-xs text-cyber-text backdrop-blur-md focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
       />
 
       <MentionPicker

@@ -22,11 +22,17 @@
     "confirmDeleteTitle": "Delete post?",
     "confirmDeleteMessage": "This can't be undone.",
     "sponsored": "Sponsored",
-    "location": "Checked in"
+    "isIn": "is in"
   },
   "postComposer": {
     "title": "Create post",
     "placeholder": "Share something with your community…",
+    "visibilityLabel": "Who can see this?",
+    "visibilityOptions": {
+      "public": "Public",
+      "members": "Members",
+      "private": "Only me"
+    },
     "photoPreviewAlt": "Selected photo preview",
     "removeMedia": "Remove media",
     "removeSticker": "Remove sticker",

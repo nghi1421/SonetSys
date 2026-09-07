@@ -14,5 +14,7 @@ require app_path('Modules/Menu/routes/api.php');
 require app_path('Modules/Notification/routes/api.php');
 require app_path('Modules/Report/routes/api.php');
 require app_path('Modules/Search/routes/api.php');
+require app_path('Modules/Song/routes/api.php');
 require app_path('Modules/Story/routes/api.php');
+require app_path('Modules/Subscription/routes/api.php');
 require app_path('Modules/Wallet/routes/api.php');

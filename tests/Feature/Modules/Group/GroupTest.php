@@ -375,6 +375,65 @@ final class GroupTest extends TestCase
         $this->deleteJson("/api/v1/groups/{$group->id}/members/{$adminTwo->id}")->assertForbidden();
     }
 
+    public function test_popular_returns_groups_ordered_by_members_count_descending_and_respects_the_limit(): void
+    {
+        $owner = User::factory()->create();
+
+        $groups = [];
+        foreach (range(1, 6) as $i) {
+            $groups[$i] = $this->createGroup($owner, 'public');
+        }
+
+        // Give groups 2, 3, 4 progressively more members so the ordering is
+        // unambiguous: group 4 (4 members) > group 3 (3) > group 2 (2) > the
+        // rest (1 member each, tied — order among ties is not asserted).
+        foreach ([4, 4, 4] as $_) {
+            $this->joinAsApproved($groups[4], $this->otherUser());
+        }
+        foreach ([3, 3] as $_) {
+            $this->joinAsApproved($groups[3], $this->otherUser());
+        }
+        $this->joinAsApproved($groups[2], $this->otherUser());
+
+        Sanctum::actingAs($owner);
+
+        $response = $this->getJson('/api/v1/groups/popular');
+
+        $response->assertOk();
+        $data = $response->json('data');
+
+        $this->assertCount(5, $data);
+        $this->assertSame($groups[4]->id, $data[0]['id']);
+        $this->assertSame(4, $data[0]['members_count']);
+        $this->assertSame($groups[3]->id, $data[1]['id']);
+        $this->assertSame(3, $data[1]['members_count']);
+        $this->assertSame($groups[2]->id, $data[2]['id']);
+        $this->assertSame(2, $data[2]['members_count']);
+    }
+
+    public function test_popular_attaches_the_viewers_membership_status(): void
+    {
+        $owner = User::factory()->create();
+        $group = $this->createGroup($owner, 'public');
+
+        $member = $this->otherUser();
+        $this->joinAsApproved($group, $member);
+
+        $outsider = $this->otherUser();
+        Sanctum::actingAs($outsider);
+
+        $asOutsider = $this->getJson('/api/v1/groups/popular')->json('data');
+        $outsiderRow = collect($asOutsider)->firstWhere('id', $group->id);
+        $this->assertNull($outsiderRow['viewer_membership']);
+
+        Sanctum::actingAs($member);
+
+        $asMember = $this->getJson('/api/v1/groups/popular')->json('data');
+        $memberRow = collect($asMember)->firstWhere('id', $group->id);
+        $this->assertSame('member', $memberRow['viewer_membership']['role']);
+        $this->assertSame('approved', $memberRow['viewer_membership']['status']);
+    }
+
     private function otherUser(): User
     {
         return User::factory()->create();

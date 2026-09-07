@@ -60,29 +60,29 @@ async function onConfirmDelete(): Promise<void> {
     <AppAlert v-if="error">{{ error }}</AppAlert>
 
     <form class="space-y-4 rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md" @submit.prevent="onSave">
-      <h2 class="text-xs font-bold uppercase tracking-widest text-cyber-neon-cyan">{{ t('groups.groupSettings.title') }}</h2>
+ <h2 class="text-xs font-bold text-cyber-neon-cyan">{{ t('groups.groupSettings.title') }}</h2>
 
       <AppInput v-model="name" :label="t('groups.groupSettings.nameLabel')" />
 
       <div class="space-y-1.5">
-        <label class="block text-[9px] font-mono uppercase tracking-widest text-cyber-neon-cyan">
+ <label class="block text-xs text-cyber-neon-cyan">
           {{ t('groups.groupSettings.descriptionLabel') }}
         </label>
         <textarea
           v-model="description"
           rows="3"
-          class="block w-full resize-none rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-2 font-mono text-xs text-cyber-text backdrop-blur-md transition-all duration-300 focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
+ class="block w-full resize-none rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-2 text-xs text-cyber-text backdrop-blur-md transition-all duration-300 focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
         />
       </div>
 
       <div class="space-y-1.5">
-        <label class="block text-[9px] font-mono uppercase tracking-widest text-cyber-neon-cyan">
+ <label class="block text-xs text-cyber-neon-cyan">
           {{ t('groups.groupSettings.visibilityLabel') }}
         </label>
         <div class="grid grid-cols-2 gap-2">
           <button
             type="button"
-            class="rounded-hud border px-3 py-2 text-left font-mono text-xs transition-all duration-300"
+ class="rounded-hud border px-3 py-2 text-left text-xs transition-all duration-300"
             :class="
               visibility === 'public'
                 ? 'border-cyber-neon-cyan/50 bg-cyber-neon-cyan/10 text-cyber-neon-cyan shadow-cyan-glow'
@@ -94,7 +94,7 @@ async function onConfirmDelete(): Promise<void> {
           </button>
           <button
             type="button"
-            class="rounded-hud border px-3 py-2 text-left font-mono text-xs transition-all duration-300"
+ class="rounded-hud border px-3 py-2 text-left text-xs transition-all duration-300"
             :class="
               visibility === 'private'
                 ? 'border-cyber-neon-pink/50 bg-cyber-neon-pink/10 text-cyber-neon-pink shadow-pink-glow'
@@ -111,13 +111,13 @@ async function onConfirmDelete(): Promise<void> {
     </form>
 
     <section v-if="isOwner" class="rounded-hud border border-cyber-neon-pink/30 bg-cyber-neon-pink/5 p-5 backdrop-blur-md">
-      <h2 class="text-xs font-bold uppercase tracking-widest text-cyber-neon-pink">{{ t('groups.groupSettings.dangerZoneTitle') }}</h2>
-      <p class="mt-2 font-mono text-xs text-cyber-muted">
+ <h2 class="text-xs font-bold text-cyber-neon-pink">{{ t('groups.groupSettings.dangerZoneTitle') }}</h2>
+ <p class="mt-2 text-xs text-cyber-muted">
         {{ t('groups.groupSettings.dangerZoneDescription') }}
       </p>
       <button
         type="button"
-        class="mt-4 rounded-full border border-cyber-neon-pink/30 bg-cyber-neon-pink/10 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-cyber-neon-pink transition-all duration-300 hover:shadow-pink-glow disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
+ class="mt-4 rounded-full border border-cyber-neon-pink/30 bg-cyber-neon-pink/10 px-4 py-1.5 text-xs font-bold text-cyber-neon-pink transition-all duration-300 hover:shadow-pink-glow disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
         :disabled="deleting"
         @click="confirmingDelete = true"
       >

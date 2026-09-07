@@ -44,8 +44,8 @@ async function onSubmit(): Promise<void> {
 <template>
   <AppModal :open="true" size="md" @close="emit('close')">
     <form class="space-y-4" @submit.prevent="onSubmit">
-      <h2 class="font-mono text-xs font-bold uppercase tracking-widest text-cyber-text">
-        // {{ t('groups.createGroupModal.title') }}
+ <h2 class="text-xs font-bold text-cyber-text">
+        {{ t('groups.createGroupModal.title') }}
       </h2>
 
       <AppAlert v-if="error">{{ error }}</AppAlert>
@@ -61,13 +61,13 @@ async function onSubmit(): Promise<void> {
       />
 
       <div class="space-y-1.5">
-        <label class="block text-[9px] font-mono uppercase tracking-widest text-cyber-neon-cyan">
+ <label class="block text-xs text-cyber-neon-cyan">
           {{ t('groups.createGroupModal.visibilityLabel') }}
         </label>
         <div class="grid grid-cols-2 gap-2">
           <button
             type="button"
-            class="rounded-hud border px-3 py-2 text-left font-mono text-xs transition-all duration-300"
+ class="rounded-hud border px-3 py-2 text-left text-xs transition-all duration-300"
             :class="
               visibility === 'public'
                 ? 'border-cyber-neon-cyan/50 bg-cyber-neon-cyan/10 text-cyber-neon-cyan shadow-cyan-glow'
@@ -76,13 +76,13 @@ async function onSubmit(): Promise<void> {
             @click="visibility = 'public'"
           >
             {{ t('groups.visibility.public') }}
-            <span class="mt-0.5 block font-mono text-[9px] normal-case text-cyber-muted">{{
+ <span class="mt-0.5 block text-xs normal-case text-cyber-muted">{{
               t('groups.visibility.publicHint')
             }}</span>
           </button>
           <button
             type="button"
-            class="rounded-hud border px-3 py-2 text-left font-mono text-xs transition-all duration-300"
+ class="rounded-hud border px-3 py-2 text-left text-xs transition-all duration-300"
             :class="
               visibility === 'private'
                 ? 'border-cyber-neon-pink/50 bg-cyber-neon-pink/10 text-cyber-neon-pink shadow-pink-glow'
@@ -91,7 +91,7 @@ async function onSubmit(): Promise<void> {
             @click="visibility = 'private'"
           >
             {{ t('groups.visibility.private') }}
-            <span class="mt-0.5 block font-mono text-[9px] normal-case text-cyber-muted">{{
+ <span class="mt-0.5 block text-xs normal-case text-cyber-muted">{{
               t('groups.visibility.privateHint')
             }}</span>
           </button>
@@ -101,7 +101,7 @@ async function onSubmit(): Promise<void> {
       <div class="flex justify-end gap-3 pt-2">
         <button
           type="button"
-          class="rounded-full border border-cyber-border bg-cyber-glass px-4 py-1.5 font-mono text-xs uppercase tracking-wider text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
+ class="rounded-full border border-cyber-border bg-cyber-glass px-4 py-1.5 text-xs text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
           @click="emit('close')"
         >
           {{ t('common.cancel') }}

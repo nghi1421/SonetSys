@@ -27,10 +27,10 @@ watch(tag, load)
 
 <template>
   <AppShell>
-    <div class="mx-auto max-w-2xl space-y-4">
+    <div class="mx-auto max-w-3xl space-y-4">
       <header class="flex items-center gap-2 rounded-hud border border-cyber-border bg-cyber-glass p-4 backdrop-blur-md">
         <Hash class="h-5 w-5 text-cyber-neon-cyan" />
-        <h1 class="font-mono text-sm font-bold uppercase tracking-widest text-cyber-text">#{{ tag }}</h1>
+ <h1 class="text-sm font-bold text-cyber-text">#{{ tag }}</h1>
       </header>
 
       <div v-if="feedStore.hashtagLoading" class="space-y-4">
@@ -48,7 +48,7 @@ watch(tag, load)
       <div v-else-if="feedStore.hashtagPosts.length === 0" class="flex flex-col items-center py-16 text-center">
         <Inbox class="h-8 w-8 text-cyber-muted" />
         <p class="mt-4 text-xs font-bold text-cyber-text">{{ t('feed.hashtagView.emptyTitle') }}</p>
-        <p class="mt-1 font-mono text-xs text-cyber-muted">
+ <p class="mt-1 text-xs text-cyber-muted">
           {{ t('feed.hashtagView.emptyDescription', { tag }) }}
         </p>
       </div>

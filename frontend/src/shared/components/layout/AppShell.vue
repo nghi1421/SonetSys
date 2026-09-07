@@ -11,12 +11,18 @@ const sidebarOpen = ref(false)
   <div class="min-h-screen">
     <AppHeader @toggle-sidebar="sidebarOpen = !sidebarOpen" />
 
-    <div class="mx-auto flex max-w-5xl">
+    <div class="flex gap-4 pr-4 sm:pr-6">
       <AppSidebar :open="sidebarOpen" @close="sidebarOpen = false" />
 
-      <main class="min-w-0 flex-1 px-4 py-6">
-        <slot />
-      </main>
+      <div class="flex min-w-0 flex-1 gap-4" :class="$slots.right && 'justify-center'">
+        <main class="min-w-0 px-4 py-6" :class="!$slots.right && 'flex-1'">
+          <slot />
+        </main>
+
+        <aside v-if="$slots.right" class="hidden w-96 shrink-0 space-y-4 py-6 xl:block">
+          <slot name="right" />
+        </aside>
+      </div>
     </div>
 
     <FloatingChatBubble />

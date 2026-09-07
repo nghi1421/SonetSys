@@ -31,6 +31,8 @@ final class CreateReelRequest extends FormRequest
             'body' => ['sometimes', 'nullable', 'string', 'max:10000'],
             'mentioned_user_ids' => ['sometimes', 'array'],
             'mentioned_user_ids.*' => ['integer', Rule::exists('users', 'id')],
+            'song_id' => ['sometimes', 'nullable', 'integer', Rule::exists('songs', 'id')],
+            'song_start_sec' => ['sometimes', 'nullable', 'integer', 'min:0'],
         ];
     }
 
@@ -46,6 +48,8 @@ final class CreateReelRequest extends FormRequest
             mediaType: MediaType::Video,
             mentionedUserIds: array_map('intval', (array) ($this->validated('mentioned_user_ids') ?? [])),
             isReel: true,
+            songId: $this->filled('song_id') ? (int) $this->validated('song_id') : null,
+            songStartSec: (int) ($this->validated('song_start_sec') ?? 0),
         );
     }
 }

@@ -26,7 +26,7 @@ final class EloquentStoryRepository implements StoryRepositoryInterface
         return Story::query()
             ->where('expires_at', '>', now())
             ->withCount('views')
-            ->with('author')
+            ->with(['author', 'song'])
             ->orderByDesc('published_at')
             ->get();
     }

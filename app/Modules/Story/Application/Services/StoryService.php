@@ -32,6 +32,8 @@ final class StoryService
                 'media_disk' => $stored['disk'],
                 'media_path' => $stored['path'],
                 'caption' => $data->caption,
+                'song_id' => $data->songId,
+                'song_start_sec' => $data->songStartSec,
                 'published_at' => now(),
                 'expires_at' => now()->addHours(24),
             ]);

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Story\Http\Resources;
 
 use App\Core\Storage\Application\Services\StorageService;
+use App\Modules\Song\Http\Resources\SongResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -23,6 +24,8 @@ final class StoryResource extends JsonResource
             'media_type' => $this->media_type->value,
             'media_url' => app(StorageService::class)->url($this->media_disk, $this->media_path),
             'caption' => $this->caption,
+            'song' => SongResource::make($this->whenLoaded('song')),
+            'song_start_sec' => (int) $this->song_start_sec,
             'published_at' => $this->published_at->toIso8601String(),
             'expires_at' => $this->expires_at->toIso8601String(),
             'viewed_by_me' => (bool) ($this->viewed_by_me ?? false),

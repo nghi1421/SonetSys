@@ -3,9 +3,6 @@
     "yourStory": "Your story",
     "addStory": "Add story"
   },
-  "storiesPage": {
-    "empty": "No stories yet. Be the first to share one."
-  },
   "viewer": {
     "viewersCount": "{count} views",
     "viewersButton": "Viewers",
@@ -23,6 +20,9 @@
     "addVideo": "Add video",
     "captionPlaceholder": "Add a caption (optional)…",
     "removeMedia": "Remove media",
+    "addMusic": "Add music",
+    "changeMusic": "Change music",
+    "removeMusic": "Remove music",
     "submit": "Share story",
     "publishError": "Could not publish your story. Please try again.",
     "mediaRequired": "Choose a photo or video to share."

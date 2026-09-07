@@ -14,5 +14,7 @@ final readonly class CreateStoryData
         public UploadedFile $media,
         public MediaType $mediaType,
         public ?string $caption = null,
+        public ?int $songId = null,
+        public int $songStartSec = 0,
     ) {}
 }

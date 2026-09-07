@@ -1,6 +1,7 @@
 import { http } from '@/shared/api/http'
 import type { ApiResponse, PaginationMeta } from '@/shared/api/types'
 import type { User } from '@/modules/auth/types'
+import type { RecentUser } from '../types'
 
 export interface UpdateUserPayload {
   role: string
@@ -18,5 +19,10 @@ export const userApi = {
   async update(userId: number, payload: UpdateUserPayload) {
     const { data } = await http.put<ApiResponse<User>>(`/users/${userId}`, payload)
     return data
+  },
+
+  async recent() {
+    const { data } = await http.get<ApiResponse<RecentUser[]>>('/users/recent')
+    return data.data ?? []
   },
 }

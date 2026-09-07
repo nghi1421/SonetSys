@@ -150,7 +150,7 @@ async function onDeletePage(page: StaticPage): Promise<void> {
 
     <!-- Menu items -->
     <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-      <h2 class="border-b border-slate-200 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-500">
+ <h2 class="border-b border-slate-200 px-4 py-3 text-xs font-bold text-slate-500">
         {{ t('admin.menu.items.title') }}
       </h2>
 
@@ -160,7 +160,7 @@ async function onDeletePage(page: StaticPage): Promise<void> {
 
       <div v-else class="overflow-x-auto">
         <table class="w-full text-left text-sm">
-          <thead class="bg-slate-50 text-[11px] uppercase tracking-widest text-slate-500">
+ <thead class="bg-slate-50 text-[11px] text-slate-500">
             <tr>
               <th class="px-4 py-2 font-medium">{{ t('admin.menu.items.labelHeader') }}</th>
               <th class="px-4 py-2 font-medium">{{ t('admin.menu.items.slugPageHeader') }}</th>
@@ -208,7 +208,7 @@ async function onDeletePage(page: StaticPage): Promise<void> {
                 <div v-else class="flex items-center justify-between gap-3 px-4 py-3">
                   <div class="min-w-0">
                     <p class="truncate text-sm font-medium text-slate-900">{{ item.label }}</p>
-                    <p class="mt-0.5 text-[11px] uppercase tracking-widest text-slate-400">
+ <p class="mt-0.5 text-[11px] text-slate-400">
                       /{{ item.slug }} · {{ item.static_page ? item.static_page.title : t('admin.menu.items.noPageAttachedShort') }}
                     </p>
                   </div>
@@ -287,7 +287,7 @@ async function onDeletePage(page: StaticPage): Promise<void> {
 
     <!-- Static pages -->
     <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-      <h2 class="border-b border-slate-200 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-500">
+ <h2 class="border-b border-slate-200 px-4 py-3 text-xs font-bold text-slate-500">
         {{ t('admin.menu.pages.title') }}
       </h2>
 
@@ -302,7 +302,7 @@ async function onDeletePage(page: StaticPage): Promise<void> {
 
       <div v-else class="overflow-x-auto">
         <table class="w-full text-left text-sm">
-          <thead class="bg-slate-50 text-[11px] uppercase tracking-widest text-slate-500">
+ <thead class="bg-slate-50 text-[11px] text-slate-500">
             <tr>
               <th class="px-4 py-2 font-medium">{{ t('admin.menu.pages.titleHeader') }}</th>
               <th class="px-4 py-2 font-medium">{{ t('admin.menu.pages.contentHeader') }}</th>

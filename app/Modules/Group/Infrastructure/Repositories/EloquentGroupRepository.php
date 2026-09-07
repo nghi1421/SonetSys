@@ -33,6 +33,15 @@ final class EloquentGroupRepository implements GroupRepositoryInterface
             ->get();
     }
 
+    public function popular(int $limit): Collection
+    {
+        return Group::query()
+            ->with('owner')
+            ->orderByDesc('members_count')
+            ->limit($limit)
+            ->get();
+    }
+
     public function update(Group $group, array $attributes): Group
     {
         $group->fill($attributes)->save();

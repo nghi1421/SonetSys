@@ -33,10 +33,10 @@ const membershipDotClass = computed(() => {
     class="flex flex-col gap-3 rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-cyan/50 hover:shadow-cyan-glow"
   >
     <div class="flex items-start justify-between gap-2">
-      <h3 class="text-xs font-bold tracking-wider text-cyber-text">// {{ group.name }}</h3>
+      <h3 class="text-xs font-bold text-cyber-text">{{ group.name }}</h3>
 
       <span
-        class="inline-flex shrink-0 items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest"
+ class="inline-flex shrink-0 items-center gap-1 rounded-full border px-2 py-0.5 text-xs"
         :class="
           group.visibility === 'public'
             ? 'border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 text-cyber-neon-cyan'
@@ -49,19 +49,19 @@ const membershipDotClass = computed(() => {
       </span>
     </div>
 
-    <p v-if="group.description" class="line-clamp-2 font-mono text-xs leading-relaxed text-cyber-muted">
+ <p v-if="group.description" class="line-clamp-2 text-xs leading-relaxed text-cyber-muted">
       {{ group.description }}
     </p>
 
     <div class="mt-auto flex items-center justify-between gap-2 border-t border-cyber-border pt-3">
-      <span class="inline-flex items-center gap-1.5 font-mono text-[10px] tabular-nums text-cyber-muted">
+      <span class="inline-flex items-center gap-1.5 font-mono text-xs tabular-nums text-cyber-muted">
         <Users class="h-3 w-3" />
         {{ group.members_count }}
       </span>
 
       <span
         v-if="membershipLabel"
-        class="inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-cyber-surface px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest text-cyber-text"
+ class="inline-flex items-center gap-1.5 rounded-full border border-cyber-border bg-cyber-surface px-2 py-0.5 text-xs text-cyber-text"
       >
         <span class="h-1.5 w-1.5 rounded-full" :class="membershipDotClass" />
         {{ membershipLabel }}

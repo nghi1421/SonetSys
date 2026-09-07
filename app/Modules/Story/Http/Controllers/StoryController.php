@@ -50,7 +50,7 @@ final class StoryController extends Controller
     {
         $story = $this->stories->create($request->toDto());
 
-        return ApiResponse::success(StoryResource::make($story->load('author')), status: 201);
+        return ApiResponse::success(StoryResource::make($story->load(['author', 'song'])), status: 201);
     }
 
     public function destroy(Request $request, Story $story): JsonResponse

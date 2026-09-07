@@ -44,11 +44,11 @@ async function onSubmit(): Promise<void> {
     <div class="w-full max-w-sm space-y-6">
       <div class="text-center">
         <h1
-          class="bg-gradient-to-r from-cyber-neon-cyan via-cyber-neon-indigo to-cyber-neon-pink bg-clip-text text-sm font-bold uppercase tracking-widest text-transparent"
+ class="bg-gradient-to-r from-cyber-neon-cyan via-cyber-neon-indigo to-cyber-neon-pink bg-clip-text text-sm font-bold text-transparent"
         >
           {{ t('auth.forgotPassword.title') }}
         </h1>
-        <p class="mt-1 font-mono text-xs text-cyber-muted">{{ t('auth.forgotPassword.subtitle') }}</p>
+ <p class="mt-1 text-xs text-cyber-muted">{{ t('auth.forgotPassword.subtitle') }}</p>
       </div>
 
       <AppAlert v-if="generalError">{{ generalError }}</AppAlert>
@@ -69,7 +69,7 @@ async function onSubmit(): Promise<void> {
         <AppButton type="submit" :label="t('auth.forgotPassword.submit')" :loading="loading" class="w-full" />
       </form>
 
-      <p class="text-center font-mono text-xs text-cyber-muted">
+ <p class="text-center text-xs text-cyber-muted">
         {{ t('auth.forgotPassword.rememberedPassword') }}
         <RouterLink
           :to="{ name: 'login' }"

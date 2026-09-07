@@ -14,9 +14,12 @@ import reels from './locales/en/reels.json'
 import report from './locales/en/report.json'
 import search from './locales/en/search.json'
 import settings from './locales/en/settings.json'
+import songs from './locales/en/songs.json'
 import stories from './locales/en/stories.json'
 import storage from './locales/en/storage.json'
+import subscription from './locales/en/subscription.json'
 import wallet from './locales/en/wallet.json'
+import widgets from './locales/en/widgets.json'
 
 export const SUPPORTED_LOCALES = ['en'] as const
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number]
@@ -42,6 +45,9 @@ const en = {
   search,
   report,
   settings,
+  subscription,
+  widgets,
+  songs,
 }
 
 export const i18n = createI18n({

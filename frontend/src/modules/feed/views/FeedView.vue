@@ -4,7 +4,9 @@ import { useI18n } from 'vue-i18n'
 import { Inbox } from '@lucide/vue'
 import AppShell from '@/shared/components/layout/AppShell.vue'
 import AppButton from '@/shared/components/ui/AppButton.vue'
+import PopularGroupsWidget from '@/modules/groups/components/PopularGroupsWidget.vue'
 import StoriesReel from '@/modules/stories/components/StoriesReel.vue'
+import NewMembersWidget from '@/modules/users/components/NewMembersWidget.vue'
 import PostCard from '../components/PostCard.vue'
 import PostComposer from '../components/PostComposer.vue'
 import PostDetailModal from '../components/PostDetailModal.vue'
@@ -33,7 +35,7 @@ onMounted(() => {
 
 <template>
   <AppShell>
-    <div class="mx-auto max-w-2xl space-y-4">
+    <div class="mx-auto max-w-3xl space-y-4">
       <StoriesReel />
 
       <PostComposer :on-submit="feedStore.createPost" />
@@ -43,7 +45,7 @@ onMounted(() => {
           v-for="tab in tabs"
           :key="tab"
           type="button"
-          class="rounded-t-hud px-4 py-2 font-mono text-xs uppercase tracking-widest transition-all duration-300"
+ class="rounded-t-hud px-4 py-2 text-xs transition-all duration-300"
           :class="
             activeTab === tab
               ? 'border-b-2 border-cyber-neon-cyan text-cyber-neon-cyan'
@@ -71,7 +73,7 @@ onMounted(() => {
         <div v-else-if="feedStore.posts.length === 0" class="flex flex-col items-center py-16 text-center">
           <Inbox class="h-8 w-8 text-cyber-muted" />
           <p class="mt-4 text-xs font-bold text-cyber-text">{{ t('feed.feedView.emptyTitle') }}</p>
-          <p class="mt-1 font-mono text-xs text-cyber-muted">
+ <p class="mt-1 text-xs text-cyber-muted">
             {{ t('feed.feedView.emptyDescription') }}
           </p>
         </div>
@@ -112,7 +114,7 @@ onMounted(() => {
         <div v-else-if="feedStore.followingPosts.length === 0" class="flex flex-col items-center py-16 text-center">
           <Inbox class="h-8 w-8 text-cyber-muted" />
           <p class="mt-4 text-xs font-bold text-cyber-text">{{ t('feed.feedView.followingEmptyTitle') }}</p>
-          <p class="mt-1 font-mono text-xs text-cyber-muted">
+ <p class="mt-1 text-xs text-cyber-muted">
             {{ t('feed.feedView.followingEmptyDescription') }}
           </p>
         </div>
@@ -137,6 +139,11 @@ onMounted(() => {
         </template>
       </template>
     </div>
+
+    <template #right>
+      <NewMembersWidget />
+      <PopularGroupsWidget />
+    </template>
 
     <PostDetailModal v-if="modalPost" :post="modalPost" @close="modalPost = null" />
   </AppShell>

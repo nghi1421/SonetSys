@@ -6,6 +6,7 @@ namespace App\Modules\Feed\Http\Resources;
 
 use App\Core\Storage\Application\Services\StorageService;
 use App\Modules\Feed\Domain\Enums\MediaType;
+use App\Modules\Song\Http\Resources\SongResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -39,6 +40,8 @@ final class PostResource extends JsonResource
                 'name' => $user->name,
             ])->values() : [],
             'shared_post' => $this->shared_post_id !== null ? self::make($this->sharedPost) : null,
+            'song' => SongResource::make($this->whenLoaded('song')),
+            'song_start_sec' => (int) $this->song_start_sec,
             'media_type' => $this->media_type?->value,
             'media_url' => in_array($this->media_type, [MediaType::Image, MediaType::Video], true) && $this->media_path !== null
                 ? app(StorageService::class)->url($this->media_disk ?? 'local', $this->media_path)

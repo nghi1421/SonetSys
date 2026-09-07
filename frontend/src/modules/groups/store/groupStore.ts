@@ -16,6 +16,10 @@ export const useGroupStore = defineStore('groups', () => {
   const requests = ref<GroupMember[]>([])
   const loadingRequests = ref(false)
 
+  const popularGroups = ref<Group[]>([])
+  const popularLoading = ref(false)
+  const popularError = ref(false)
+
   async function fetchGroups(): Promise<void> {
     loading.value = true
     try {
@@ -59,7 +63,9 @@ export const useGroupStore = defineStore('groups', () => {
 
   async function join(groupId: number): Promise<void> {
     const response = await groupApi.join(groupId)
-    if (response.data && currentGroup.value?.id === groupId) {
+    if (!response.data) return
+
+    if (currentGroup.value?.id === groupId) {
       const wasApproved = currentGroup.value.viewer_membership?.status === 'approved'
       currentGroup.value = {
         ...currentGroup.value,
@@ -68,6 +74,20 @@ export const useGroupStore = defineStore('groups', () => {
           response.data.status === 'approved' && !wasApproved
             ? currentGroup.value.members_count + 1
             : currentGroup.value.members_count,
+      }
+    }
+
+    const popularIndex = popularGroups.value.findIndex((group) => group.id === groupId)
+    if (popularIndex !== -1) {
+      const target = popularGroups.value[popularIndex]!
+      const wasApproved = target.viewer_membership?.status === 'approved'
+      popularGroups.value[popularIndex] = {
+        ...target,
+        viewer_membership: { role: response.data.role, status: response.data.status },
+        members_count:
+          response.data.status === 'approved' && !wasApproved
+            ? target.members_count + 1
+            : target.members_count,
       }
     }
   }
@@ -146,6 +166,18 @@ export const useGroupStore = defineStore('groups', () => {
     }
   }
 
+  async function fetchPopular(): Promise<void> {
+    popularLoading.value = true
+    popularError.value = false
+    try {
+      popularGroups.value = await groupApi.popular()
+    } catch {
+      popularError.value = true
+    } finally {
+      popularLoading.value = false
+    }
+  }
+
   return {
     groups,
     loading,
@@ -155,6 +187,9 @@ export const useGroupStore = defineStore('groups', () => {
     loadingMembers,
     requests,
     loadingRequests,
+    popularGroups,
+    popularLoading,
+    popularError,
     fetchGroups,
     createGroup,
     fetchGroup,
@@ -162,6 +197,7 @@ export const useGroupStore = defineStore('groups', () => {
     deleteGroup,
     join,
     leave,
+    fetchPopular,
     fetchMembers,
     fetchRequests,
     approveRequest,

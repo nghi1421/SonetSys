@@ -89,6 +89,14 @@ final class GroupService
     }
 
     /**
+     * @return Collection<int, Group>
+     */
+    public function popular(int $limit): Collection
+    {
+        return $this->cache->rememberPopular($limit, fn () => $this->groups->popular($limit));
+    }
+
+    /**
      * @param  Group|Collection<int, Group>  $groups
      */
     public function attachViewerMembership(Group|Collection $groups, int $viewerId): void

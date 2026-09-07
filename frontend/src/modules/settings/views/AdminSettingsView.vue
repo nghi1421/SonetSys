@@ -99,11 +99,11 @@ async function onSave(): Promise<void> {
 
     <form v-else class="space-y-6" @submit.prevent="onSave">
       <section class="space-y-5 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 class="text-xs font-semibold uppercase tracking-widest text-slate-500">{{ t('settings.mail.heading') }}</h2>
+ <h2 class="text-xs font-semibold text-slate-500">{{ t('settings.mail.heading') }}</h2>
 
         <div class="grid grid-cols-2 gap-4">
           <div class="space-y-1.5">
-            <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">{{ t('settings.mail.hostLabel') }}</label>
+ <label class="block text-[11px] font-medium text-slate-500">{{ t('settings.mail.hostLabel') }}</label>
             <input
               v-model="mailHost"
               type="text"
@@ -112,7 +112,7 @@ async function onSave(): Promise<void> {
             />
           </div>
           <div class="space-y-1.5">
-            <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">{{ t('settings.mail.portLabel') }}</label>
+ <label class="block text-[11px] font-medium text-slate-500">{{ t('settings.mail.portLabel') }}</label>
             <input
               v-model.number="mailPort"
               type="number"
@@ -124,7 +124,7 @@ async function onSave(): Promise<void> {
         </div>
 
         <div class="space-y-1.5">
-          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">{{ t('settings.mail.usernameLabel') }}</label>
+ <label class="block text-[11px] font-medium text-slate-500">{{ t('settings.mail.usernameLabel') }}</label>
           <input
             v-model="mailUsername"
             type="text"
@@ -134,7 +134,7 @@ async function onSave(): Promise<void> {
         </div>
 
         <div class="space-y-1.5">
-          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">{{ t('settings.mail.passwordLabel') }}</label>
+ <label class="block text-[11px] font-medium text-slate-500">{{ t('settings.mail.passwordLabel') }}</label>
           <input
             v-model="mailPassword"
             type="password"
@@ -147,7 +147,7 @@ async function onSave(): Promise<void> {
         </div>
 
         <div class="space-y-1.5">
-          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">{{ t('settings.mail.encryptionLabel') }}</label>
+ <label class="block text-[11px] font-medium text-slate-500">{{ t('settings.mail.encryptionLabel') }}</label>
           <input
             v-model="mailEncryption"
             type="text"
@@ -158,7 +158,7 @@ async function onSave(): Promise<void> {
 
         <div class="grid grid-cols-2 gap-4">
           <div class="space-y-1.5">
-            <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">{{ t('settings.mail.fromAddressLabel') }}</label>
+ <label class="block text-[11px] font-medium text-slate-500">{{ t('settings.mail.fromAddressLabel') }}</label>
             <input
               v-model="mailFromAddress"
               type="email"
@@ -167,7 +167,7 @@ async function onSave(): Promise<void> {
             />
           </div>
           <div class="space-y-1.5">
-            <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">{{ t('settings.mail.fromNameLabel') }}</label>
+ <label class="block text-[11px] font-medium text-slate-500">{{ t('settings.mail.fromNameLabel') }}</label>
             <input
               v-model="mailFromName"
               type="text"
@@ -179,10 +179,10 @@ async function onSave(): Promise<void> {
       </section>
 
       <section class="space-y-5 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 class="text-xs font-semibold uppercase tracking-widest text-slate-500">{{ t('settings.cache.heading') }}</h2>
+ <h2 class="text-xs font-semibold text-slate-500">{{ t('settings.cache.heading') }}</h2>
 
         <div class="space-y-1.5">
-          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">{{ t('settings.cache.driverLabel') }}</label>
+ <label class="block text-[11px] font-medium text-slate-500">{{ t('settings.cache.driverLabel') }}</label>
           <div class="grid grid-cols-2 gap-2">
             <button
               type="button"
@@ -214,10 +214,10 @@ async function onSave(): Promise<void> {
       </section>
 
       <section class="space-y-5 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 class="text-xs font-semibold uppercase tracking-widest text-slate-500">{{ t('settings.redis.heading') }}</h2>
+ <h2 class="text-xs font-semibold text-slate-500">{{ t('settings.redis.heading') }}</h2>
 
         <div class="space-y-1.5">
-          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">{{ t('settings.redis.clientLabel') }}</label>
+ <label class="block text-[11px] font-medium text-slate-500">{{ t('settings.redis.clientLabel') }}</label>
           <select
             v-model="redisClient"
             class="block w-full rounded-lg border border-slate-200 px-3 py-2 text-xs text-slate-900 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-600/30"
@@ -229,7 +229,7 @@ async function onSave(): Promise<void> {
 
         <div class="grid grid-cols-2 gap-4">
           <div class="space-y-1.5">
-            <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">{{ t('settings.redis.hostLabel') }}</label>
+ <label class="block text-[11px] font-medium text-slate-500">{{ t('settings.redis.hostLabel') }}</label>
             <input
               v-model="redisHost"
               type="text"
@@ -238,7 +238,7 @@ async function onSave(): Promise<void> {
             />
           </div>
           <div class="space-y-1.5">
-            <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">{{ t('settings.redis.portLabel') }}</label>
+ <label class="block text-[11px] font-medium text-slate-500">{{ t('settings.redis.portLabel') }}</label>
             <input
               v-model.number="redisPort"
               type="number"
@@ -250,7 +250,7 @@ async function onSave(): Promise<void> {
         </div>
 
         <div class="space-y-1.5">
-          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">{{ t('settings.redis.passwordLabel') }}</label>
+ <label class="block text-[11px] font-medium text-slate-500">{{ t('settings.redis.passwordLabel') }}</label>
           <input
             v-model="redisPassword"
             type="password"
@@ -263,7 +263,7 @@ async function onSave(): Promise<void> {
         </div>
 
         <div class="space-y-1.5">
-          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">{{ t('settings.redis.databaseLabel') }}</label>
+ <label class="block text-[11px] font-medium text-slate-500">{{ t('settings.redis.databaseLabel') }}</label>
           <input
             v-model.number="redisDatabase"
             type="number"
@@ -274,10 +274,10 @@ async function onSave(): Promise<void> {
       </section>
 
       <section class="space-y-5 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 class="text-xs font-semibold uppercase tracking-widest text-slate-500">{{ t('settings.uploads.heading') }}</h2>
+ <h2 class="text-xs font-semibold text-slate-500">{{ t('settings.uploads.heading') }}</h2>
 
         <div class="space-y-1.5">
-          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">{{ t('settings.uploads.maxSizeLabel') }}</label>
+ <label class="block text-[11px] font-medium text-slate-500">{{ t('settings.uploads.maxSizeLabel') }}</label>
           <input
             v-model.number="maxUploadSizeKb"
             type="number"

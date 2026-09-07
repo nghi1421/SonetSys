@@ -121,6 +121,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/subscription',
+      name: 'subscription',
+      component: () => import('@/modules/subscription/views/SubscriptionView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/groups/:slug',
       name: 'group-detail',
       component: () => import('@/modules/groups/views/GroupDetailView.vue'),
@@ -178,6 +184,12 @@ const router = createRouter({
           meta: { requiresAdmin: true },
         },
         {
+          path: 'subscriptions',
+          name: 'admin-subscriptions',
+          component: () => import('@/modules/subscription/views/AdminSubscriptionsView.vue'),
+          meta: { requiresAdmin: true },
+        },
+        {
           path: 'reports',
           name: 'admin-reports',
           component: () => import('@/modules/report/views/AdminReportsView.vue'),
@@ -193,6 +205,12 @@ const router = createRouter({
           path: 'reactions',
           name: 'admin-reactions',
           component: () => import('@/modules/reactions/views/AdminReactionsView.vue'),
+          meta: { requiresAdmin: true },
+        },
+        {
+          path: 'songs',
+          name: 'admin-songs',
+          component: () => import('@/modules/songs/views/AdminSongsView.vue'),
           meta: { requiresAdmin: true },
         },
       ],

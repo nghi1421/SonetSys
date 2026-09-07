@@ -2,6 +2,7 @@
 
 use App\Console\Commands\AdCampaignExpire;
 use App\Console\Commands\ExpireStories;
+use App\Console\Commands\RenewSubscriptions;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -12,3 +13,4 @@ Artisan::command('inspire', function () {
 
 Schedule::command(ExpireStories::class)->hourly();
 Schedule::command(AdCampaignExpire::class)->hourly();
+Schedule::command(RenewSubscriptions::class)->dailyAt('02:00');

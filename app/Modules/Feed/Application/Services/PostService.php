@@ -91,6 +91,8 @@ final class PostService
                 'location_name' => $data->locationName,
                 'location_lat' => $data->locationLat,
                 'location_lng' => $data->locationLng,
+                'song_id' => $data->songId,
+                'song_start_sec' => $data->songStartSec,
                 'published_at' => now(),
             ]);
 

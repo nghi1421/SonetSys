@@ -19,6 +19,8 @@ use Illuminate\Http\Request;
 
 final class GroupController extends Controller
 {
+    private const POPULAR_LIMIT = 5;
+
     public function __construct(
         private readonly GroupService $groups,
     ) {}
@@ -28,6 +30,16 @@ final class GroupController extends Controller
         $user = $request->user();
 
         $groups = $this->groups->list();
+        $this->groups->attachViewerMembership($groups, (int) $user->id);
+
+        return ApiResponse::success(GroupResource::collection($groups));
+    }
+
+    public function popular(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        $groups = $this->groups->popular(self::POPULAR_LIMIT);
         $this->groups->attachViewerMembership($groups, (int) $user->id);
 
         return ApiResponse::success(GroupResource::collection($groups));

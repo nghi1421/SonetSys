@@ -26,5 +26,7 @@ final readonly class CreatePostData
         /** @var list<int> */
         public array $mentionedUserIds = [],
         public bool $isReel = false,
+        public ?int $songId = null,
+        public int $songStartSec = 0,
     ) {}
 }

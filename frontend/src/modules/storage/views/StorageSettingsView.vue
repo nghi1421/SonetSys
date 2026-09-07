@@ -79,7 +79,7 @@ async function onSave(): Promise<void> {
       @submit.prevent="onSave"
     >
       <div class="space-y-1.5">
-        <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">{{ t('storage.settings.driverLabel') }}</label>
+ <label class="block text-[11px] font-medium text-slate-500">{{ t('storage.settings.driverLabel') }}</label>
         <div class="grid grid-cols-2 gap-2">
           <button
             type="button"
@@ -113,7 +113,7 @@ async function onSave(): Promise<void> {
 
       <template v-if="driver === 's3'">
         <div class="space-y-1.5">
-          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">{{ t('storage.settings.bucketLabel') }}</label>
+ <label class="block text-[11px] font-medium text-slate-500">{{ t('storage.settings.bucketLabel') }}</label>
           <input
             v-model="bucket"
             type="text"
@@ -122,7 +122,7 @@ async function onSave(): Promise<void> {
           />
         </div>
         <div class="space-y-1.5">
-          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">{{ t('storage.settings.regionLabel') }}</label>
+ <label class="block text-[11px] font-medium text-slate-500">{{ t('storage.settings.regionLabel') }}</label>
           <input
             v-model="region"
             type="text"
@@ -131,7 +131,7 @@ async function onSave(): Promise<void> {
           />
         </div>
         <div class="space-y-1.5">
-          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">{{ t('storage.settings.accessKeyLabel') }}</label>
+ <label class="block text-[11px] font-medium text-slate-500">{{ t('storage.settings.accessKeyLabel') }}</label>
           <input
             v-model="key"
             type="text"
@@ -140,7 +140,7 @@ async function onSave(): Promise<void> {
           />
         </div>
         <div class="space-y-1.5">
-          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">{{ t('storage.settings.secretKeyLabel') }}</label>
+ <label class="block text-[11px] font-medium text-slate-500">{{ t('storage.settings.secretKeyLabel') }}</label>
           <input
             v-model="secret"
             type="password"
@@ -152,7 +152,7 @@ async function onSave(): Promise<void> {
           {{ storageStore.config?.has_secret ? t('storage.settings.secretHintExisting') : t('storage.settings.secretHintRequired') }}
         </p>
         <div class="space-y-1.5">
-          <label class="block text-[11px] font-medium uppercase tracking-widest text-slate-500">
+ <label class="block text-[11px] font-medium text-slate-500">
             {{ t('storage.settings.endpointLabel') }}
           </label>
           <input

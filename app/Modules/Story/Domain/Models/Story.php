@@ -6,6 +6,7 @@ namespace App\Modules\Story\Domain\Models;
 
 use App\Core\Auth\Domain\Models\User;
 use App\Core\Storage\Domain\Enums\MediaType;
+use App\Modules\Song\Domain\Models\Song;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,6 +22,8 @@ final class Story extends Model
         'media_disk',
         'media_path',
         'caption',
+        'song_id',
+        'song_start_sec',
         'published_at',
         'expires_at',
     ];
@@ -29,6 +32,7 @@ final class Story extends Model
     {
         return [
             'media_type' => MediaType::class,
+            'song_start_sec' => 'integer',
             'published_at' => 'datetime',
             'expires_at' => 'datetime',
         ];
@@ -42,5 +46,10 @@ final class Story extends Model
     public function views(): HasMany
     {
         return $this->hasMany(StoryView::class);
+    }
+
+    public function song(): BelongsTo
+    {
+        return $this->belongsTo(Song::class);
     }
 }

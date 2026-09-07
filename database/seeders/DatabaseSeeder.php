@@ -36,5 +36,7 @@ final class DatabaseSeeder extends Seeder
 
         app(MenuService::class)->seedDefaults();
         app(ReactionTypeService::class)->seedDefaults();
+
+        $this->call(DemoDataSeeder::class);
     }
 }

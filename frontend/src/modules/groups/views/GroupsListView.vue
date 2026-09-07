@@ -36,9 +36,9 @@ async function onJoin(groupId: number): Promise<void> {
 
 <template>
   <AppShell>
-    <div class="mx-auto max-w-4xl space-y-4">
+    <div class="mx-auto max-w-5xl space-y-4">
       <div class="flex items-center justify-between">
-        <h1 class="text-sm font-bold tracking-wider text-cyber-text">// {{ t('groups.groupsList.title') }}</h1>
+        <h1 class="text-sm font-bold text-cyber-text">{{ t('groups.groupsList.title') }}</h1>
         <AppButton :label="t('groups.groupsList.createButton')" @click="showCreateModal = true" />
       </div>
 
@@ -55,7 +55,7 @@ async function onJoin(groupId: number): Promise<void> {
       <div v-else-if="groupStore.groups.length === 0" class="flex flex-col items-center py-16 text-center">
         <Users class="h-8 w-8 text-cyber-muted" />
         <p class="mt-4 text-xs font-bold text-cyber-text">{{ t('groups.groupsList.emptyTitle') }}</p>
-        <p class="mt-1 font-mono text-xs text-cyber-muted">{{ t('groups.groupsList.emptyDescription') }}</p>
+ <p class="mt-1 text-xs text-cyber-muted">{{ t('groups.groupsList.emptyDescription') }}</p>
       </div>
 
       <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2">

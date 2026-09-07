@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Core\Auth\Infrastructure\Repositories;
 
 use App\Core\Auth\Application\Contracts\UserRepositoryInterface;
+use App\Core\Auth\Domain\Enums\UserStatus;
 use App\Core\Auth\Domain\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -48,5 +49,14 @@ final class EloquentUserRepository implements UserRepositoryInterface
             ->orderBy('name')
             ->limit($limit)
             ->get(['id', 'name', 'avatar_url']);
+    }
+
+    public function recent(int $limit): Collection
+    {
+        return User::query()
+            ->where('status', UserStatus::Active)
+            ->orderByDesc('created_at')
+            ->limit($limit)
+            ->get(['id', 'name', 'avatar_url', 'created_at']);
     }
 }

@@ -22,6 +22,13 @@ final class HashtagService
      */
     private const PATTERN = '/#([\p{L}\p{N}_]{1,50})/u';
 
+    /**
+     * Fenced code blocks and inline code spans, stripped before hashtag
+     * matching — posts now render as markdown, so a "#" inside a code
+     * sample (e.g. a C `#include`) must not become a hashtag.
+     */
+    private const CODE_PATTERN = '/```.*?```|`[^`\n]*`/us';
+
     public function extractAndAttach(string $body, Post|Comment $subject): void
     {
         $hashtagIds = collect($this->extractTags($body))
@@ -36,7 +43,9 @@ final class HashtagService
      */
     private function extractTags(string $body): array
     {
-        preg_match_all(self::PATTERN, $body, $matches);
+        $withoutCode = preg_replace(self::CODE_PATTERN, '', $body) ?? $body;
+
+        preg_match_all(self::PATTERN, $withoutCode, $matches);
 
         return collect($matches[1] ?? [])
             ->map(fn (string $tag) => Str::lower($tag))

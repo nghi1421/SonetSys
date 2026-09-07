@@ -7,6 +7,8 @@ function toRequestBody(payload: CreateReelPayload): FormData {
   form.append('media', payload.media)
   if (payload.body) form.append('body', payload.body)
   payload.mentioned_user_ids?.forEach((id) => form.append('mentioned_user_ids[]', String(id)))
+  if (payload.song_id) form.append('song_id', String(payload.song_id))
+  if (payload.song_start_sec) form.append('song_start_sec', String(payload.song_start_sec))
   return form
 }
 

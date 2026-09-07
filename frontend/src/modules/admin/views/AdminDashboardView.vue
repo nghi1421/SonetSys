@@ -53,14 +53,14 @@ onMounted(() => {
       <div v-for="card in statCards" :key="card.label" class="p-4">
         <div class="flex items-center gap-2 text-slate-400">
           <component :is="card.icon" class="h-4 w-4" />
-          <p class="text-[11px] font-medium uppercase tracking-widest">{{ card.label }}</p>
+ <p class="text-[11px] font-medium">{{ card.label }}</p>
         </div>
         <p class="mt-2 font-mono text-xl font-bold tabular-nums text-slate-900">{{ card.value }}</p>
       </div>
     </div>
 
     <div>
-      <h2 class="text-xs font-bold uppercase tracking-widest text-slate-500">{{ t('admin.dashboard.manageTitle') }}</h2>
+ <h2 class="text-xs font-bold text-slate-500">{{ t('admin.dashboard.manageTitle') }}</h2>
       <div class="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <RouterLink
           v-for="link in quickLinks"

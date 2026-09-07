@@ -97,7 +97,7 @@ function statusBadgeClass(status: string): string {
 
     <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
       <table class="w-full text-left text-sm">
-        <thead class="border-b border-slate-200 bg-slate-50 text-[11px] uppercase tracking-widest text-slate-500">
+ <thead class="border-b border-slate-200 bg-slate-50 text-[11px] text-slate-500">
           <tr>
             <th class="px-4 py-3 font-medium">{{ t('admin.users.nameHeader') }}</th>
             <th class="px-4 py-3 font-medium">{{ t('admin.users.emailHeader') }}</th>
@@ -123,7 +123,7 @@ function statusBadgeClass(status: string): string {
           <tr v-for="user in userStore.users" :key="user.id" class="transition-colors duration-150 hover:bg-slate-50">
             <td class="px-4 py-3 font-medium text-slate-900">
               {{ user.name }}
-              <span v-if="isSelf(user)" class="ml-1 text-[10px] font-normal uppercase tracking-wider text-slate-400">{{ t('admin.users.you') }}</span>
+ <span v-if="isSelf(user)" class="ml-1 text-xs font-normal text-slate-400">{{ t('admin.users.you') }}</span>
             </td>
             <td class="px-4 py-3 text-slate-500">{{ user.email }}</td>
             <td class="px-4 py-3">

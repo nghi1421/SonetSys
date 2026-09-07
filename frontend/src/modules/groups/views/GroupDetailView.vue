@@ -76,7 +76,7 @@ function createGroupPost(payload: Parameters<typeof feedStore.createGroupPost>[1
 
 <template>
   <AppShell>
-    <div class="mx-auto max-w-2xl space-y-4">
+    <div class="mx-auto max-w-3xl space-y-4">
       <div v-if="groupStore.loadingCurrent" class="h-40 animate-pulse rounded-hud border border-cyber-border bg-cyber-surface/60" />
 
       <AppAlert v-else-if="!group">{{ t('groups.groupDetail.notFound') }}</AppAlert>
@@ -85,10 +85,10 @@ function createGroupPost(payload: Parameters<typeof feedStore.createGroupPost>[1
         <header class="rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md">
           <div class="flex items-start justify-between gap-3">
             <div class="min-w-0">
-              <h1 class="text-sm font-bold tracking-wider text-cyber-text">// {{ group.name }}</h1>
+              <h1 class="text-sm font-bold text-cyber-text">{{ group.name }}</h1>
               <div class="mt-2 flex flex-wrap items-center gap-2">
                 <span
-                  class="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest"
+ class="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs"
                   :class="
                     group.visibility === 'public'
                       ? 'border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 text-cyber-neon-cyan'
@@ -99,7 +99,7 @@ function createGroupPost(payload: Parameters<typeof feedStore.createGroupPost>[1
                   <Lock v-else class="h-2.5 w-2.5" />
                   {{ t(`groups.visibility.${group.visibility}`) }}
                 </span>
-                <span class="inline-flex items-center gap-1.5 font-mono text-[10px] tabular-nums text-cyber-muted">
+                <span class="inline-flex items-center gap-1.5 font-mono text-xs tabular-nums text-cyber-muted">
                   <Users class="h-3 w-3" />
                   {{ t('groups.groupDetail.membersCount', { count: group.members_count }) }}
                 </span>
@@ -116,7 +116,7 @@ function createGroupPost(payload: Parameters<typeof feedStore.createGroupPost>[1
               v-else-if="group.viewer_membership.status === 'pending'"
               type="button"
               disabled
-              class="shrink-0 rounded-full border border-amber-500/30 bg-amber-500/10 px-4 py-2 font-mono text-xs uppercase tracking-wider text-amber-400"
+ class="shrink-0 rounded-full border border-amber-500/30 bg-amber-500/10 px-4 py-2 text-xs text-amber-400"
             >
               {{ t('groups.roles.requested') }}
             </button>
@@ -124,14 +124,14 @@ function createGroupPost(payload: Parameters<typeof feedStore.createGroupPost>[1
               v-else-if="!isOwner"
               type="button"
               :disabled="joiningOrLeaving"
-              class="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-cyber-border bg-cyber-glass px-4 py-2 font-mono text-xs uppercase tracking-wider text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-pink/50 hover:text-cyber-neon-pink hover:shadow-pink-glow disabled:cursor-not-allowed disabled:opacity-40"
+ class="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-cyber-border bg-cyber-glass px-4 py-2 text-xs text-cyber-text backdrop-blur-md transition-all duration-300 hover:border-cyber-neon-pink/50 hover:text-cyber-neon-pink hover:shadow-pink-glow disabled:cursor-not-allowed disabled:opacity-40"
               @click="onLeave"
             >
               <LogOut class="h-3.5 w-3.5" /> {{ t('groups.groupDetail.leave') }}
             </button>
           </div>
 
-          <p v-if="group.description" class="mt-3 whitespace-pre-wrap font-mono text-xs leading-relaxed text-cyber-text/90">
+ <p v-if="group.description" class="mt-3 whitespace-pre-wrap text-xs leading-relaxed text-cyber-text/90">
             {{ group.description }}
           </p>
 
@@ -144,7 +144,7 @@ function createGroupPost(payload: Parameters<typeof feedStore.createGroupPost>[1
             v-show="tab !== 'settings' || isManager"
             :key="tab"
             type="button"
-            class="rounded-t-hud px-4 py-2 font-mono text-xs uppercase tracking-widest transition-all duration-300"
+ class="rounded-t-hud px-4 py-2 text-xs transition-all duration-300"
             :class="
               activeTab === tab
                 ? 'border-b-2 border-cyber-neon-cyan text-cyber-neon-cyan'
@@ -160,7 +160,7 @@ function createGroupPost(payload: Parameters<typeof feedStore.createGroupPost>[1
           <div v-if="!canViewPosts" class="flex flex-col items-center py-16 text-center">
             <Lock class="h-8 w-8 text-cyber-muted" />
             <p class="mt-4 text-xs font-bold text-cyber-text">{{ t('groups.groupDetail.privateTitle') }}</p>
-            <p class="mt-1 font-mono text-xs text-cyber-muted">{{ t('groups.groupDetail.privateDescription') }}</p>
+ <p class="mt-1 text-xs text-cyber-muted">{{ t('groups.groupDetail.privateDescription') }}</p>
           </div>
 
           <div v-else class="space-y-4">
@@ -177,7 +177,7 @@ function createGroupPost(payload: Parameters<typeof feedStore.createGroupPost>[1
 
             <div v-else-if="feedStore.posts.length === 0" class="flex flex-col items-center py-16 text-center">
               <p class="text-xs font-bold text-cyber-text">{{ t('groups.groupDetail.emptyPostsTitle') }}</p>
-              <p class="mt-1 font-mono text-xs text-cyber-muted">{{ t('groups.groupDetail.emptyPostsDescription') }}</p>
+ <p class="mt-1 text-xs text-cyber-muted">{{ t('groups.groupDetail.emptyPostsDescription') }}</p>
             </div>
 
             <template v-else>

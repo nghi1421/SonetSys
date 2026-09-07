@@ -106,19 +106,19 @@ async function onCancel(campaign: AdCampaign): Promise<void> {
 
 <template>
   <AppShell>
-    <div class="mx-auto max-w-2xl space-y-4">
+    <div class="mx-auto max-w-3xl space-y-4">
       <header class="rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md">
         <div class="flex items-center justify-between">
           <div>
-            <h1 class="text-sm font-bold tracking-wider text-cyber-text">
-              // {{ t('advertising.advertiseView.title') }}
+            <h1 class="text-sm font-bold text-cyber-text">
+              {{ t('advertising.advertiseView.title') }}
             </h1>
-            <p class="mt-1 font-mono text-xs text-cyber-muted">{{ t('advertising.advertiseView.subtitle') }}</p>
+ <p class="mt-1 text-xs text-cyber-muted">{{ t('advertising.advertiseView.subtitle') }}</p>
           </div>
           <div class="flex items-center gap-2 rounded-full border border-cyber-neon-cyan/30 bg-cyber-neon-cyan/10 px-4 py-2">
             <Coins class="h-4 w-4 text-cyber-neon-cyan" />
             <div class="text-right">
-              <p class="font-mono text-[9px] uppercase tracking-widest text-cyber-neon-cyan">
+ <p class="hidden text-xs text-cyber-neon-cyan sm:block">
                 {{ t('advertising.advertiseView.walletHint') }}
               </p>
               <p class="font-mono text-sm font-bold tabular-nums text-cyber-text">{{ walletStore.balance }}</p>
@@ -130,13 +130,13 @@ async function onCancel(campaign: AdCampaign): Promise<void> {
       <AppAlert v-if="loadError" variant="error">{{ loadError }}</AppAlert>
 
       <section class="rounded-hud border border-cyber-border bg-cyber-glass p-5 backdrop-blur-md">
-        <h2 class="text-xs font-bold uppercase tracking-widest text-cyber-text">
+ <h2 class="text-xs font-bold text-cyber-text">
           {{ t('advertising.advertiseView.form.title') }}
         </h2>
 
         <p
           v-if="!adStore.loading && adStore.eligiblePosts.length === 0"
-          class="mt-3 font-mono text-xs text-cyber-muted"
+ class="mt-3 text-xs text-cyber-muted"
         >
           {{ t('advertising.advertiseView.form.noEligiblePosts') }}
         </p>
@@ -145,13 +145,13 @@ async function onCancel(campaign: AdCampaign): Promise<void> {
           <AppAlert v-if="formError" variant="error">{{ formError }}</AppAlert>
 
           <div>
-            <label class="block font-mono text-[10px] uppercase tracking-widest text-cyber-muted">
+ <label class="block text-xs text-cyber-muted">
               {{ t('advertising.advertiseView.form.postLabel') }}
             </label>
             <select
               v-model="form.postId"
               required
-              class="mt-1 w-full rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-2 font-mono text-xs text-cyber-text backdrop-blur-md focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
+ class="mt-1 w-full rounded-hud border border-cyber-border bg-cyber-surface/60 px-3 py-2 text-xs text-cyber-text backdrop-blur-md focus:border-cyber-neon-cyan/50 focus:outline-none focus:ring-2 focus:ring-cyber-neon-indigo/40"
             >
               <option value="" disabled>{{ t('advertising.advertiseView.form.postPlaceholder') }}</option>
               <option v-for="post in adStore.eligiblePosts" :key="post.id" :value="post.id">
@@ -162,7 +162,7 @@ async function onCancel(campaign: AdCampaign): Promise<void> {
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block font-mono text-[10px] uppercase tracking-widest text-cyber-muted">
+ <label class="block text-xs text-cyber-muted">
                 {{ t('advertising.advertiseView.form.budgetLabel') }}
               </label>
               <input
@@ -176,7 +176,7 @@ async function onCancel(campaign: AdCampaign): Promise<void> {
               />
             </div>
             <div>
-              <label class="block font-mono text-[10px] uppercase tracking-widest text-cyber-muted">
+ <label class="block text-xs text-cyber-muted">
                 {{ t('advertising.advertiseView.form.daysLabel') }}
               </label>
               <input
@@ -202,7 +202,7 @@ async function onCancel(campaign: AdCampaign): Promise<void> {
       </section>
 
       <section class="space-y-3">
-        <h2 class="font-mono text-xs font-bold uppercase tracking-widest text-cyber-text">
+ <h2 class="text-xs font-bold text-cyber-text">
           {{ t('advertising.advertiseView.myCampaigns.title') }}
         </h2>
 
@@ -224,7 +224,7 @@ async function onCancel(campaign: AdCampaign): Promise<void> {
           <p class="mt-4 text-xs font-bold text-cyber-text">
             {{ t('advertising.advertiseView.myCampaigns.emptyTitle') }}
           </p>
-          <p class="mt-1 font-mono text-xs text-cyber-muted">
+ <p class="mt-1 text-xs text-cyber-muted">
             {{ t('advertising.advertiseView.myCampaigns.emptyDescription') }}
           </p>
         </div>
@@ -234,14 +234,14 @@ async function onCancel(campaign: AdCampaign): Promise<void> {
             <li v-for="campaign in adStore.campaigns" :key="campaign.id" class="p-4 transition-all duration-300 hover:shadow-cyan-glow">
               <div class="flex items-start justify-between gap-3">
                 <div class="min-w-0">
-                  <p class="truncate font-mono text-xs text-cyber-text/90">{{ postExcerpt(campaign) }}</p>
-                  <p class="mt-1 font-mono text-[10px] uppercase tracking-widest text-cyber-muted">
+ <p class="truncate text-xs text-cyber-text/90">{{ postExcerpt(campaign) }}</p>
+ <p class="mt-1 text-xs text-cyber-muted">
                     {{ t('advertising.advertiseView.myCampaigns.budget') }}: {{ campaign.budget }} ·
                     {{ useRelativeTime(campaign.created_at) }}
                   </p>
                 </div>
                 <span
-                  class="inline-flex shrink-0 items-center rounded-full border px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest"
+ class="inline-flex shrink-0 items-center rounded-full border px-2 py-0.5 text-xs"
                   :class="statusClass(campaign.status)"
                 >
                   {{ t(`advertising.advertiseView.statuses.${campaign.status}`) }}
